@@ -9,8 +9,8 @@ spring:
   jpa:
     showSql: 'true'
     hibernate:
-      ddl-auto: 'create-drop'
-#      ddl-auto: update
+#      ddl-auto: 'create-drop'
+      ddl-auto: update
     properties:
       hibernate:
         dialect: 'org.hibernate.dialect.PostgreSQLDialect'
@@ -40,3 +40,6 @@ application:
     refresh-jwt:
       secret-key: 294C4D868F5CC153E538D5DD921B1612263C3D700EF1662E6C89903DE0FF3F9F
       expiration: 2592000000
+    verification-jwt:
+      secret-key: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+      expiration: 86400000

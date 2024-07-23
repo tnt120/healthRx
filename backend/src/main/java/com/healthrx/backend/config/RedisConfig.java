@@ -1,4 +1,4 @@
-package com.healthrx.backend.api.config;
+package com.healthrx.backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -4,6 +4,7 @@ import com.healthrx.backend.api.internal.enums.Role;
 import com.healthrx.backend.api.internal.enums.Sex;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -20,6 +21,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@Builder
 @Accessors(chain = true)
 public class User implements UserDetails {
 
@@ -27,8 +29,9 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
+    @Column(nullable = false)
     private String password;
     private String pictureUrl;
     private String firstName;
@@ -47,6 +50,8 @@ public class User implements UserDetails {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private DoctorDetails doctorDetails;
+
+    private boolean isVerifiedDoctor;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

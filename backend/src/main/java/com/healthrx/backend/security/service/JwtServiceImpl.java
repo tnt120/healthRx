@@ -28,11 +28,17 @@ public class JwtServiceImpl implements JwtService {
     @Value("${application.security.refresh-jwt.secret-key}")
     private String SECRET_REFRESH_KEY;
 
+    @Value("${application.security.verification-jwt.secret-key}")
+    private String SECRET_VERIFICATION_KEY;
+
     @Value("${application.security.access-jwt.expiration}")
     private long ACCESS_JWT_EXPIRATION;
 
     @Value("${application.security.refresh-jwt.expiration}")
     private long REFRESH_JWT_EXPIRATION;
+
+    @Value("${application.security.verification-jwt.expiration}")
+    private long VERIFICATION_JWT_EXPIRATION;
 
     private final RedisService redisService;
 
@@ -77,6 +83,15 @@ public class JwtServiceImpl implements JwtService {
                         .signWith(getSigningKey(TokenType.ACCESS), SignatureAlgorithm.HS256)
                         .compact();
             }
+            case VERIFICATION -> {
+                return Jwts.builder()
+                        .setClaims(Map.of())
+                        .setSubject(userDetails.getUsername())
+                        .setIssuedAt(new Date(System.currentTimeMillis()))
+                        .setExpiration(new Date(System.currentTimeMillis() + VERIFICATION_JWT_EXPIRATION))
+                        .signWith(getSigningKey(TokenType.VERIFICATION), SignatureAlgorithm.HS256)
+                        .compact();
+            }
             case REFRESH -> {
                 Map<String, Object> headers = new HashMap<>();
                 headers.put("source", getHeader("source"));
@@ -113,6 +128,7 @@ public class JwtServiceImpl implements JwtService {
         String secret = switch (tokenType) {
             case ACCESS -> SECRET_ACCESS_KEY;
             case REFRESH -> SECRET_REFRESH_KEY;
+            case VERIFICATION -> SECRET_VERIFICATION_KEY;
         };
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         return Keys.hmacShaKeyFor(keyBytes);
