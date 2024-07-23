@@ -29,7 +29,7 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON;
 
 @Component
 @RequiredArgsConstructor
-public class JwtAutheticationFilter extends OncePerRequestFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
