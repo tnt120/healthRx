@@ -1,6 +1,7 @@
 package com.healthrx.backend.service.impl;
 
 import com.healthrx.backend.api.external.AuthRequest;
+import com.healthrx.backend.api.external.Token;
 import com.healthrx.backend.api.internal.User;
 import com.healthrx.backend.api.internal.VerificationToken;
 import com.healthrx.backend.api.internal.enums.Role;
@@ -10,6 +11,8 @@ import com.healthrx.backend.security.service.JwtService;
 import com.healthrx.backend.security.util.TokenType;
 import com.healthrx.backend.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +26,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final VerificationTokenRepository verificationTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
 
     @Override
     public void register(AuthRequest request) {
@@ -56,5 +60,25 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .build();
 
         verificationTokenRepository.save(tokenEntity);
+    }
+
+    @Override
+    public Token login(AuthRequest request) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
+
+        var user = userRepository.findUserByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        var accessToken = jwtService.generateToken(user, TokenType.ACCESS);
+        var refreshToken = jwtService.generateToken(user, TokenType.REFRESH);
+
+        return Token.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken).build();
     }
 }
