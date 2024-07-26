@@ -94,7 +94,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public Token refresh(HttpServletRequest request, HttpServletResponse response) {
-        String refreshToken = Arrays.stream(request.getCookies())
+        Cookie[] cookies = request.getCookies();
+
+        if (isNull(cookies)) {
+            throw INVALID_USER.getError();
+        }
+
+        String refreshToken = Arrays.stream(cookies)
                 .filter(cookie -> cookie.getName().equals("refresh_token"))
                 .map(Cookie::getValue)
                 .findFirst()

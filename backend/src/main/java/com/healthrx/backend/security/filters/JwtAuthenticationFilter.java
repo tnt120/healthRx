@@ -25,6 +25,7 @@ import java.util.Arrays;
 
 import static com.healthrx.backend.handler.BusinessErrorCodes.TOKEN_EXPIRED;
 import static com.healthrx.backend.security.util.TokenType.ACCESS;
+import static java.util.Objects.isNull;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON;
 
 @Component
@@ -46,7 +47,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String accessToken = Arrays.stream(request.getCookies())
+        Cookie[] cookies = request.getCookies();
+
+        if (isNull(cookies)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        String accessToken = Arrays.stream(cookies)
                 .filter(cookie -> cookie.getName().equals("access_token"))
                 .map(Cookie::getValue)
                 .findFirst()
