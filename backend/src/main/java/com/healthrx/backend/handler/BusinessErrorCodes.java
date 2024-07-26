@@ -19,6 +19,7 @@ public enum BusinessErrorCodes {
     TOKEN_EXPIRED(300, "Access token expired", HttpStatus.UNAUTHORIZED),
     BAD_CREDENTIALS(301, "Login and / or password is incorrect", HttpStatus.UNAUTHORIZED),
     ALREADY_EXISTS(302, "User with this email already exists", HttpStatus.CONFLICT),
+    INVALID_USER(303, "Wrong refresh token", HttpStatus.FORBIDDEN),
     ;
 
     private final int code;

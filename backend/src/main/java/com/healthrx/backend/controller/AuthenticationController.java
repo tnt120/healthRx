@@ -3,6 +3,7 @@ package com.healthrx.backend.controller;
 import com.healthrx.backend.api.external.AuthRequest;
 import com.healthrx.backend.api.external.Token;
 import com.healthrx.backend.service.AuthenticationService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -46,6 +47,22 @@ public class AuthenticationController {
 
         response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
         response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
+
+        return ResponseEntity.ok(tokens);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<Token> refresh(HttpServletRequest request, HttpServletResponse response) {
+        Token tokens = authService.refresh(request, response);
+
+        ResponseCookie accessTokenCookie = ResponseCookie.from("access_token", tokens.getAccessToken())
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(24 * 60 * 60) // 24h
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
 
         return ResponseEntity.ok(tokens);
     }

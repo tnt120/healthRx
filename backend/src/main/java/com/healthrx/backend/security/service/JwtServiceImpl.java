@@ -2,6 +2,7 @@ package com.healthrx.backend.security.service;
 
 import com.healthrx.backend.security.util.TokenType;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -55,6 +56,16 @@ public class JwtServiceImpl implements JwtService {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    @Override
+    public Header<?> extractAllHeaders(String token, TokenType tokenType) {
+        return Jwts
+                .parserBuilder()
+                .setSigningKey(getSigningKey(tokenType))
+                .build()
+                .parseClaimsJws(token)
+                .getHeader();
     }
 
     @Override

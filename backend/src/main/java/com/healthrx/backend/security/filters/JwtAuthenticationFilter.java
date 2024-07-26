@@ -41,26 +41,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
 
-        if (request.getServletPath().contains("/api/auth/register") || request.getServletPath().contains("/api/auth/login")) {
+        if (request.getServletPath().contains("/api/auth/register") || request.getServletPath().contains("/api/auth/login") || request.getServletPath().contains("/api/auth/refresh")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String authHeader = Arrays.stream(request.getCookies())
+        String accessToken = Arrays.stream(request.getCookies())
                 .filter(cookie -> cookie.getName().equals("access_token"))
                 .map(Cookie::getValue)
                 .findFirst()
                 .orElse(null);
 
-        final String accessToken;
         final String userEmail;
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (accessToken == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        accessToken = authHeader.substring(7);
         try {
             userEmail = jwtService.extractEmail(accessToken, ACCESS);
 
