@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import static com.healthrx.backend.security.util.TokenType.*;
+
 @Service
 @RequiredArgsConstructor
 public class JwtServiceImpl implements JwtService {
@@ -80,17 +82,21 @@ public class JwtServiceImpl implements JwtService {
                         .setSubject(userDetails.getUsername())
                         .setIssuedAt(new Date(System.currentTimeMillis()))
                         .setExpiration(new Date(System.currentTimeMillis() + ACCESS_JWT_EXPIRATION))
-                        .signWith(getSigningKey(TokenType.ACCESS), SignatureAlgorithm.HS256)
+                        .signWith(getSigningKey(ACCESS), SignatureAlgorithm.HS256)
                         .compact();
             }
             case VERIFICATION -> {
-                return Jwts.builder()
+                String verificationToken = Jwts.builder()
                         .setClaims(Map.of())
                         .setSubject(userDetails.getUsername())
                         .setIssuedAt(new Date(System.currentTimeMillis()))
                         .setExpiration(new Date(System.currentTimeMillis() + VERIFICATION_JWT_EXPIRATION))
-                        .signWith(getSigningKey(TokenType.VERIFICATION), SignatureAlgorithm.HS256)
+                        .signWith(getSigningKey(VERIFICATION), SignatureAlgorithm.HS256)
                         .compact();
+
+                this.redisService.saveToken(userDetails.getUsername(), verificationToken, VERIFICATION);
+
+                return verificationToken;
             }
             case REFRESH -> {
                 Map<String, Object> headers = new HashMap<>();
@@ -106,10 +112,10 @@ public class JwtServiceImpl implements JwtService {
                         .setSubject(userDetails.getUsername())
                         .setIssuedAt(new Date(System.currentTimeMillis()))
                         .setExpiration(expiration)
-                        .signWith(getSigningKey(TokenType.REFRESH), SignatureAlgorithm.HS256)
+                        .signWith(getSigningKey(REFRESH), SignatureAlgorithm.HS256)
                         .compact();
 
-                this.redisService.saveRefreshToken(userDetails.getUsername(), refreshToken);
+                this.redisService.saveToken(userDetails.getUsername(), refreshToken, REFRESH);
 
                 return refreshToken;
             }
@@ -120,8 +126,8 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String email = extractEmail(token, TokenType.ACCESS);
-        return email.equals(userDetails.getUsername()) && !isTokenExpired(token, TokenType.ACCESS);
+        final String email = extractEmail(token, ACCESS);
+        return email.equals(userDetails.getUsername()) && !isTokenExpired(token, ACCESS);
     }
 
     private Key getSigningKey(TokenType tokenType) {

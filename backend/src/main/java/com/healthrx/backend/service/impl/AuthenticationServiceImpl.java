@@ -3,10 +3,8 @@ package com.healthrx.backend.service.impl;
 import com.healthrx.backend.api.external.AuthRequest;
 import com.healthrx.backend.api.external.Token;
 import com.healthrx.backend.api.internal.User;
-import com.healthrx.backend.api.internal.VerificationToken;
 import com.healthrx.backend.api.internal.enums.Role;
 import com.healthrx.backend.repository.UserRepository;
-import com.healthrx.backend.repository.VerificationTokenRepository;
 import com.healthrx.backend.security.service.JwtService;
 import com.healthrx.backend.security.util.TokenType;
 import com.healthrx.backend.service.AuthenticationService;
@@ -17,13 +15,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import static com.healthrx.backend.handler.BusinessErrorCodes.ALREADY_EXISTS;
+import static com.healthrx.backend.security.util.TokenType.VERIFICATION;
 
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final UserRepository userRepository;
-    private final VerificationTokenRepository verificationTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -52,14 +50,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         userRepository.save(user);
 
-        var verificationToken = jwtService.generateToken(user, TokenType.VERIFICATION);
-
-        var tokenEntity = VerificationToken.builder()
-                .token(verificationToken)
-                .user(user)
-                .build();
-
-        verificationTokenRepository.save(tokenEntity);
+        var verificationToken = jwtService.generateToken(user, VERIFICATION); // potrzebne zwrócienie tokena do wysłania emaila
     }
 
     @Override
