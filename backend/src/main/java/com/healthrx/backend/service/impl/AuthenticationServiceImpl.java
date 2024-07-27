@@ -4,6 +4,7 @@ import com.healthrx.backend.api.external.AuthRequest;
 import com.healthrx.backend.api.external.Token;
 import com.healthrx.backend.api.internal.User;
 import com.healthrx.backend.api.internal.enums.Role;
+import com.healthrx.backend.kafka.KafkaReceiveModel;
 import com.healthrx.backend.repository.UserRepository;
 import com.healthrx.backend.security.service.JwtService;
  import com.healthrx.backend.security.service.RedisService;
@@ -14,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,10 +23,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static com.healthrx.backend.handler.BusinessErrorCodes.ALREADY_EXISTS;
 import static com.healthrx.backend.handler.BusinessErrorCodes.INVALID_USER;
@@ -41,6 +40,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final RedisService redisService;
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
+    private final KafkaTemplate<String, KafkaReceiveModel> kafkaTemplate;
 
     @Autowired
     private HttpServletRequest httpServletRequest;
@@ -69,7 +69,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         userRepository.save(user);
 
-        var verificationToken = jwtService.generateToken(user, VERIFICATION); // potrzebne zwrócienie tokena do wysłania emaila
+        var verificationToken = jwtService.generateToken(user, VERIFICATION);
+
+        this.sendMail(Collections.singletonList(request.getEmail()), verificationToken);
     }
 
     @Override
@@ -153,5 +155,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private String getHeader(String headerName) {
         return httpServletRequest.getHeader(headerName);
+    }
+
+    private void sendMail(List<String> emails, String verificationToken) {
+        KafkaReceiveModel kafkaReceiveModel = new KafkaReceiveModel()
+                .setSubject("Account verification")
+                .setStrategy("VERIFICATION")
+                .setEmails(emails)
+                .setData(Map.of(
+                        "link", "http://localhost:4200/verification/" + verificationToken
+                ));
+
+        this.kafkaTemplate.send("mails", kafkaReceiveModel);
     }
 }
