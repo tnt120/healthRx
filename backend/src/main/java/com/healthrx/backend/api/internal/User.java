@@ -38,7 +38,7 @@ public class User implements UserDetails {
     private String lastName;
     private String phoneNumber;
     private OffsetDateTime birthDate;
-    private Double weight;
+    private Double height;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -48,10 +48,13 @@ public class User implements UserDetails {
 
     private Boolean configured;
 
+    private boolean isVerifiedDoctor;
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private DoctorDetails doctorDetails;
 
-    private boolean isVerifiedDoctor;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private AccountSettings accountSettings;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
