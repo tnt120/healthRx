@@ -7,6 +7,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import static com.healthrx.backend.handler.BusinessErrorCodes.INVALID_TOKEN;
 import static com.healthrx.backend.security.util.TokenType.*;
 
 @Service
@@ -50,12 +52,16 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public Claims extractAllClaims(String token, TokenType tokenType) {
-        return Jwts
-                .parserBuilder()
-                .setSigningKey(getSigningKey(tokenType))
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        try {
+            return Jwts
+                    .parserBuilder()
+                    .setSigningKey(getSigningKey(tokenType))
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (SignatureException e) {
+            throw INVALID_TOKEN.getError();
+        }
     }
 
     @Override

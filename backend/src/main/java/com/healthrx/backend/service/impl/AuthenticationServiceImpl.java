@@ -25,8 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import static com.healthrx.backend.handler.BusinessErrorCodes.ALREADY_EXISTS;
-import static com.healthrx.backend.handler.BusinessErrorCodes.INVALID_USER;
+import static com.healthrx.backend.handler.BusinessErrorCodes.*;
 import static com.healthrx.backend.security.util.TokenType.*;
 import static java.util.Objects.isNull;
 
@@ -85,6 +84,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         var user = userRepository.findUserByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!user.getConfigured()) {
+            throw NOT_VERIFIED_ACCOUNT.getError();
+        }
 
         var accessToken = jwtService.generateToken(user, ACCESS);
         var refreshToken = jwtService.generateToken(user, REFRESH);

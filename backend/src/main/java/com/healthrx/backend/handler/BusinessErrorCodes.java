@@ -16,6 +16,7 @@ import java.io.IOException;
 public enum BusinessErrorCodes {
 
     NO_CODE(0, "No code", HttpStatus.NOT_IMPLEMENTED),
+    INVALID_TOKEN(100, "Invalid token", HttpStatus.FORBIDDEN),
     ACCESS_TOKEN_EXPIRED(300, "Access token expired", HttpStatus.UNAUTHORIZED),
     VERIFICATION_TOKEN_EXPIRED(301, "Verification token expired", HttpStatus.UNAUTHORIZED),
     BAD_CREDENTIALS(302, "Login and / or password is incorrect", HttpStatus.UNAUTHORIZED),
@@ -23,6 +24,7 @@ public enum BusinessErrorCodes {
     INVALID_USER(304, "Wrong refresh token", HttpStatus.FORBIDDEN),
     INVALID_VERIFICATION(305, "Invalid verification or wrong verification token", HttpStatus.FORBIDDEN),
     INVALID_EMAIL(306, "Account with provided email does not exists", HttpStatus.FORBIDDEN),
+    NOT_VERIFIED_ACCOUNT(307, "Account is not verified", HttpStatus.FORBIDDEN),
     ;
 
     private final int code;
