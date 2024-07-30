@@ -49,45 +49,7 @@ public class UserServiceImpl implements UserService {
         user.setBirthDate(request.getBirthDate());
         user.setPhoneNumber(request.getPhoneNumber());
 
-        if (user.getRole() == Role.USER) {
-            user.setHeight(request.getHeight());
-            AccountSettings accountSettings = new AccountSettings()
-                    .setUser(user)
-                    .setParametersNotifications(request.getParametersNotifications())
-                    .setBadResultsNotificationsEnabled(request.isBadResultsNotificationsEnabled())
-                    .setDrugNotificationsEnabled(request.isDrugNotificationsEnabled());
-
-            user.setAccountSettings(accountSettings);
-
-            request.getParameters().forEach(parameter -> {
-                UserParameter userParameter = new UserParameter()
-                        .setUser(user)
-                        .setParameter(
-                                parameterRepository.getReferenceById(parameter.getId())
-                        );
-
-                userParameterRepository.save(userParameter);
-            });
-        } else if (user.getRole() == Role.DOCTOR) {
-            DoctorDetails doctorDetails = new DoctorDetails()
-                    .setUser(user)
-                    .setNumberPWZ(request.getNumberPWZ())
-                    .setNumberPESEL(request.getNumberPESEL())
-                    .setIdPhotoFrontUrl(request.getIdPhotoFrontUrl())
-                    .setIdPhotoBackUrl(request.getIdPhotoBackUrl());
-
-            user.setDoctorDetails(doctorDetails);
-
-            request.getSpecializations().forEach(specialization -> {
-                DoctorSpecialization doctorSpecialization = new DoctorSpecialization()
-                        .setDoctorDetails(doctorDetails)
-                        .setSpecialization(
-                                specializationRepository.getReferenceById(specialization.getId())
-                        );
-
-                doctorSpecializationRepository.save(doctorSpecialization);
-            });
-        }
+        fillUserDetails(user, request);
 
         user.setConfigured(true);
 
@@ -142,5 +104,47 @@ public class UserServiceImpl implements UserService {
                 ));
 
         this.kafkaTemplate.send("mails", kafkaReceiveModel);
+    }
+
+    private void fillUserDetails(User user, UserVerificationRequest request) {
+        if (user.getRole() == Role.USER) {
+            user.setHeight(request.getHeight());
+            AccountSettings accountSettings = new AccountSettings()
+                    .setUser(user)
+                    .setParametersNotifications(request.getParametersNotifications())
+                    .setBadResultsNotificationsEnabled(request.isBadResultsNotificationsEnabled())
+                    .setDrugNotificationsEnabled(request.isDrugNotificationsEnabled());
+
+            user.setAccountSettings(accountSettings);
+
+            request.getParameters().forEach(parameter -> {
+                UserParameter userParameter = new UserParameter()
+                        .setUser(user)
+                        .setParameter(
+                                parameterRepository.getReferenceById(parameter.getId())
+                        );
+
+                userParameterRepository.save(userParameter);
+            });
+        } else if (user.getRole() == Role.DOCTOR) {
+            DoctorDetails doctorDetails = new DoctorDetails()
+                    .setUser(user)
+                    .setNumberPWZ(request.getNumberPWZ())
+                    .setNumberPESEL(request.getNumberPESEL())
+                    .setIdPhotoFrontUrl(request.getIdPhotoFrontUrl())
+                    .setIdPhotoBackUrl(request.getIdPhotoBackUrl());
+
+            user.setDoctorDetails(doctorDetails);
+
+            request.getSpecializations().forEach(specialization -> {
+                DoctorSpecialization doctorSpecialization = new DoctorSpecialization()
+                        .setDoctorDetails(doctorDetails)
+                        .setSpecialization(
+                                specializationRepository.getReferenceById(specialization.getId())
+                        );
+
+                doctorSpecializationRepository.save(doctorSpecialization);
+            });
+        }
     }
 }
