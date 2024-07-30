@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserVerificationRequest {
-    private String verificationToken;
+    private String email;
     private String firstName;
     private String lastName;
     private Sex sex;

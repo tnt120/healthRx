@@ -141,6 +141,11 @@ public class JwtServiceImpl implements JwtService {
         return email.equals(userDetails.getUsername()) && !isTokenExpired(token, ACCESS);
     }
 
+    @Override
+    public boolean isTokenExpired(String token, TokenType tokenType) {
+        return extractExpiration(token, tokenType).before(new Date());
+    }
+
     private Key getSigningKey(TokenType tokenType) {
         String secret = switch (tokenType) {
             case ACCESS -> SECRET_ACCESS_KEY;
@@ -149,10 +154,6 @@ public class JwtServiceImpl implements JwtService {
         };
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         return Keys.hmacShaKeyFor(keyBytes);
-    }
-
-    private boolean isTokenExpired(String token, TokenType tokenType) {
-        return extractExpiration(token, tokenType).before(new Date());
     }
 
     private String getHeader(String headerName) {

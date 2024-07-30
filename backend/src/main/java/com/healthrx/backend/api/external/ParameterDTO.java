@@ -12,4 +12,7 @@ import lombok.NoArgsConstructor;
 public class ParameterDTO {
     private String id;
     private String name;
+    private String unit;
+    private String minValue;
+    private String maxValue;
 }

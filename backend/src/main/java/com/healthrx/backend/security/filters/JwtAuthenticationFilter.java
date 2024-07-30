@@ -23,7 +23,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Arrays;
 
-import static com.healthrx.backend.handler.BusinessErrorCodes.TOKEN_EXPIRED;
+import static com.healthrx.backend.handler.BusinessErrorCodes.ACCESS_TOKEN_EXPIRED;
 import static com.healthrx.backend.security.util.TokenType.ACCESS;
 import static java.util.Objects.isNull;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON;
@@ -90,7 +90,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request, response);
             }
         } catch (ExpiredJwtException e) {
-            handleError(TOKEN_EXPIRED, response);
+            handleError(ACCESS_TOKEN_EXPIRED, response);
         }
     }
 
