@@ -5,6 +5,7 @@ import com.healthrx.backend.api.external.UserVerificationRequest;
 import com.healthrx.backend.api.external.VerificationDataResponse;
 import com.healthrx.backend.api.internal.*;
 import com.healthrx.backend.api.internal.enums.Role;
+import com.healthrx.backend.handler.ExpiredTokenException;
 import com.healthrx.backend.kafka.KafkaReceiveModel;
 import com.healthrx.backend.mapper.ParameterMapper;
 import com.healthrx.backend.mapper.SpecializationMapper;
@@ -67,10 +68,15 @@ public class UserServiceImpl implements UserService {
             throw INVALID_VERIFICATION.getError();
         }
 
-        User user = userRepository.findUserByEmail(jwtService.extractEmail(verificationToken, VERIFICATION))
-                .orElseThrow(INVALID_VERIFICATION::getError);
+        User user;
 
-        if (jwtService.isTokenExpired(verificationToken, VERIFICATION)) {
+        try {
+            user = userRepository.findUserByEmail(jwtService.extractEmail(verificationToken, VERIFICATION))
+                    .orElseThrow(INVALID_VERIFICATION::getError);
+        } catch (ExpiredTokenException e) {
+            user = userRepository.findUserByEmail(e.getClaims().getSubject())
+                    .orElseThrow(INVALID_VERIFICATION::getError);
+
             var newToken = jwtService.generateToken(user, VERIFICATION);
             this.sendMail(Collections.singletonList(user.getEmail()), newToken);
             throw VERIFICATION_TOKEN_EXPIRED.getError();

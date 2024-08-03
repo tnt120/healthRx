@@ -2,6 +2,7 @@ package com.healthrx.backend.security.filters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.healthrx.backend.handler.BusinessErrorCodes;
+import com.healthrx.backend.handler.ExpiredTokenException;
 import com.healthrx.backend.security.service.JwtService;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -89,7 +90,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 filterChain.doFilter(request, response);
             }
-        } catch (ExpiredJwtException e) {
+        } catch (ExpiredJwtException | ExpiredTokenException e) {
             handleError(ACCESS_TOKEN_EXPIRED, response);
         }
     }

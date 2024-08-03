@@ -1,10 +1,8 @@
 package com.healthrx.backend.security.service;
 
+import com.healthrx.backend.handler.ExpiredTokenException;
 import com.healthrx.backend.security.util.TokenType;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Header;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -59,7 +57,10 @@ public class JwtServiceImpl implements JwtService {
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
-        } catch (SignatureException e) {
+        } catch (ExpiredJwtException e) {
+            throw new ExpiredTokenException("Token has expired", e.getClaims());
+        }
+        catch (SignatureException e) {
             throw INVALID_TOKEN.getError();
         }
     }
