@@ -1,5 +1,6 @@
 package com.healthrx.backend.api.internal;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +24,7 @@ public class Drug {
     @Column(length = 512)
     private String name;
 
-    @Column(length = 512)
+    @Column(length = 2048)
     private String power;
 
     @Column(length = 512)
@@ -47,8 +48,9 @@ public class Drug {
     @Column(length = 1024)
     private String characteristic;
 
-//    private String atcCode;
+    private String atcCodes;
 
-//    @OneToMany(mappedBy = "drug", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private List<DrugPack> drugPacks;
+    @OneToMany(mappedBy = "drug", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<DrugPack> drugPacks;
 }

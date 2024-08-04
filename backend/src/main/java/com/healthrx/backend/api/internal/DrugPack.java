@@ -1,5 +1,6 @@
 package com.healthrx.backend.api.internal;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,9 +22,11 @@ public class DrugPack {
 
     @ManyToOne
     @JoinColumn(name = "drug_id")
+    @JsonBackReference
     private Drug drug;
 
     private String gtinCode;
+    private String accessibilityCategory;
     private String packType;
     private String packSize;
     private String packagesQuantity;
