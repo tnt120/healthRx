@@ -6,6 +6,10 @@ import com.healthrx.backend.api.internal.Unit;
 import com.healthrx.backend.repository.ParameterRepository;
 import com.healthrx.backend.repository.SpecializationRepository;
 import com.healthrx.backend.repository.UnitRepository;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,17 +26,25 @@ public class BackendApplication {
     public CommandLineRunner init(
             final SpecializationRepository specializationRepository,
             final UnitRepository unitRepository,
-            final ParameterRepository parameterRepository
+            final ParameterRepository parameterRepository,
+            final JobLauncher jobLauncher,
+            final Job job
             ) {
         return args -> {
-            specializationRepository.save(new Specialization().setName("Kardiolog"));
-            specializationRepository.save(new Specialization().setName("Ortopeda"));
-            specializationRepository.save(new Specialization().setName("Pediatra"));
-            Unit unit1 = unitRepository.save(new Unit().setName("Kilogram").setSymbol("kg"));
-            Unit unit2 = unitRepository.save(new Unit().setName("Godzina").setSymbol("h"));
+//            specializationRepository.save(new Specialization().setName("Kardiolog"));
+//            specializationRepository.save(new Specialization().setName("Ortopeda"));
+//            specializationRepository.save(new Specialization().setName("Pediatra"));
+//            Unit unit1 = unitRepository.save(new Unit().setName("Kilogram").setSymbol("kg"));
+//            Unit unit2 = unitRepository.save(new Unit().setName("Godzina").setSymbol("h"));
+//
+//            parameterRepository.save(new Parameter().setName("Waga").setUnit(unit1).setMinValue("18.5").setMaxValue("24.9"));
+//            parameterRepository.save(new Parameter().setName("Sen").setUnit(unit2).setMinValue("7").setMaxValue("9"));
 
-            parameterRepository.save(new Parameter().setName("Waga").setUnit(unit1).setMinValue("18.5").setMaxValue("24.9"));
-            parameterRepository.save(new Parameter().setName("Sen").setUnit(unit2).setMinValue("7").setMaxValue("9"));
+            JobParameters jobParameters = new JobParametersBuilder()
+                    .addLong("startAt", System.currentTimeMillis())
+                    .toJobParameters();
+
+            jobLauncher.run(job, jobParameters);
         };
     }
 }
