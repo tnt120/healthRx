@@ -11,9 +11,10 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class VerificationDataResponse {
-    private String userEmail;
+public class InitAndConfigResponse {
+    private UserResponse user;
     private List<ParameterDTO> parameters;
     private List<SpecializationDTO> specializations;
+    private List<ActivityDTO> activities;
     private List<CityDTO> cities;
 }

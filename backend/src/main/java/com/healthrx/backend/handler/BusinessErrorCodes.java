@@ -25,6 +25,7 @@ public enum BusinessErrorCodes {
     INVALID_VERIFICATION(305, "Invalid verification or wrong verification token", HttpStatus.FORBIDDEN),
     INVALID_EMAIL(306, "Account with provided email does not exists", HttpStatus.FORBIDDEN),
     NOT_VERIFIED_ACCOUNT(307, "Account is not verified", HttpStatus.FORBIDDEN),
+    USER_NOT_FOUND(308, "User not found", HttpStatus.NOT_FOUND),
     ;
 
     private final int code;

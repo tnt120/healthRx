@@ -1,5 +1,6 @@
 package com.healthrx.backend.controller;
 
+import com.healthrx.backend.api.external.InitAndConfigResponse;
 import com.healthrx.backend.api.external.Token;
 import com.healthrx.backend.api.external.UserVerificationRequest;
 import com.healthrx.backend.api.external.VerificationDataResponse;
@@ -32,4 +33,10 @@ public class UserController {
 
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/initAndConfig")
+    public ResponseEntity<InitAndConfigResponse> getInitAndConfigData() {
+        return ResponseEntity.ok(userService.getInitAndConfigData());
+    }
+
 }

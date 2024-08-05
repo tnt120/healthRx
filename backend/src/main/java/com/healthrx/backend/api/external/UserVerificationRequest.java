@@ -33,4 +33,5 @@ public class UserVerificationRequest {
     private String numberPESEL;
     private String idPhotoFrontUrl;
     private String idPhotoBackUrl;
+    private CityDTO city;
 }

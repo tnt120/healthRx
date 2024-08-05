@@ -1,15 +1,13 @@
 package com.healthrx.backend;
 
+import com.healthrx.backend.api.internal.City;
 import com.healthrx.backend.api.internal.Parameter;
 import com.healthrx.backend.api.internal.Specialization;
 import com.healthrx.backend.api.internal.Unit;
+import com.healthrx.backend.repository.CityRepository;
 import com.healthrx.backend.repository.ParameterRepository;
 import com.healthrx.backend.repository.SpecializationRepository;
 import com.healthrx.backend.repository.UnitRepository;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersBuilder;
-import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -28,7 +26,8 @@ public class BackendApplication {
     public CommandLineRunner init(
             final SpecializationRepository specializationRepository,
             final UnitRepository unitRepository,
-            final ParameterRepository parameterRepository
+            final ParameterRepository parameterRepository,
+            final CityRepository cityRepository
             ) {
         return args -> {
 //            specializationRepository.save(new Specialization().setName("Kardiolog"));
@@ -39,6 +38,7 @@ public class BackendApplication {
 //
 //            parameterRepository.save(new Parameter().setName("Waga").setUnit(unit1).setMinValue("18.5").setMaxValue("24.9"));
 //            parameterRepository.save(new Parameter().setName("Sen").setUnit(unit2).setMinValue("7").setMaxValue("9"));
+//            cityRepository.save(new City().setName("Kraków"));
         };
     }
 }
