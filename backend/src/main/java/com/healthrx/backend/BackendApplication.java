@@ -14,8 +14,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
+@EnableScheduling
 public class BackendApplication {
 
     public static void main(String[] args) {
@@ -26,9 +28,7 @@ public class BackendApplication {
     public CommandLineRunner init(
             final SpecializationRepository specializationRepository,
             final UnitRepository unitRepository,
-            final ParameterRepository parameterRepository,
-            final JobLauncher jobLauncher,
-            final Job job
+            final ParameterRepository parameterRepository
             ) {
         return args -> {
 //            specializationRepository.save(new Specialization().setName("Kardiolog"));
@@ -39,12 +39,6 @@ public class BackendApplication {
 //
 //            parameterRepository.save(new Parameter().setName("Waga").setUnit(unit1).setMinValue("18.5").setMaxValue("24.9"));
 //            parameterRepository.save(new Parameter().setName("Sen").setUnit(unit2).setMinValue("7").setMaxValue("9"));
-
-            JobParameters jobParameters = new JobParametersBuilder()
-                    .addLong("startAt", System.currentTimeMillis())
-                    .toJobParameters();
-
-            jobLauncher.run(job, jobParameters);
         };
     }
 }

@@ -22,11 +22,13 @@ import org.springframework.batch.item.xml.StaxEventItemReader;
 import org.springframework.batch.item.xml.builder.StaxEventItemReaderBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.transaction.PlatformTransactionManager;
+
+import java.net.MalformedURLException;
 
 @Configuration
 //@EnableBatchProcessing
@@ -40,20 +42,20 @@ public class BatchConfig {
     private final JobCompletionListener jobCompletionListener;
 
     @Bean
-    public StaxEventItemReader<DrugXml> itemReader() {
+    public StaxEventItemReader<DrugXml> itemReader() throws MalformedURLException {
         Jaxb2Marshaller drugMarshaller = new Jaxb2Marshaller();
         drugMarshaller.setClassesToBeBound(DrugXml.class);
 
         return new StaxEventItemReaderBuilder<DrugXml>()
                 .name("drugReader")
-                .resource(new FileSystemResource("src/main/resources/leki.xml"))
+                .resource(new UrlResource("https://api.dane.gov.pl/resources/52520,wykaz-produktow-leczniczych-plik-w-formacie-xml/file"))
                 .addFragmentRootElements("{http://rejestrymedyczne.ezdrowie.gov.pl/rpl/eksport-danych-v1.0}produktLeczniczy")
                 .unmarshaller(drugMarshaller)
                 .build();
     }
 
     @Bean
-    public SynchronizedItemStreamReader<DrugXml> synchronizedItemReader() {
+    public SynchronizedItemStreamReader<DrugXml> synchronizedItemReader() throws MalformedURLException {
         return new SynchronizedItemStreamReaderBuilder<DrugXml>()
                 .delegate(itemReader())
                 .build();
