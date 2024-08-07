@@ -40,6 +40,7 @@ public class UserServiceImpl implements UserService {
     private final ActivityRepository activityRepository;
     private final ParameterMapper parameterMapper;
     private final SpecializationMapper specializationMapper;
+    private final UserParameterMapper userParameterMapper;
     private final CityMapper cityMapper;
     private final UserMapper userMapper;
     private final ActivityMapper activityMapper;
@@ -149,6 +150,13 @@ public class UserServiceImpl implements UserService {
                      specializationRepository.findAll()
                              .stream()
                              .map(specializationMapper::map)
+                             .toList()
+             );
+
+             response.setUserParameters(
+                     userParameterRepository.findAllByUserId(user.getId())
+                             .stream()
+                             .map(userParameterMapper::map)
                              .toList()
              );
          }

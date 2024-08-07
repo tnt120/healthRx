@@ -17,4 +17,5 @@ public class InitAndConfigResponse {
     private List<SpecializationDTO> specializations;
     private List<ActivityDTO> activities;
     private List<CityDTO> cities;
+    private List<UserParametersResponse> userParameters;
 }
