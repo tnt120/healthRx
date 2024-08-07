@@ -27,6 +27,7 @@ public enum BusinessErrorCodes {
     NOT_VERIFIED_ACCOUNT(307, "Account is not verified", HttpStatus.FORBIDDEN),
     USER_NOT_FOUND(308, "User not found", HttpStatus.NOT_FOUND),
     PARAMETER_NOT_FOUND(309, "Provided parameter not found", HttpStatus.NOT_FOUND),
+    PARAMETER_LOG_ALREADY_EXISTS(310, "Parameter log already exists. Post message incorrect", HttpStatus.BAD_REQUEST),
     ;
 
     private final int code;
