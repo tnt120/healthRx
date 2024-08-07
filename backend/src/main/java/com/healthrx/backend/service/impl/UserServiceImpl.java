@@ -38,6 +38,7 @@ public class UserServiceImpl implements UserService {
     private final DoctorSpecializationRepository doctorSpecializationRepository;
     private final CityRepository cityRepository;
     private final ActivityRepository activityRepository;
+    private final ParameterLogRepository parameterLogRepository;
     private final ParameterMapper parameterMapper;
     private final SpecializationMapper specializationMapper;
     private final UserParameterMapper userParameterMapper;
@@ -156,7 +157,14 @@ public class UserServiceImpl implements UserService {
              response.setUserParameters(
                      userParameterRepository.findAllByUserId(user.getId())
                              .stream()
-                             .map(userParameterMapper::map)
+                             .map(userParameter -> {
+                                 Double parameterValue = parameterLogRepository.findParameterLogValueByParameterIdAndUserIdAndToday(
+                                         userParameter.getParameter().getId(),
+                                         userParameter.getUser().getId()
+                                 ).orElse(null);
+
+                                 return userParameterMapper.map(userParameter, parameterValue);
+                             })
                              .toList()
              );
          }
