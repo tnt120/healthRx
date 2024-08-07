@@ -26,4 +26,9 @@ public class ParametersController {
     public ResponseEntity<List<UserParametersResponse>> setMonitorUserParameters(@RequestBody List<UserParametersRequest> request) {
         return ResponseEntity.ok(parametersService.setMonitorUserParameters(request));
     }
+
+    @PatchMapping("/monitor")
+    public ResponseEntity<UserParametersResponse> editMonitorUserParameters(@RequestBody UserParametersRequest request) {
+        return ResponseEntity.ok(parametersService.editMonitorUserParameters(request));
+    }
 }

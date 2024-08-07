@@ -28,6 +28,8 @@ public enum BusinessErrorCodes {
     USER_NOT_FOUND(308, "User not found", HttpStatus.NOT_FOUND),
     PARAMETER_NOT_FOUND(309, "Provided parameter not found", HttpStatus.NOT_FOUND),
     PARAMETER_LOG_ALREADY_EXISTS(310, "Parameter log already exists. Post message incorrect", HttpStatus.BAD_REQUEST),
+    PARAMETER_LOG_NOT_FOUND(311, "Parameter log not found", HttpStatus.NOT_FOUND),
+    INVALID_USER_REQUEST(312, "User try to modify someone else data", HttpStatus.FORBIDDEN),
     ;
 
     private final int code;

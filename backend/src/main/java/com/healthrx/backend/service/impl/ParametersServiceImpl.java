@@ -23,8 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.healthrx.backend.handler.BusinessErrorCodes.PARAMETER_LOG_ALREADY_EXISTS;
-import static com.healthrx.backend.handler.BusinessErrorCodes.PARAMETER_NOT_FOUND;
+import static com.healthrx.backend.handler.BusinessErrorCodes.*;
 
 @Service
 @RequiredArgsConstructor
@@ -95,5 +94,22 @@ public class ParametersServiceImpl implements ParametersService {
         });
 
         return response;
+    }
+
+    @Override
+    public UserParametersResponse editMonitorUserParameters(UserParametersRequest request) {
+
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        ParameterLog parameterLog = this.parameterLogRepository.findById(request.getId())
+                .orElseThrow(PARAMETER_LOG_NOT_FOUND::getError);
+
+        if (parameterLog.getUser().getId().equals(user.getId())) {
+            throw INVALID_USER_REQUEST.getError();
+        }
+
+        parameterLog.setValue(request.getValue());
+
+        return this.parameterMapper.map(this.parameterLogRepository.save(parameterLog));
     }
 }
