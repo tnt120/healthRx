@@ -36,6 +36,31 @@ $frontend-theme: mat.define-theme((
 // @include mat.color-variants-backwards-compatibility($frontend-theme);
 /* You can add global styles to this file, and also import other style files */
 @import './styles/variables';
+@import './styles/typography';
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body {
+  height: 100%;
+}
+
+html {
+  font-size: 16px;
+}
+
+@media (max-width: 1280px) {
+  html {
+      zoom: 1.2;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+*, *::after, *::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
