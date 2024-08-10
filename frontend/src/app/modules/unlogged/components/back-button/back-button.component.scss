@@ -1,0 +1,21 @@
+@import '../../../../../styles/variables';
+
+:host {
+  button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 0;
+    border-radius: 50%;
+    background-color: $primary-blue;;
+    color: $white;
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+
+    img {
+      width: 32px;
+      height: 32px;
+    }
+  }
+}

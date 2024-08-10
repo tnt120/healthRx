@@ -8,10 +8,7 @@ import com.healthrx.backend.handler.BusinessErrorCodes;
 import com.healthrx.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/user")
@@ -34,7 +31,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/initAndConfig")
+    @GetMapping("/initAndConfig")
     public ResponseEntity<InitAndConfigResponse> getInitAndConfigData() {
         return ResponseEntity.ok(userService.getInitAndConfigData());
     }

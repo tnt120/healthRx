@@ -1,6 +1,7 @@
 package com.healthrx.backend.service.impl;
 
-import com.healthrx.backend.api.external.AuthRequest;
+import com.healthrx.backend.api.external.LoginRequest;
+import com.healthrx.backend.api.external.RegisterRequest;
 import com.healthrx.backend.api.external.Token;
 import com.healthrx.backend.api.internal.User;
 import com.healthrx.backend.api.internal.enums.Role;
@@ -45,7 +46,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private HttpServletRequest httpServletRequest;
 
     @Override
-    public void register(AuthRequest request) {
+    public void register(RegisterRequest request) {
 
         Role role;
         if (request.getIsDoctor()) {
@@ -74,7 +75,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public Token login(AuthRequest request) {
+    public Token login(LoginRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),

@@ -1,6 +1,7 @@
 package com.healthrx.backend.controller;
 
-import com.healthrx.backend.api.external.AuthRequest;
+import com.healthrx.backend.api.external.LoginRequest;
+import com.healthrx.backend.api.external.RegisterRequest;
 import com.healthrx.backend.api.external.Token;
 import com.healthrx.backend.service.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +20,7 @@ public class AuthenticationController {
     private final AuthenticationService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody AuthRequest request) {
+    public ResponseEntity<Void> register(@RequestBody RegisterRequest request) {
 
         authService.register(request);
 
@@ -27,7 +28,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Token> login(@RequestBody AuthRequest request, HttpServletResponse response) {
+    public ResponseEntity<Token> login(@RequestBody LoginRequest request, HttpServletResponse response) {
 
         Token tokens = authService.login(request);
 

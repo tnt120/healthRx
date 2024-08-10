@@ -1,1 +1,45 @@
-<p>login works!</p>
+<div class="container">
+  <div class="header-container">
+    <h1>Health<span class="primary-blue">Rx</span></h1>
+    <app-divider width="100%"></app-divider>
+  </div>
+  <div class="main-form-container">
+    <div class="heading">
+      <app-back-button (click)="redirectTo('')"></app-back-button>
+      <p class="text-4">Zaloguj się na swoje konto</p>
+    </div>
+    <form [formGroup]="loginForm" class="form">
+      @if (formErrors().overall) {
+        <mat-error>{{ formErrors().overall }}</mat-error>
+      }
+      <div class="controls">
+        <mat-form-field class="example-full-width" appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" placeholder="Email" (blur)="updateErrorMessage('email', 'email')">
+          @if (loginForm.controls.email.invalid) {
+            <mat-error>{{ formErrors().email }}</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field class="example-full-width" appearance="outline">
+          <mat-label>Hasło</mat-label>
+          <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" placeholder="Hasło" (blur)="updateErrorMessage('password', 'hasło')">
+          <button type="button" mat-icon-button matSuffix (click)="toogleHide()" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword">
+            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          @if (loginForm.controls.password.invalid) {
+            <mat-error>{{ formErrors().password }}</mat-error>
+          }
+        </mat-form-field>
+      </div>
+      <div class="submit-container">
+        <button mat-flat-button class="submit-button" (click)="login()">Zaloguj</button>
+        <button mat-button>Nie pamiętasz hasła?</button>
+      </div>
+    </form>
+    <div class="no-account-container">
+      <app-divider width="100%"></app-divider>
+        <span>Nie masz konta? <button mat-button (click)="redirectTo('register')">Zarejestruj się</button></span>
+      <app-divider width="100%"></app-divider>
+    </div>
+  </div>
+</div>
