@@ -5,6 +5,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 @NgModule({
   imports: [],
@@ -14,7 +17,10 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatInputModule,
     MatIconModule,
     MatMenuModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatStepperModule,
+    MatSelectModule,
+    MatDatepickerModule
   ]
 })
 export class MyMaterialModule { }

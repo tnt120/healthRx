@@ -8,6 +8,7 @@ import { StoreModule } from '@ngrx/store';
 import { MyMaterialModule } from './material';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './core/interceptors/auth/auth.interceptor';
+import { provideNativeDateAdapter } from '@angular/material/core';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { authInterceptor } from './core/interceptors/auth/auth.interceptor';
     provideAnimationsAsync(),
     provideHttpClient(
       withInterceptors([authInterceptor])
-    )
+    ),
+    provideNativeDateAdapter()
   ],
   bootstrap: [AppComponent]
 })

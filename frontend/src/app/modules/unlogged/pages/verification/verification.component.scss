@@ -1,0 +1,75 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 50%;
+
+    .header-container {
+      width: 100%;
+      text-align: center;
+
+      h1 {
+        padding: 1rem;
+      }
+    }
+
+    .main-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      padding: 2rem 0;
+      gap: 2rem;
+
+      mat-stepper {
+        width: 100%;
+      }
+
+      .step-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 100%;
+        padding: 2rem;
+        gap: 1rem;
+
+        form {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          gap: 1rem;
+        }
+
+        .stepper-buttons {
+          width: 100%;
+          display: flex;
+          justify-content: flex-end;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 1280px) {
+  :host {
+    .container {
+      width: 60%;
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  :host {
+    .container {
+      width: 90%;
+    }
+  }
+}

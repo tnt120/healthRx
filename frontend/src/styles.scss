@@ -63,4 +63,7 @@ body {
   box-sizing: border-box;
 }
 
-
+mat-stepper {
+  border-radius: 5px;
+  @include mat.elevation(3);
+}

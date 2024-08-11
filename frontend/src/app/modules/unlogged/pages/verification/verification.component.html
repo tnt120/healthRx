@@ -1,1 +1,51 @@
-<p>Verification token: {{ verficationToken }}</p>
+<div class="container">
+  <div class="header-container">
+    <h1>Health<span class="primary-blue">Rx</span></h1>
+    <app-divider width="100%"></app-divider>
+  </div>
+  <div class="main-container">
+    <mat-stepper #stepper class="stepper" [orientation]="(stepperOrientation | async)!" linear>
+      <mat-step [stepControl]="userPersonalDataForm" label="Dane personalne" [editable]="true">
+        <div class="step-container">
+          <div class="heading">
+            <h4>Dane personalne</h4>
+          </div>
+          <form [formGroup]="userPersonalDataForm">
+            <mat-form-field appearance="outline">
+              <mat-label>Imię</mat-label>
+              <input matInput type="text" formControlName="firstName" placeholder="Imię" (blur)="updateErrorMessage(userPersonalDataForm, 'firstName', 'imie')" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Nazwisko</mat-label>
+              <input matInput type="text" formControlName="lastName" placeholder="Nazwisko" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Płeć</mat-label>
+              <mat-select formControlName="sex">
+                <mat-option>-</mat-option>
+                <mat-option value="xd">xd</mat-option>
+                <!-- @for() -->
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Data urodzenia</mat-label>
+              <input matInput [matDatepicker]="datepicker" formControlName="birthdate" />
+              <mat-datepicker-toggle matIconSuffix [for]="datepicker"></mat-datepicker-toggle>
+              <mat-datepicker #datepicker></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Numer telefonu</mat-label>
+              <input matInput type="text" placeholder="Numer telefonu" formControlName="phoneNumber" />
+              <mat-icon matSuffix>phone</mat-icon>
+            </mat-form-field>
+          </form>
+          <div class="stepper-buttons">
+            <button mat-button matStepperNext [disabled]="userPersonalDataForm.invalid">Dalej</button>
+          </div>
+        </div>
+      </mat-step>
+      <mat-step label="Personalizacja"></mat-step>
+      <mat-step label="Podsumowanie"></mat-step>
+    </mat-stepper>
+  </div>
+</div>
