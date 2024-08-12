@@ -1,8 +1,5 @@
 <div class="container">
-  <div class="header-container">
-    <h1>Health<span class="primary-blue">Rx</span></h1>
-    <app-divider width="100%"></app-divider>
-  </div>
+  <app-unlogged-header [isAuth]="true"></app-unlogged-header>
   <div class="main-form-container">
     <div class="heading">
       <app-back-button (click)="redirectTo('')"></app-back-button>

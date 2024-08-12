@@ -1,3 +1,5 @@
+@import "../../../../../styles/variables";
+
 :host {
   display: flex;
   justify-content: center;
@@ -9,23 +11,14 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    width: 50%;
-
-    .header-container {
-      width: 100%;
-      text-align: center;
-
-      h1 {
-        padding: 1rem;
-      }
-    }
+    width: 90%;
 
     .main-container {
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      width: 100%;
+      width: 80%;
       padding: 2rem 0;
       gap: 2rem;
 
@@ -41,10 +34,53 @@
         padding: 2rem;
         gap: 1rem;
 
+        .heading {
+          h4 {
+            color: $primary-blue;
+            opacity: 0.8;
+          }
+        }
+
+        .text-summary-data {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+          max-width: 450px;
+        }
+
+        .parameters-container {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+        }
+
         form {
           display: flex;
           flex-direction: column;
           width: 100%;
+          gap: 1rem;
+
+          .space-between-div {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+
+            .time-picker {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              gap: 1rem;
+            }
+          }
+
+          mat-form-field {
+            width: 100%;
+          }
+        }
+
+        .parameters-form {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, 200px);
           gap: 1rem;
         }
 
@@ -52,6 +88,7 @@
           width: 100%;
           display: flex;
           justify-content: flex-end;
+          gap: 1rem;
         }
       }
     }
@@ -61,7 +98,9 @@
 @media screen and (max-width: 1280px) {
   :host {
     .container {
-      width: 60%;
+      .main-container {
+        width: 70%;
+      }
     }
   }
 }
@@ -69,7 +108,33 @@
 @media screen and (max-width: 768px) {
   :host {
     .container {
-      width: 90%;
+      .header-container {
+        h1 {
+          font-size: 1.5rem;
+        }
+      }
+
+      .main-container {
+        width: 100%;
+
+        .step-container {
+          form {
+            .space-between-div {
+              flex-direction: column;
+              gap: 1rem;
+            }
+
+            .time-picker {
+              flex-direction: column;
+              gap: 0.2rem;
+            }
+          }
+
+          .parameters-form {
+            grid-template-columns: repeat(auto-fill, 130px);
+          }
+        }
+      }
     }
   }
 }

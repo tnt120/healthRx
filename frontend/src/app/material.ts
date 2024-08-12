@@ -8,6 +8,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @NgModule({
   imports: [],
@@ -20,7 +21,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
     MatCheckboxModule,
     MatStepperModule,
     MatSelectModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    MatSlideToggleModule
   ]
 })
 export class MyMaterialModule { }

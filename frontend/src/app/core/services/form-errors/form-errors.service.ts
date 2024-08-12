@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, FormGroup } from '@angular/forms';
+import { AbstractControl } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +14,11 @@ export class FormErrorsService {
       email: `Nieprawidłowy email`,
       minlength: `Pole ${name} musi mieć co najmniej ${errors['minlength']?.requiredLength} znaków`,
       forbiddenPassword: `Pole ${name} musi posiadać co najmniej jedną: dużą literę, cyfrę i znak specjalny`,
-      passwordsDoNotMatch: `Podane hasła nie są takie same`
+      passwordsDoNotMatch: `Podane hasła nie są takie same`,
+      forbiddenOnlyLetters: `Pole ${name} może zawierać tylko litery`,
+      forbiddenPhoneNumber: `Numer telefonu musi składać się z 9 cyfr oraz opcjonalnie z numerem (np. +48)`,
+      forbiddenPesel: `Numer PESEL musi składać się z 11 cyfr`,
+      forbiddenNumberPwz: `Numer PWZ musi składać się z 7 cyfr`,
     };
 
     for (const error in errors) {

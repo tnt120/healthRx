@@ -9,6 +9,8 @@ import { VerificationComponent } from './pages/verification/verification.compone
 import { SharedModule } from '../../shared/shared.module';
 import { BackButtonComponent } from './components/back-button/back-button.component';
 import { MyMaterialModule } from '../../material';
+import { TextSummaryRowComponent } from './components/text-summary-row/text-summary-row.component';
+import { UnloggedHeaderComponent } from './components/unlogged-header/unlogged-header.component';
 
 
 @NgModule({
@@ -17,7 +19,9 @@ import { MyMaterialModule } from '../../material';
     LoginComponent,
     RegisterComponent,
     VerificationComponent,
-    BackButtonComponent
+    BackButtonComponent,
+    TextSummaryRowComponent,
+    UnloggedHeaderComponent,
   ],
   imports: [
     CommonModule,

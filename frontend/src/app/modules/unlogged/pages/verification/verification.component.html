@@ -1,51 +1,290 @@
 <div class="container">
-  <div class="header-container">
-    <h1>Health<span class="primary-blue">Rx</span></h1>
-    <app-divider width="100%"></app-divider>
-  </div>
-  <div class="main-container">
-    <mat-stepper #stepper class="stepper" [orientation]="(stepperOrientation | async)!" linear>
-      <mat-step [stepControl]="userPersonalDataForm" label="Dane personalne" [editable]="true">
-        <div class="step-container">
-          <div class="heading">
-            <h4>Dane personalne</h4>
+  @if (!errorMessage() && (verificationData$ | async)) {
+    <app-unlogged-header [isAuth]="false"></app-unlogged-header>
+    <div class="main-container">
+      <mat-stepper #stepper class="stepper" [orientation]="(stepperOrientation | async)!" linear (selectionChange)="prepareData()" [(selectedIndex)]="stepperIndex"> <!-- dodać linear-->
+        <mat-step [stepControl]="personalDataForm" label="Dane personalne" [editable]="true">
+          <div class="step-container">
+            <div class="heading">
+              <h4>Dane personalne</h4>
+            </div>
+            <form [formGroup]="personalDataForm">
+              <mat-form-field appearance="outline">
+                <mat-label>Imię</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  formControlName="firstName"
+                  placeholder="Imię"
+                  (blur)="updateErrorMessage(personalDataForm, 'personalDataForm', 'firstName', 'imie')"
+                  [appForbiddenRegex]="'onlyLetters'"
+                />
+                @if (personalDataForm.controls.firstName.invalid) {
+                  <mat-error>{{ formErrors().personalDataForm.firstName}}</mat-error>
+                }
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Nazwisko</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  formControlName="lastName"
+                  placeholder="Nazwisko"
+                  (blur)="updateErrorMessage(personalDataForm, 'personalDataForm', 'lastName', 'nazwisko')"
+                  [appForbiddenRegex]="'onlyLetters'"
+                />
+                @if (personalDataForm.controls.lastName.invalid) {
+                  <mat-error>{{ formErrors().personalDataForm.lastName}}</mat-error>
+                }
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Płeć</mat-label>
+                <mat-select formControlName="sex" (blur)="updateErrorMessage(personalDataForm, 'personalDataForm', 'sex', 'płeć')">
+                  <mat-option value="MAN">Mężczyzna</mat-option>
+                  <mat-option value="WOMAN">Kobieta</mat-option>
+                  <mat-option value="NO_ANSWER">Nie chce podawać</mat-option>
+                </mat-select>
+                @if (personalDataForm.controls.sex.invalid) {
+                  <mat-error>{{ formErrors().personalDataForm.sex}}</mat-error>
+                }
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Data urodzenia</mat-label>
+                <input matInput [matDatepicker]="datepicker" formControlName="birthDate" (blur)="updateErrorMessage(personalDataForm, 'personalDataForm', 'birthDate', 'data urodzenia')" />
+                <mat-datepicker-toggle matIconSuffix [for]="datepicker"></mat-datepicker-toggle>
+                <mat-datepicker #datepicker></mat-datepicker>
+                @if (personalDataForm.controls.birthDate.invalid) {
+                  <mat-error>{{ formErrors().personalDataForm.birthDate}}</mat-error>
+                }
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Numer telefonu</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  placeholder="Numer telefonu"
+                  formControlName="phoneNumber"
+                  (blur)="updateErrorMessage(personalDataForm, 'personalDataForm', 'phoneNumber', 'numer telefonu')"
+                  [appForbiddenRegex]="'phoneNumber'"
+                />
+                <mat-icon matSuffix>phone</mat-icon>
+                @if (personalDataForm.controls.phoneNumber.invalid) {
+                  <mat-error>{{ formErrors().personalDataForm.phoneNumber}}</mat-error>
+                }
+              </mat-form-field>
+            </form>
+            <div class="stepper-buttons">
+              <button mat-flat-button matStepperNext [disabled]="personalDataForm.invalid">Dalej</button>
+            </div>
           </div>
-          <form [formGroup]="userPersonalDataForm">
-            <mat-form-field appearance="outline">
-              <mat-label>Imię</mat-label>
-              <input matInput type="text" formControlName="firstName" placeholder="Imię" (blur)="updateErrorMessage(userPersonalDataForm, 'firstName', 'imie')" />
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Nazwisko</mat-label>
-              <input matInput type="text" formControlName="lastName" placeholder="Nazwisko" />
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Płeć</mat-label>
-              <mat-select formControlName="sex">
-                <mat-option>-</mat-option>
-                <mat-option value="xd">xd</mat-option>
-                <!-- @for() -->
-              </mat-select>
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Data urodzenia</mat-label>
-              <input matInput [matDatepicker]="datepicker" formControlName="birthdate" />
-              <mat-datepicker-toggle matIconSuffix [for]="datepicker"></mat-datepicker-toggle>
-              <mat-datepicker #datepicker></mat-datepicker>
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Numer telefonu</mat-label>
-              <input matInput type="text" placeholder="Numer telefonu" formControlName="phoneNumber" />
-              <mat-icon matSuffix>phone</mat-icon>
-            </mat-form-field>
-          </form>
-          <div class="stepper-buttons">
-            <button mat-button matStepperNext [disabled]="userPersonalDataForm.invalid">Dalej</button>
+        </mat-step>
+        @if (data.role === 'DOCTOR') {
+          <mat-step [stepControl]="doctorPersonalizationForm" label="Informacje lekarskie" [editable]="true">
+            <div class="step-container">
+              <div>
+                <form [formGroup]="doctorPersonalizationForm">
+                  <div class="heading">
+                    <h4>Dodatkowe informacje o lekarzu</h4>
+                  </div>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Specjalizacje</mat-label>
+                    <mat-select formControlName="specializations" multiple>
+                      @for (specialization of data.specializations; track specialization.id) {
+                        <mat-option [value]="specialization">{{ specialization.name }}</mat-option>
+                      }
+                    </mat-select>
+                    @if (doctorPersonalizationForm.controls.specializations.invalid) {
+                      <mat-error>Pole jest wymagane</mat-error>
+                    }
+                  </mat-form-field>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Miasto</mat-label>
+                    <mat-select formControlName="city">
+                      @for (city of data.cities; track city.id) {
+                        <mat-option [value]="city">{{ city.name }}</mat-option>
+                      }
+                    </mat-select>
+                    @if (doctorPersonalizationForm.controls.city.invalid) {
+                      <mat-error>Pole jest wymagane</mat-error>
+                    }
+                  </mat-form-field>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Pesel</mat-label>
+                    <input
+                      matInput
+                      type="text"
+                      formControlName="numberPESEL"
+                      placeholder="Imię"
+                      (blur)="updateErrorMessage(doctorPersonalizationForm, 'doctorPersonalizationForm', 'numberPESEL', 'Pesel')"
+                      [appForbiddenRegex]="'pesel'"
+                    />
+                    @if (doctorPersonalizationForm.controls.numberPESEL.invalid) {
+                      <mat-error>{{ formErrors().doctorPersonalizationForm.numberPESEL}}</mat-error>
+                    }
+                  </mat-form-field>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Numer PWZ</mat-label>
+                    <input
+                      matInput
+                      type="text"
+                      formControlName="numberPWZ"
+                      placeholder="Imię"
+                      (blur)="updateErrorMessage(doctorPersonalizationForm, 'doctorPersonalizationForm', 'numberPWZ', 'numer PWZ')"
+                      [appForbiddenRegex]="'numberPwz'"
+                    />
+                    @if (doctorPersonalizationForm.controls.numberPWZ.invalid) {
+                      <mat-error>{{ formErrors().doctorPersonalizationForm.numberPWZ}}</mat-error>
+                    }
+                  </mat-form-field>
+                  <div class="heading">
+                    <h4>Zdjęcia uprawnień lekarskich</h4>
+                  </div>
+                  <div class="heading">
+                    <h4>Zdjęcie profilowe lekarza</h4>
+                  </div>
+                </form>
+                <div class="stepper-buttons">
+                  <button mat-stroked-button matStepperPrevious>Wróć</button>
+                  <button mat-flat-button matStepperNext [disabled]="doctorPersonalizationForm.invalid">Dalej</button>
+                </div>
+              </div>
+            </div>
+          </mat-step>
+        } @else {
+          <mat-step label="Personalizacja" [editable]="true">
+            <div class="step-container">
+              <form [formGroup]="userPersonalizationForm">
+                <div class="heading">
+                  <h4>Wybór parametrów do monitorowania</h4>
+                </div>
+                <div class="parameters-form">
+                  @for (parameter of data.parameters; track parameter.id) {
+                    <app-parameter-tail [control]="userPersonalizationForm.controls.parameters.get(parameter.id)" [parameter]="parameter"></app-parameter-tail>
+                  }
+                </div>
+                <div class="heading">
+                  <h4>Uzpełnij swój wzrost</h4>
+                  <p><i>Opcjonalne</i></p>
+                </div>
+                <div>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Wzrost [cm]</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      placeholder="Wzrost [cm]"
+                      formControlName="height"
+                      min="100"
+                    />
+                    @if (userPersonalizationForm.controls.height.invalid) {
+                      <mat-error>Minimalny wzrost: 100 cm</mat-error>
+                    }
+                  </mat-form-field>
+                </div>
+                <div class="heading">
+                  <h4>Czy chcesz otrzymywać powiadomienia w celu przypomnieć o uzupełnieniu paramerów?</h4>
+                </div>
+                <div class="space-between-div">
+                  <mat-slide-toggle (click)="clearHour()" formControlName="isParametersNotifications">{{ userPersonalizationForm.get('isParametersNotifications')?.value ? 'Tak' : 'Nie' }}</mat-slide-toggle>
+                  <div class="time-picker" *ngIf="userPersonalizationForm.get('isParametersNotifications')?.value">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Godzina</mat-label>
+                      <mat-select formControlName="parametersNotificationsHour">
+                        <mat-option *ngFor="let hour of hours" [value]="hour">{{ hour }}</mat-option>
+                      </mat-select>
+                      @if (personalDataForm.controls.sex.invalid) {
+                        <mat-error>Pole jest wymagane</mat-error>
+                      }
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Minuta</mat-label>
+                      <mat-select formControlName="parametersNotificationsMinute">
+                        <mat-option *ngFor="let minute of minutes" [value]="minute">{{ minute }}</mat-option>
+                      </mat-select>
+                      @if (personalDataForm.controls.sex.invalid) {
+                        <mat-error>Pole jest wymagane</mat-error>
+                      }
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="heading">
+                  <h4>Czy chcesz otrzymywać powiadomienia w przypadku niepokojących wyników?</h4>
+                </div>
+                <mat-slide-toggle (click)="clearHour()" formControlName="isBadResultsNotificationsEnabled">{{ userPersonalizationForm.get('isBadResultsNotificationsEnabled')?.value ? 'Tak' : 'Nie' }}</mat-slide-toggle>
+                <div class="heading">
+                  <h4>Czy chcesz otrzymywać powiadomienia o zażyciu leku z priorytetem wysokim?</h4>
+                </div>
+                <mat-slide-toggle (click)="clearHour()" formControlName="isDrugNotificationsEnabled">{{ userPersonalizationForm.get('isDrugNotificationsEnabled')?.value ? 'Tak' : 'Nie' }}</mat-slide-toggle>
+              </form>
+              <div class="stepper-buttons">
+                <button mat-stroked-button matStepperPrevious>Wróć</button>
+                <button mat-flat-button matStepperNext (click)="prepareData()">Dalej</button>
+              </div>
+            </div>
+          </mat-step>
+        }
+        <mat-step label="Podsumowanie">
+          <div class="step-container" *ngIf="userData">
+            <div class="heading">
+              <h4>Dane personalne</h4>
+            </div>
+            <div class="text-summary-data">
+              @for (summary of userSummary.personalData; track summary.title) {
+                <app-text-summary-row [title]="summary.title" [value]="summary.value"></app-text-summary-row>
+              }
+            </div>
+            <!-- @if () -->
+            <div class="heading">
+              <h4>Wybrane parametry do monitorowania</h4>
+            </div>
+            <div class="parameters-container">
+              @if (userData.parameters && userData.parameters.length === 0) {
+                <p>Brak wybranych parametrów</p>
+              } @else {
+                <div class="parameters-form">
+                  @for (parameter of userData.parameters; track parameter.id) {
+                    <app-parameter-tail [control]="null" [parameter]="parameter"></app-parameter-tail>
+                  }
+                </div>
+              }
+            </div>
+            @if (userSummary.userNotifications) {
+              <div class="heading">
+                <h4>Powiadomienia dla parametrów</h4>
+              </div>
+              <div class="text-summary-data">
+                @for (summary of userSummary.userNotifications; track summary.title) {
+                  <app-text-summary-row [title]="summary.title" [value]="summary.value"></app-text-summary-row>
+                }
+              </div>
+            } @else {
+              <div class="heading">
+                <h4>Informacje szczegółowe lekarza</h4>
+              </div>
+              <div class="text-summary-data">
+                @for (summary of userSummary.doctorPersonal; track summary.title) {
+                  <app-text-summary-row [title]="summary.title" [value]="summary.value"></app-text-summary-row>
+                }
+              </div>
+              <div class="heading">
+                <h4>Dokument potwierdzający prawo do wykonywania zawodu</h4>
+              </div>
+              <div class="heading">
+                <h4>Zdjęcie profilowe</h4>
+              </div>
+            }
+            <div class="stepper-buttons">
+              <button mat-stroked-button matStepperPrevious>Wróć</button>
+              <button mat-flat-button matStepperNext (click)="verify()">Gotowe</button>
+            </div>
           </div>
-        </div>
-      </mat-step>
-      <mat-step label="Personalizacja"></mat-step>
-      <mat-step label="Podsumowanie"></mat-step>
-    </mat-stepper>
-  </div>
+        </mat-step>
+      </mat-stepper>
+    </div>
+  } @else if (errorMessage()) {
+    <!-- error komponent zrobić -->
+    <div class="error">
+      <h1>{{ errorMessage() }}</h1>
+    </div>
+  }
 </div>

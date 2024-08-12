@@ -3,6 +3,10 @@ import { AbstractControl, NG_VALIDATORS, ValidationErrors, Validator, ValidatorF
 
 interface ForbiddenRegex {
   password: string;
+  onlyLetters: string;
+  phoneNumber: string;
+  pesel: string;
+  numberPwz: string;
 }
 
 export function forbiddenNameValidator(type: keyof ForbiddenRegex): ValidatorFn {
@@ -12,6 +16,18 @@ export function forbiddenNameValidator(type: keyof ForbiddenRegex): ValidatorFn 
     switch (type) {
       case 'password':
         regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$/;
+        break;
+      case 'onlyLetters':
+        regex = /^[a-zA-Z]+$/;
+        break;
+      case 'phoneNumber':
+        regex = /^(?:\d{9}|\+\d{11})$/;
+        break;
+      case 'pesel':
+        regex = /^[0-9]{11}$/;
+        break;
+      case 'numberPwz':
+        regex = /^[0-9]{7}$/;
         break;
     }
 
