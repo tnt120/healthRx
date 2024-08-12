@@ -92,6 +92,7 @@ public class UserServiceImpl implements UserService {
 
         return VerificationDataResponse.builder()
                 .userEmail(user.getEmail())
+                .role(user.getRole().name())
                 .parameters(
                         parameterRepository.findAll()
                                 .stream()
@@ -216,6 +217,7 @@ public class UserServiceImpl implements UserService {
                     .setCity(city);
 
             user.setDoctorDetails(doctorDetails);
+            user.setPictureUrl(request.getProfilePictureUrl());
 
             request.getSpecializations().forEach(specialization -> {
                 DoctorSpecialization doctorSpecialization = new DoctorSpecialization()

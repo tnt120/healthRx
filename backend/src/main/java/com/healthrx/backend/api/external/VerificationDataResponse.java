@@ -13,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class VerificationDataResponse {
     private String userEmail;
+    private String role;
     private List<ParameterDTO> parameters;
     private List<SpecializationDTO> specializations;
     private List<CityDTO> cities;

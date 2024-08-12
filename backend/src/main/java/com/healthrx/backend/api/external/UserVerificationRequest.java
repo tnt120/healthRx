@@ -27,11 +27,12 @@ public class UserVerificationRequest {
     private LocalTime parametersNotifications;
     private boolean isBadResultsNotificationsEnabled;
     private boolean isDrugNotificationsEnabled;
-    private List<SpecializationDTO> specializations;
 
+    private List<SpecializationDTO> specializations;
     private String numberPWZ;
     private String numberPESEL;
     private String idPhotoFrontUrl;
     private String idPhotoBackUrl;
+    private String profilePictureUrl;
     private CityDTO city;
 }
