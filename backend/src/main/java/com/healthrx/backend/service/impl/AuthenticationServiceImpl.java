@@ -130,7 +130,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         newHeaders.put("source", getHeader("source"));
         newHeaders.put("user-agent", getHeader("user-agent"));
         newHeaders.put("origin", getHeader("origin"));
-        newHeaders.put("sec-ch-ua-mobile", getHeader("sec-ch-ua-mobile"));
+//        newHeaders.put("sec-ch-ua-mobile", getHeader("sec-ch-ua-mobile"));
 
         if (!compareHeaders(storedTokenHeaders, newHeaders)) {
             throw INVALID_USER.getError();

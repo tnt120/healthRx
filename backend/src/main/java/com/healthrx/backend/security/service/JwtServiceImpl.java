@@ -121,7 +121,7 @@ public class JwtServiceImpl implements JwtService {
                 headers.put("source", getHeader("source"));
                 headers.put("user-agent", getHeader("user-agent"));
                 headers.put("origin", getHeader("origin"));
-                headers.put("sec-chu-ua-mobile", getHeader("sec-ch-ua-mobile"));
+//                headers.put("sec-chu-ua-mobile", getHeader("sec-ch-ua-mobile"));
 
                 Date expiration = new Date(System.currentTimeMillis() + REFRESH_JWT_EXPIRATION);
 
