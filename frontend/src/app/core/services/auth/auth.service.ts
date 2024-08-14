@@ -1,11 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environments';
 import { LoginRequest } from '../../models/auth/login-request.model';
-import { Observable, switchMap } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { UserService } from '../user/user.service';
-import { Config } from '../../models/user/config.model';
 import { RegisterRequest } from '../../models/auth/register-request.model';
+import { Store } from '@ngrx/store';
+import { configActions } from '../../state/config/config.actions';
 
 @Injectable({
   providedIn: 'root'
@@ -15,12 +16,12 @@ export class AuthService {
 
   private readonly http = inject(HttpClient);
 
-  private readonly userService = inject(UserService);
+  private readonly store = inject(Store);
 
-  login(credentials: LoginRequest): Observable<Config> {
+  login(credentials: LoginRequest): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/login`, credentials)
       .pipe(
-        switchMap(() => this.userService.getInitAndConfig())
+        tap(() => this.store.dispatch(configActions.load())),
       );
   }
 

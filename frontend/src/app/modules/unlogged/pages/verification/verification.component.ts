@@ -1,8 +1,8 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { catchError, EMPTY, map, Observable, tap } from 'rxjs';
+import { catchError, EMPTY, map, Observable, tap, Subscription } from 'rxjs';
 import { StepperOrientation } from '@angular/cdk/stepper';
 import { FormErrorsService } from '../../../../core/services/form-errors/form-errors.service';
 import { UserService } from '../../../../core/services/user/user.service';
@@ -18,7 +18,7 @@ import { Sex } from '../../../../core/enums/sex.enum';
   templateUrl: './verification.component.html',
   styleUrl: './verification.component.scss'
 })
-export class VerificationComponent implements OnInit {
+export class VerificationComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
 
   private readonly router = inject(Router);
@@ -79,6 +79,8 @@ export class VerificationComponent implements OnInit {
 
   stepperIndex = 0;
 
+  subscription: Subscription | undefined;
+
   formErrors = signal<any>({
     personalDataForm: {
       firstName: '',
@@ -124,6 +126,10 @@ export class VerificationComponent implements OnInit {
           return EMPTY;
         })
       );
+  }
+
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe();
   }
 
   generateHours() {
@@ -227,7 +233,7 @@ export class VerificationComponent implements OnInit {
   }
 
   verify() {
-    this.userService.verifyUser(this.userData).subscribe({
+    this.subscription = this.userService.verifyUser(this.userData).subscribe({
       next: () => {
         alert('Konto zostało zweryfikowane. Możesz się zalogować');
         this.router.navigate(['/login']);

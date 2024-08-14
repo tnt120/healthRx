@@ -1,21 +1,29 @@
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { StoreModule } from '@ngrx/store';
+import { Store, StoreModule } from '@ngrx/store';
 import { MyMaterialModule } from './material';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './core/interceptors/auth/auth.interceptor';
 import { provideNativeDateAdapter } from '@angular/material/core';
-import { UserService } from './core/services/user/user.service';
-import { catchError, EMPTY, Observable, tap, throwError } from 'rxjs';
-import { Config } from './core/models/user/config.model';
 import { Router } from '@angular/router';
 import { httpErrorInterceptor } from './core/interceptors/http-error/http-error.interceptor';
+import { userReducer } from './core/state/user/user.reducer';
+import { activitiesReducer } from './core/state/activities/activities.reducer';
+import { citiesReducer } from './core/state/cities/cities.reducer';
+import { parametersReducer } from './core/state/parameters/parameters.reducer';
+import { specializationsReducer } from './core/state/specializations/specializations.reducer';
+import { userParametersReducer } from './core/state/user-parameters/user-parameters.reducer';
+import { configActions } from './core/state/config/config.actions';
+import { EffectsModule } from '@ngrx/effects';
+import { AppState } from './core/state/app.state';
+import * as configEffects from './core/state/config/config.effects';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
-function initializeAppFactory(userService: UserService, router: Router): () => Observable<Config> {
+function initializeAppFactory(store: Store, router: Router): () => void {
   return () => {
 
     // odkomentowac po testowaniu i dodaniu routingów
@@ -26,15 +34,7 @@ function initializeAppFactory(userService: UserService, router: Router): () => O
     //   return EMPTY;
     // }
 
-    return userService.getInitAndConfig().pipe(
-      tap((config) => {
-        console.log('Config initialized', config);
-      }),
-      catchError((err) => {
-        console.error('Error while initializing app', err);
-        return EMPTY;
-      })
-    );
+    store.dispatch(configActions.load());
   };
 }
 
@@ -44,7 +44,16 @@ function initializeAppFactory(userService: UserService, router: Router): () => O
     BrowserModule,
     AppRoutingModule,
     MyMaterialModule,
-    StoreModule.forRoot({}, {}),
+    StoreModule.forRoot<AppState>({
+      user: userReducer,
+      activities: activitiesReducer,
+      cities: citiesReducer,
+      parameters: parametersReducer,
+      specializations: specializationsReducer,
+      userParameters: userParametersReducer,
+    }, {}),
+    EffectsModule.forRoot([configEffects]),
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode(), autoPause: true, trace: true, traceLimit: 75 }),
   ],
   providers: [
     provideAnimationsAsync(),
@@ -58,7 +67,7 @@ function initializeAppFactory(userService: UserService, router: Router): () => O
       provide: APP_INITIALIZER,
       useFactory: initializeAppFactory,
       multi: true,
-      deps: [UserService, Router],
+      deps: [Store, Router],
     },
   ],
   bootstrap: [AppComponent],

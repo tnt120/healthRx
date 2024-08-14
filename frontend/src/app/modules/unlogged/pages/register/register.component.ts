@@ -1,5 +1,6 @@
+import { Subscription } from 'rxjs';
 import { AuthService } from './../../../../core/services/auth/auth.service';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormErrorsService } from '../../../../core/services/form-errors/form-errors.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -18,7 +19,7 @@ interface ErrorsTypes {
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss', '../../styles/auth.styles.scss']
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent implements OnInit, OnDestroy {
   private readonly formErrorsService = inject(FormErrorsService);
 
   private readonly router = inject(Router);
@@ -45,6 +46,8 @@ export class RegisterComponent implements OnInit {
 
   hideConfirmPassword = true;
 
+  subscription: Subscription | undefined;
+
   ngOnInit(): void {
     this.registerForm.get('password')?.valueChanges.subscribe(() => {
       this.registerForm.get('confirmPassword')?.updateValueAndValidity();
@@ -55,6 +58,10 @@ export class RegisterComponent implements OnInit {
         this.updateFormErrors('overall', '');
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe();
   }
 
   updateErrorMessage(field: keyof ErrorsTypes, name: string) {
@@ -89,7 +96,7 @@ export class RegisterComponent implements OnInit {
 
       console.log(this.registerForm.get('isDoctor')?.value, credentials);
 
-      this.authService.register(credentials).subscribe({
+      this.subscription = this.authService.register(credentials).subscribe({
         next: () => {
           alert('Rejestracja przebiegła pomyślnie. Na podany adres email został wysłany link aktywacyjny.');
         },

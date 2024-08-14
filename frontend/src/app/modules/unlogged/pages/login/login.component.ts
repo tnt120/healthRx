@@ -1,11 +1,13 @@
 import { AuthService } from './../../../../core/services/auth/auth.service';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { FormErrorsService } from '../../../../core/services/form-errors/form-errors.service';
 import { Router } from '@angular/router';
 import { LoginRequest } from '../../../../core/models/auth/login-request.model';
 import { Roles } from '../../../../core/enums/roles.enum';
 import { ErrorCodesService } from '../../../../core/services/error-codes/error-codes.service';
+import { Store } from '@ngrx/store';
+import { Subscription, tap } from 'rxjs';
 
 interface ErrorsTypes {
   email: string,
@@ -18,7 +20,7 @@ interface ErrorsTypes {
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss', '../../styles/auth.styles.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   private readonly formErrorsService = inject(FormErrorsService);
 
   private readonly router = inject(Router);
@@ -26,6 +28,10 @@ export class LoginComponent implements OnInit {
   private readonly authService = inject(AuthService);
 
   private readonly errorCodesService = inject(ErrorCodesService);
+
+  private readonly store = inject(Store);
+
+  private storedUser$ = this.store.select('user');
 
   loginForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
@@ -40,12 +46,18 @@ export class LoginComponent implements OnInit {
 
   hidePassword = true;
 
+  subscriptions: Subscription[] = [];
+
   ngOnInit(): void {
     this.loginForm?.valueChanges.subscribe(() => {
       if (this.loginForm.valid) {
         this.updateFormErrors('overall', '');
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((s) => s.unsubscribe());
   }
 
   updateErrorMessage(field: keyof ErrorsTypes, name: string) {
@@ -63,19 +75,21 @@ export class LoginComponent implements OnInit {
         password: this.loginForm.get('password')!.value!
       };
 
-      this.authService.login(credentials).subscribe({
-        next: (res) => {
-          switch (res.user.role) {
-            case Roles.HEAD_ADMIN || Roles.ADMIN:
-              console.log(res, 'Naviage to admin panel');
-              break;
-            case Roles.USER:
-              console.log(res, 'Navigate to user panel');
-              break;
-            case Roles.DOCTOR:
-              console.log(res, 'Navigate to doctor panel');
-              break;
-          }
+      this.subscriptions.push(this.authService.login(credentials).subscribe({
+        next: () => {
+          this.subscriptions.push(this.storedUser$.subscribe((user) => {
+            switch (user.role) {
+              case Roles.HEAD_ADMIN || Roles.ADMIN:
+                console.log(user, 'Naviage to admin panel');
+                break;
+              case Roles.USER:
+                console.log(user, 'Navigate to user panel');
+                break;
+              case Roles.DOCTOR:
+                console.log(user, 'Navigate to doctor panel');
+                break;
+            }
+          }));
         },
         error: (err) => {
           if ([302, 307].includes(err.error.code)) {
@@ -87,7 +101,7 @@ export class LoginComponent implements OnInit {
 
           this.loginForm.reset();
         }
-      });
+      }));
 
     } else {
       this.updateFormErrors('overall', 'Uzupełnij poprawnie wszystkie pola');
