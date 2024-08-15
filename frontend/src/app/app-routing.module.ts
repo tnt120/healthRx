@@ -7,8 +7,20 @@ const routes: Routes = [
     loadChildren: () => import('./modules/unlogged/unlogged.module').then(m => m.UnloggedModule)
   },
   {
+    path: 'user',
+    loadChildren: () => import('./modules/user/user.module').then(m => m.UserModule)
+  },
+  {
+    path: 'doctor',
+    loadChildren: () => import('./modules/doctor/doctor.module').then(m => m.DoctorModule)
+  },
+  {
+    path: 'admin',
+    loadChildren: () => import('./modules/admin/admin.module').then(m => m.AdminModule)
+  },
+  {
     path: '**',
-    redirectTo: ''
+    redirectTo: '' // w przyszłości dodac że strona nie istnieje
   }
 ];
 
