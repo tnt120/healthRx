@@ -6,45 +6,62 @@ import { CabinetAddComponent } from './pages/cabinet-add/cabinet-add.component';
 import { ActivitesDashboardComponent } from './pages/activites-dashboard/activites-dashboard.component';
 import { SearchDoctorComponent } from './pages/search-doctor/search-doctor.component';
 import { UserMessagesComponent } from './pages/user-messages/user-messages.component';
-import { SettingsComponent } from './pages/settings/settings.component';
+import { MainLayoutComponent } from '../../core/components/main-layout/main-layout.component';
+import { CabinetCalendarComponent } from './pages/cabinet-calendar/cabinet-calendar.component';
+import { UserStatisticsComponent } from './pages/user-statistics/user-statistics.component';
+import { SettingsComponent } from '../../shared/components/settings/settings.component';
 
 const routes: Routes = [
   {
-    path: 'parameters',
-    component: ParametersDashboardComponent
-  },
-  {
-    path: 'cabinet',
-    component: CabinetDashboardComponent
-  },
-  {
-    path: 'cabinet/add',
-    component: CabinetAddComponent
-  },
-  {
-    path: 'activities',
-    component: ActivitesDashboardComponent
-  },
-  {
-    path: 'doctors',
-    component: SearchDoctorComponent
-  },
-  {
-    path: 'messages',
-    component: UserMessagesComponent
-  },
-  {
-    path: 'settings',
-    component: SettingsComponent
-  },
-  {
     path: '',
-    redirectTo: 'parameters',
-    pathMatch: 'full'
-  },
-  {
-    path: '**',
-    redirectTo: 'parameters' // w przyszłości dodać błąd że strona nie istnieje
+    component: MainLayoutComponent,
+    children: [
+      {
+        path: 'parameters',
+        component: ParametersDashboardComponent
+      },
+      {
+        path: 'cabinet',
+        component: CabinetDashboardComponent
+      },
+      {
+        path: 'cabinet/add',
+        component: CabinetAddComponent
+      },
+      {
+        path: 'cabinet/calendar',
+        component: CabinetCalendarComponent
+      },
+      {
+        path: 'activities',
+        component: ActivitesDashboardComponent
+      },
+      {
+        path: 'doctors',
+        component: SearchDoctorComponent
+      },
+      {
+        path: 'doctors/messages',
+        component: UserMessagesComponent
+      },
+      {
+        path: 'statistics',
+        component: UserStatisticsComponent
+      },
+      {
+        path: 'settings',
+        component: SettingsComponent
+      },
+      {
+        path: '',
+        redirectTo: 'parameters',
+        pathMatch: 'full'
+      },
+      {
+        path: '**',
+        redirectTo: 'parameters' // w przyszłości dodać błąd że strona nie istnieje
+      }
+    ]
   }
 ];
 

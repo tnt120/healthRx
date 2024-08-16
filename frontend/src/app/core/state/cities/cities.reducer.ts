@@ -6,5 +6,6 @@ export const citiesInitialState: City[] = [];
 
 export const citiesReducer = createReducer(
   citiesInitialState,
-  on(configActions.loadSuccess, (state, { config }) => config.cities || [])
+  on(configActions.loadSuccess, (state, { config }) => config.cities || []),
+  on(configActions.logout, () => citiesInitialState)
 );

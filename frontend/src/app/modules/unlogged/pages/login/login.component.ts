@@ -79,14 +79,15 @@ export class LoginComponent implements OnInit, OnDestroy {
         next: () => {
           this.subscriptions.push(this.storedUser$.subscribe((user) => {
             switch (user.role) {
-              case Roles.HEAD_ADMIN || Roles.ADMIN:
-                console.log(user, 'Naviage to admin panel');
+              case Roles.HEAD_ADMIN:
+              case Roles.ADMIN:
+                this.redirectTo('admin');
                 break;
               case Roles.USER:
-                console.log(user, 'Navigate to user panel');
+                this.redirectTo('user');
                 break;
               case Roles.DOCTOR:
-                console.log(user, 'Navigate to doctor panel');
+                this.redirectTo('doctor');
                 break;
             }
           }));
@@ -113,6 +114,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   redirectTo(path: string) {
+    console.log('Redirecting to', path);
     this.router.navigate([path]);
   }
 

@@ -1,0 +1,33 @@
+<mat-toolbar *ngIf="isMobile()">
+  <button mat-icon-button (click)="toggleMenu()">
+    <mat-icon class="white" aria-hidden="false" matListItemIcon fontSet="material-symbols-outlined">menu</mat-icon>
+  </button>
+  <span matListItemTitle class="white header">HealthRx</span>
+</mat-toolbar>
+<mat-sidenav-container autosize [style.height]="isMobile() ? 'calc(100% - 64px)' : '100%'">
+  <mat-sidenav [mode]="isMobile() ? 'over' : 'side'" [opened]="isOpended()" [style.width]="navWidth()">
+    <mat-nav-list class="custom-list">
+      <div [ngStyle]="{'margin-top': isMobile() ? '36px' : '0px'}">
+        <div *ngIf="!isMobile()" class="header-container">
+          <button mat-icon-button (click)="toggleMenu()">
+            <mat-icon class="white" aria-hidden="false" matListItemIcon fontSet="material-symbols-outlined">menu</mat-icon>
+          </button>
+          <span matListItemTitle class="white header">HealthRx</span>
+        </div>
+        @for (item of navItems$ | async; track item.title) {
+          <app-nav-item [item]="item" (emitClick)="isMobile() && toggleMenu()" [isOpened]="!isCollapsed()" (openNestedClick)="!isMobile() && toggleMenu()" />
+        }
+      </div>
+      <div>
+        <app-nav-item [item]="settingsItem" (emitClick)="isMobile() && toggleMenu()" [isOpened]="!isCollapsed()" />
+        <a mat-list-item (click)="logout()">
+          <mat-icon aria-hidden="false" matListItemIcon fontSet="material-symbols-outlined">logout</mat-icon>
+          <span matListItemTitle>Wyloguj</span>
+        </a>
+      </div>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content class="content" >
+    <ng-content></ng-content>
+  </mat-sidenav-content>
+</mat-sidenav-container>

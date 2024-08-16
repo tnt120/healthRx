@@ -1,0 +1,19 @@
+:host {
+  .nested {
+    --mat-list-list-item-leading-icon-start-space: 32px;
+
+    span {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-left: 8px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      background-color: white;
+      border-radius: 50%;
+    }
+  }
+}

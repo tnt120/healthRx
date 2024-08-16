@@ -32,4 +32,11 @@ export class AuthService {
   refresh(): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/refresh`, {});
   }
+
+  logout(): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/logout`, null)
+      .pipe(
+        tap(() => this.store.dispatch(configActions.logout()))
+      );
+  }
 }

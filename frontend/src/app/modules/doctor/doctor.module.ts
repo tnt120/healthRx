@@ -5,9 +5,9 @@ import { DoctorRoutingModule } from './doctor-routing.module';
 import { DoctorMessagesComponent } from './pages/doctor-messages/doctor-messages.component';
 import { PatientsDashboardComponent } from './pages/patients-dashboard/patients-dashboard.component';
 import { ApprovalsComponent } from './pages/approvals/approvals.component';
-import { SettingsComponent } from './pages/settings/settings.component';
 import { SharedModule } from '../../shared/shared.module';
 import { MyMaterialModule } from '../../material';
+import { CoreModule } from '../../core/core.module';
 
 
 @NgModule({
@@ -15,13 +15,13 @@ import { MyMaterialModule } from '../../material';
     DoctorMessagesComponent,
     PatientsDashboardComponent,
     ApprovalsComponent,
-    SettingsComponent
   ],
   imports: [
     CommonModule,
     DoctorRoutingModule,
     SharedModule,
-    MyMaterialModule
+    MyMaterialModule,
+    CoreModule
   ]
 })
 export class DoctorModule { }

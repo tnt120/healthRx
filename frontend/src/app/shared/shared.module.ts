@@ -5,6 +5,7 @@ import { MyMaterialModule } from '../material';
 import { ForbiddenRegexValidatorDirective } from './directives/forbiddenRegexValidator/forbidden-regex-validator.directive';
 import { RepeatPasswordValidatorDirective } from './directives/repeatPasswordValidator/repeat-password-validator.directive';
 import { ParameterTailComponent } from './components/parameter-tail/parameter-tail.component';
+import { SettingsComponent } from './components/settings/settings.component';
 
 
 
@@ -13,7 +14,8 @@ import { ParameterTailComponent } from './components/parameter-tail/parameter-ta
     DividerComponent,
     ForbiddenRegexValidatorDirective,
     RepeatPasswordValidatorDirective,
-    ParameterTailComponent
+    ParameterTailComponent,
+    SettingsComponent
   ],
   imports: [
     CommonModule,
@@ -23,7 +25,8 @@ import { ParameterTailComponent } from './components/parameter-tail/parameter-ta
     DividerComponent,
     ForbiddenRegexValidatorDirective,
     RepeatPasswordValidatorDirective,
-    ParameterTailComponent
+    ParameterTailComponent,
+    SettingsComponent
   ]
 })
 export class SharedModule { }

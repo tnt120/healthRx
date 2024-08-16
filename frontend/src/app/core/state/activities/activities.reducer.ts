@@ -6,5 +6,6 @@ export const activitiesInitialState: Activity[] = [];
 
 export const activitiesReducer = createReducer(
   activitiesInitialState,
-  on(configActions.loadSuccess, (state, { config }) => config.activities || [])
+  on(configActions.loadSuccess, (state, { config }) => config.activities || []),
+  on(configActions.logout, () => activitiesInitialState)
 );

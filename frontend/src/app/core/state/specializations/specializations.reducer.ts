@@ -6,5 +6,6 @@ export const specializationsInitialState: Specialization[] = [];
 
 export const specializationsReducer = createReducer(
   specializationsInitialState,
-  on(configActions.loadSuccess, (state, { config }) => config.specializations || [])
+  on(configActions.loadSuccess, (state, { config }) => config.specializations || []),
+  on(configActions.logout, () => specializationsInitialState)
 );

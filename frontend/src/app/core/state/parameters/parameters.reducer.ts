@@ -6,5 +6,6 @@ export const parametersInitialState: Parameter[] = [];
 
 export const parametersReducer = createReducer(
   parametersInitialState,
-  on(configActions.loadSuccess, (state, { config }) => config.parameters || [])
+  on(configActions.loadSuccess, (state, { config }) => config.parameters || []),
+  on(configActions.logout, () => parametersInitialState)
 );

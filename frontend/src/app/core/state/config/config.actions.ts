@@ -6,6 +6,7 @@ export const configActions = createActionGroup({
   events: {
     'load': emptyProps(),
     'load success': props<{config: Config}>(),
-    'load error': props<{error: any}>()
+    'load error': props<{error: any}>(),
+    'logout': emptyProps(),
   }
 });

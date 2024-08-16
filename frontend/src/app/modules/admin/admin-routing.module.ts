@@ -1,15 +1,27 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { MainLayoutComponent } from '../../core/components/main-layout/main-layout.component';
+import { SettingsComponent } from '../../shared/components/settings/settings.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: DashboardComponent
-  },
-  {
-    path: '**',
-    redirectTo: '' // w przyszłości dodac że strona nie istnieje
+    component: MainLayoutComponent,
+    children: [
+      {
+        path: '',
+        component: DashboardComponent
+      },
+      {
+        path: 'settings',
+        component: SettingsComponent
+      },
+      {
+        path: '**',
+        redirectTo: '' // w przyszłości dodać błąd że strona nie istnieje
+      }
+    ]
   }
 ];
 

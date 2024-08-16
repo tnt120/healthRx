@@ -12,5 +12,6 @@ export const userInitialState: UserResponse = {
 
 export const userReducer = createReducer(
   userInitialState,
-  on(configActions.loadSuccess, (state, { config }) => config.user)
+  on(configActions.loadSuccess, (state, { config }) => config.user),
+  on(configActions.logout, () => userInitialState)
 );

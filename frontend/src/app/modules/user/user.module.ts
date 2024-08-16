@@ -7,11 +7,12 @@ import { CabinetAddComponent } from './pages/cabinet-add/cabinet-add.component';
 import { CabinetCalendarComponent } from './pages/cabinet-calendar/cabinet-calendar.component';
 import { SearchDoctorComponent } from './pages/search-doctor/search-doctor.component';
 import { UserMessagesComponent } from './pages/user-messages/user-messages.component';
-import { SettingsComponent } from './pages/settings/settings.component';
 import { ParametersDashboardComponent } from './pages/parameters-dashboard/parameters-dashboard.component';
 import { ActivitesDashboardComponent } from './pages/activites-dashboard/activites-dashboard.component';
 import { SharedModule } from '../../shared/shared.module';
 import { MyMaterialModule } from '../../material';
+import { CoreModule } from '../../core/core.module';
+import { UserStatisticsComponent } from './pages/user-statistics/user-statistics.component';
 
 
 @NgModule({
@@ -21,15 +22,16 @@ import { MyMaterialModule } from '../../material';
     CabinetCalendarComponent,
     SearchDoctorComponent,
     UserMessagesComponent,
-    SettingsComponent,
     ParametersDashboardComponent,
-    ActivitesDashboardComponent
+    ActivitesDashboardComponent,
+    UserStatisticsComponent
   ],
   imports: [
     CommonModule,
     UserRoutingModule,
     SharedModule,
-    MyMaterialModule
+    MyMaterialModule,
+    CoreModule
   ]
 })
 export class UserModule { }

@@ -11,6 +11,7 @@ import { BackButtonComponent } from './components/back-button/back-button.compon
 import { MyMaterialModule } from '../../material';
 import { TextSummaryRowComponent } from './components/text-summary-row/text-summary-row.component';
 import { UnloggedHeaderComponent } from './components/unlogged-header/unlogged-header.component';
+import { CoreModule } from '../../core/core.module';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import { UnloggedHeaderComponent } from './components/unlogged-header/unlogged-h
     CommonModule,
     UnloggedRoutingModule,
     SharedModule,
-    MyMaterialModule
+    MyMaterialModule,
+    CoreModule
   ]
 })
 export class UnloggedModule { }

@@ -22,6 +22,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { AppState } from './core/state/app.state';
 import * as configEffects from './core/state/config/config.effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { CoreModule } from './core/core.module';
 
 function initializeAppFactory(store: Store, router: Router): () => void {
   return () => {
@@ -44,6 +45,7 @@ function initializeAppFactory(store: Store, router: Router): () => void {
     BrowserModule,
     AppRoutingModule,
     MyMaterialModule,
+    CoreModule,
     StoreModule.forRoot<AppState>({
       user: userReducer,
       activities: activitiesReducer,

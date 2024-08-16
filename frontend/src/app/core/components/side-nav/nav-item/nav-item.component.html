@@ -1,0 +1,43 @@
+<a
+  mat-list-item
+  [routerLink]="!item().subItems ? [item().route] : null"
+  routerLinkActive
+  #rla="routerLinkActive"
+  [activated]="rla.isActive || isSubItemActive()"
+  (click)="onClick(false)"
+>
+  <mat-icon class="white" aria-hidden="false" matListItemIcon fontSet="material-symbols-outlined">{{ item().icon }}</mat-icon>
+  <span matListItemTitle class="white">{{ item().title }}</span>
+
+  @if (item().subItems) {
+    <span matListItemMeta>
+      @if (nestedMenuOpen()) {
+        <mat-icon class="white" aria-hidden="false">expand_less</mat-icon>
+      } @else {
+        <mat-icon class="white" aria-hidden="false">expand_more</mat-icon>
+      }
+    </span>
+  }
+</a>
+
+@if (item().subItems && nestedMenuOpen() && isOpened()) {
+  <div @expandNestedMenu>
+    @for (subItem of item().subItems; track subItem.title) {
+      <a
+        class="nested"
+        mat-list-item
+        [routerLink]="[subItem.route]"
+        routerLinkActive
+        #subRla="routerLinkActive"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="onClick(true)"
+      >
+        <span matListItemTitle class="white">
+          <span class="dot" [style.background-color]="subRla.isActive ? 'white' : '#1469C0'"></span>
+          <mat-icon class="white" aria-hidden="false" fontSet="material-symbols-outlined">{{ subItem.icon }}</mat-icon>
+          {{ subItem.title }}
+        </span>
+      </a>
+    }
+  </div>
+}

@@ -21,11 +21,23 @@ $frontend-theme: mat.define-theme((
   )
 ));
 
+
+
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 :root {
   @include mat.all-component-themes($frontend-theme);
+  --mdc-list-list-item-label-text-color: white;
+  --mdc-list-list-item-hover-label-text-color: white;
+  --mdc-list-list-item-focus-label-text-color: white;
+  --mdc-list-list-item-label-text-font: 'Inter', sans-serif;
+  --mdc-list-list-item-leading-icon-color: white;
+  --mdc-list-list-item-hover-leading-icon-color: white;
+  --mdc-list-list-item-focus-icon-color: white;
+  --mat-list-active-indicator-color: #003E7D;
+  --mat-list-active-indicator-shape: 0;
+
 }
 
 // Comment out the line below if you want to use the pre-defined typography utility classes.
