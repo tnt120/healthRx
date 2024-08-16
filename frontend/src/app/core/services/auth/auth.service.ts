@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environments';
 import { LoginRequest } from '../../models/auth/login-request.model';
-import { Observable, tap } from 'rxjs';
+import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { UserService } from '../user/user.service';
 import { RegisterRequest } from '../../models/auth/register-request.model';
@@ -18,6 +18,12 @@ export class AuthService {
 
   private readonly store = inject(Store);
 
+  private refreshInProgress$ = new BehaviorSubject<boolean>(false);
+
+  get isRefreshInProgress(): Observable<boolean> {
+    return this.refreshInProgress$.asObservable();
+  }
+
   login(credentials: LoginRequest): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/login`, credentials)
       .pipe(
@@ -30,7 +36,16 @@ export class AuthService {
   }
 
   refresh(): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/refresh`, {});
+    this.refreshInProgress$.next(true);
+    return this.http.post<void>(`${this.apiUrl}/refresh`, {}).pipe(
+      tap(() => {
+        this.refreshInProgress$.next(false);
+      }),
+      catchError((err) => {
+        this.refreshInProgress$.next(false);
+        return throwError(() => err);
+      })
+    );
   }
 
   logout(): Observable<void> {

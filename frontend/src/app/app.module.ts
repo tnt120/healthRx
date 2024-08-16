@@ -18,25 +18,29 @@ import { parametersReducer } from './core/state/parameters/parameters.reducer';
 import { specializationsReducer } from './core/state/specializations/specializations.reducer';
 import { userParametersReducer } from './core/state/user-parameters/user-parameters.reducer';
 import { configActions } from './core/state/config/config.actions';
-import { EffectsModule } from '@ngrx/effects';
+import { EffectsModule, Actions, ofType } from '@ngrx/effects';
 import { AppState } from './core/state/app.state';
 import * as configEffects from './core/state/config/config.effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { CoreModule } from './core/core.module';
+import { firstValueFrom, of, take } from 'rxjs';
 
-function initializeAppFactory(store: Store, router: Router): () => void {
-  return () => {
-
-    // odkomentowac po testowaniu i dodaniu routingów
-    // const path = router.url;
-    // const unloggedPaths = ['/login', '/register', ''];
-
-    // if (!unloggedPaths.includes(path)) {
-    //   return EMPTY;
-    // }
-
+function initializeAppFactory(store: Store, router: Router, actions$: Actions): () => void {
+  return async () => {
     store.dispatch(configActions.load());
-  };
+
+    try {
+      await firstValueFrom(
+        actions$.pipe(
+          ofType(configActions.loadSuccess, configActions.loadError),
+          take(1),
+        )
+      );
+    } catch (error) {
+      console.error('Error loading config', error);
+      return Promise.reject();
+    }
+  }
 }
 
 @NgModule({
@@ -69,7 +73,7 @@ function initializeAppFactory(store: Store, router: Router): () => void {
       provide: APP_INITIALIZER,
       useFactory: initializeAppFactory,
       multi: true,
-      deps: [Store, Router],
+      deps: [Store, Router, Actions],
     },
   ],
   bootstrap: [AppComponent],
