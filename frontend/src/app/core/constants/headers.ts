@@ -79,6 +79,6 @@ export const adminHeaders: NavItem[] = [
   {
     icon: 'dashboard',
     title: 'Dashboard',
-    route: '/admin'
+    route: '/admin/dashboard'
   }
 ];
