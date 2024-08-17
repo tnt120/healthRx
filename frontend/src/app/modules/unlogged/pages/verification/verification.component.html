@@ -210,11 +210,11 @@
                 <div class="heading">
                   <h4>Czy chcesz otrzymywać powiadomienia w przypadku niepokojących wyników?</h4>
                 </div>
-                <mat-slide-toggle (click)="clearHour()" formControlName="isBadResultsNotificationsEnabled">{{ userPersonalizationForm.get('isBadResultsNotificationsEnabled')?.value ? 'Tak' : 'Nie' }}</mat-slide-toggle>
+                <mat-slide-toggle formControlName="isBadResultsNotificationsEnabled">{{ userPersonalizationForm.get('isBadResultsNotificationsEnabled')?.value ? 'Tak' : 'Nie' }}</mat-slide-toggle>
                 <div class="heading">
                   <h4>Czy chcesz otrzymywać powiadomienia o zażyciu leku z priorytetem wysokim?</h4>
                 </div>
-                <mat-slide-toggle (click)="clearHour()" formControlName="isDrugNotificationsEnabled">{{ userPersonalizationForm.get('isDrugNotificationsEnabled')?.value ? 'Tak' : 'Nie' }}</mat-slide-toggle>
+                <mat-slide-toggle formControlName="isDrugNotificationsEnabled">{{ userPersonalizationForm.get('isDrugNotificationsEnabled')?.value ? 'Tak' : 'Nie' }}</mat-slide-toggle>
               </form>
               <div class="stepper-buttons">
                 <button mat-stroked-button matStepperPrevious>Wróć</button>

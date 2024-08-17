@@ -188,11 +188,12 @@ public class UserServiceImpl implements UserService {
     private void fillUserDetails(User user, UserVerificationRequest request) {
         if (user.getRole() == Role.USER) {
             user.setHeight(request.getHeight());
-            AccountSettings accountSettings = new AccountSettings()
-                    .setUser(user)
-                    .setParametersNotifications(request.getParametersNotifications())
-                    .setBadResultsNotificationsEnabled(request.isBadResultsNotificationsEnabled())
-                    .setDrugNotificationsEnabled(request.isDrugNotificationsEnabled());
+            AccountSettings accountSettings = AccountSettings.builder()
+                    .user(user)
+                    .parametersNotifications(request.getParametersNotifications())
+                    .isBadResultsNotificationsEnabled(request.getIsBadResultsNotificationsEnabled())
+                    .isDrugNotificationsEnabled(request.getIsDrugNotificationsEnabled())
+                    .build();
 
             user.setAccountSettings(accountSettings);
 

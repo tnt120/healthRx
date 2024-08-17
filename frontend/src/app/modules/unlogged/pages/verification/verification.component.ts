@@ -209,7 +209,7 @@ export class VerificationComponent implements OnInit, OnDestroy {
             Object.keys(parametersForm.value).filter(key => parametersForm.value[key] === true).includes(parameter.id)
           ),
         parametersNotifications: personalizationControls.isParametersNotifications.value
-          ? `${personalizationControls.parametersNotificationsHour.value}:${personalizationControls.parametersNotificationsMinute.value}`
+          ? `${personalizationControls.parametersNotificationsHour.value}:${personalizationControls.parametersNotificationsMinute.value}:00`
           : null,
         isBadResultsNotificationsEnabled: personalizationControls.isBadResultsNotificationsEnabled.value!,
         isDrugNotificationsEnabled: personalizationControls.isDrugNotificationsEnabled.value!,

@@ -25,8 +25,8 @@ public class UserVerificationRequest {
     private List<ParameterDTO> parameters;
     private Double height;
     private LocalTime parametersNotifications;
-    private boolean isBadResultsNotificationsEnabled;
-    private boolean isDrugNotificationsEnabled;
+    private Boolean isBadResultsNotificationsEnabled;
+    private Boolean isDrugNotificationsEnabled;
 
     private List<SpecializationDTO> specializations;
     private String numberPWZ;
