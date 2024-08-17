@@ -15,11 +15,11 @@
           <span matListItemTitle class="white header">HealthRx</span>
         </div>
         @for (item of navItems$ | async; track item.title) {
-          <app-nav-item [item]="item" (emitClick)="isMobile() && toggleMenu()" [isOpened]="!isCollapsed()" (openNestedClick)="!isMobile() && toggleMenu()" />
+          <app-nav-item [item]="item" (emitClick)="itemClicked()" [isOpened]="!isCollapsed()" (openNestedClick)="!isMobile() && toggleMenu()" />
         }
       </div>
       <div>
-        <app-nav-item [item]="settingsItem" (emitClick)="isMobile() && toggleMenu()" [isOpened]="!isCollapsed()" />
+        <app-nav-item [item]="settingsItem" (emitClick)="itemClicked()" [isOpened]="!isCollapsed()" />
         <a mat-list-item (click)="logout()">
           <mat-icon aria-hidden="false" matListItemIcon fontSet="material-symbols-outlined">logout</mat-icon>
           <span matListItemTitle>Wyloguj</span>
@@ -27,7 +27,8 @@
       </div>
     </mat-nav-list>
   </mat-sidenav>
-  <mat-sidenav-content class="content" >
+  <mat-sidenav-content class="content">
+    <app-header-bar [title]="pageTitle()"></app-header-bar>
     <ng-content></ng-content>
   </mat-sidenav-content>
 </mat-sidenav-container>

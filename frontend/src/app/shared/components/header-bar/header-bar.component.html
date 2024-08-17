@@ -1,0 +1,7 @@
+<div class="bar-container">
+  <h2>{{ title() }}</h2>
+  <div class="hello-items-container">
+    <app-hello-item class="hello-item" [name]="userName$ | async" [isDate]="false"></app-hello-item>
+    <app-hello-item class="calendar-item" [isDate]="true"></app-hello-item>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+:host {
+  .bar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .hello-items-container {
+      display: flex;
+      gap: 16px;
+    }
+  }
+}
+
+@media screen and (max-width: 1280px) {
+  :host {
+    .bar-container {
+      .hello-items-container {
+        .calendar-item {
+          display: none;
+        }
+      }
+    }
+  }
+}

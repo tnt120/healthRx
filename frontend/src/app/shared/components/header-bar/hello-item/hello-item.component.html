@@ -1,0 +1,7 @@
+@if (isDate()) {
+  <p class="subtitle-2">{{ currentDate | date: 'EEEE, d MMMM' | titlecase }}</p>
+  <mat-icon mat-raised-button aria-hidden="false" matListItemIcon fontSet="material-symbols-outlined">calendar_month</mat-icon>
+} @else {
+  <p class="subtitle-2">Witaj, {{ name() }}!</p>
+  <mat-icon aria-hidden="false" matListItemIcon fontSet="material-symbols-outlined">notifications</mat-icon>
+}

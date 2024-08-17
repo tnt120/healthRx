@@ -5,6 +5,7 @@ import { MyMaterialModule } from '../material';
 import { MainLayoutComponent } from './components/main-layout/main-layout.component';
 import { RouterModule } from '@angular/router';
 import { NavItemComponent } from './components/side-nav/nav-item/nav-item.component';
+import { SharedModule } from '../shared/shared.module';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import { NavItemComponent } from './components/side-nav/nav-item/nav-item.compon
   imports: [
     CommonModule,
     MyMaterialModule,
-    RouterModule
+    RouterModule,
+    SharedModule
   ],
   exports: [
     SideNavComponent,

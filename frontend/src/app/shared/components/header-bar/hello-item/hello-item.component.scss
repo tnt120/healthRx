@@ -1,0 +1,19 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 180px;
+  border: 1px solid black;
+  padding: 10px 20px;
+}
+
+@media screen and (max-width: 768px) {
+  :host {
+    padding: 10px;
+
+    p {
+      display: none;
+    }
+  }
+}

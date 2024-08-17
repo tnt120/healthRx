@@ -7,6 +7,7 @@ import { NavItem, adminHeaders, doctorHeaders, userHeaders } from '../../constan
 import { Store } from '@ngrx/store';
 import { Roles } from '../../enums/roles.enum';
 import { UserResponse } from '../../models/user/user-response.model';
+import { ROUTE_TITLES } from '../../constants/route-titles';
 
 @Component({
   selector: 'app-side-nav',
@@ -40,11 +41,15 @@ export class SideNavComponent implements OnInit, OnDestroy {
 
   subscriptions: Subscription[] = [];
 
+  pageTitle = signal<string>('');
+
   ngOnInit(): void {
     this.observer.observe('(max-width: 768px)').subscribe(res => {
       this.isMobile.set(res.matches);
       this.isCollapsed.set(res.matches);
     });
+
+    this.pageTitle.set(ROUTE_TITLES[this.router.url.slice(1)]);
 
     this.navItems$ = this.store.select('user').pipe(
       map(user => {
@@ -74,6 +79,19 @@ export class SideNavComponent implements OnInit, OnDestroy {
     this.isCollapsed.set(!this.isCollapsed());
   }
 
+  itemClicked() {
+    if (this.isMobile()) {
+      this.toggleMenu();
+    }
+
+    
+    setTimeout(() => {
+      
+      console.log('item clicked', ROUTE_TITLES[this.router.url.slice(1)]);
+      this.pageTitle.set(ROUTE_TITLES[this.router.url.slice(1)]);
+    })
+  }
+
   logout() {
     this.authService.logout().pipe(
       tap(() => {
@@ -81,5 +99,4 @@ export class SideNavComponent implements OnInit, OnDestroy {
       })
     ).subscribe();
   }
-
 }

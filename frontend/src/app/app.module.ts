@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, NgModule, isDevMode } from '@angular/core';
+import { APP_INITIALIZER, NgModule, isDevMode, LOCALE_ID } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -23,10 +23,13 @@ import { AppState } from './core/state/app.state';
 import * as configEffects from './core/state/config/config.effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { CoreModule } from './core/core.module';
-import { firstValueFrom, of, take } from 'rxjs';
+import { firstValueFrom, take } from 'rxjs';
+import localePl from '@angular/common/locales/pl';
+import { registerLocaleData } from '@angular/common';
 
 function initializeAppFactory(store: Store, router: Router, actions$: Actions): () => void {
   return async () => {
+    registerLocaleData(localePl);
     store.dispatch(configActions.load());
 
     try {
@@ -42,6 +45,7 @@ function initializeAppFactory(store: Store, router: Router, actions$: Actions): 
     }
   }
 }
+
 
 @NgModule({
   declarations: [AppComponent],
@@ -75,6 +79,10 @@ function initializeAppFactory(store: Store, router: Router, actions$: Actions): 
       multi: true,
       deps: [Store, Router, Actions],
     },
+    {
+      provide: LOCALE_ID,
+      useValue: 'pl-PL'
+    }
   ],
   bootstrap: [AppComponent],
 })

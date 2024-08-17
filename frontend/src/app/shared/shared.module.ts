@@ -6,8 +6,8 @@ import { ForbiddenRegexValidatorDirective } from './directives/forbiddenRegexVal
 import { RepeatPasswordValidatorDirective } from './directives/repeatPasswordValidator/repeat-password-validator.directive';
 import { ParameterTailComponent } from './components/parameter-tail/parameter-tail.component';
 import { SettingsComponent } from './components/settings/settings.component';
-
-
+import { HeaderBarComponent } from './components/header-bar/header-bar.component';
+import { HelloItemComponent } from './components/header-bar/hello-item/hello-item.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +15,9 @@ import { SettingsComponent } from './components/settings/settings.component';
     ForbiddenRegexValidatorDirective,
     RepeatPasswordValidatorDirective,
     ParameterTailComponent,
-    SettingsComponent
+    SettingsComponent,
+    HeaderBarComponent,
+    HelloItemComponent
   ],
   imports: [
     CommonModule,
@@ -26,7 +28,8 @@ import { SettingsComponent } from './components/settings/settings.component';
     ForbiddenRegexValidatorDirective,
     RepeatPasswordValidatorDirective,
     ParameterTailComponent,
-    SettingsComponent
+    SettingsComponent,
+    HeaderBarComponent
   ]
 })
 export class SharedModule { }
