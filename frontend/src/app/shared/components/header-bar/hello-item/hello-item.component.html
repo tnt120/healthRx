@@ -1,7 +1,16 @@
 @if (isDate()) {
-  <p class="subtitle-2">{{ currentDate | date: 'EEEE, d MMMM' | titlecase }}</p>
-  <mat-icon mat-raised-button aria-hidden="false" matListItemIcon fontSet="material-symbols-outlined">calendar_month</mat-icon>
+  <p class="subtitle-1" class="calendar-text">{{ currentDate | date: 'EEEE, d MMMM' | titlecase }}</p>
+  <span mat-icon-button [matMenuTriggerFor]="menu">
+    <mat-icon aria-hidden="false" matListItemIcon fontSet="material-symbols-outlined">
+      calendar_month
+    </mat-icon>
+  </span>
+  <mat-menu #menu="matMenu" class="calendar-mat-menu">
+    <button mat-menu-item (click)="$event.stopPropagation()">
+      <mat-calendar></mat-calendar>
+    </button>
+  </mat-menu>
 } @else {
-  <p class="subtitle-2">Witaj, {{ name() }}!</p>
+  <p class="subtitle-1">Witaj, {{ name() }}!</p>
   <mat-icon aria-hidden="false" matListItemIcon fontSet="material-symbols-outlined">notifications</mat-icon>
 }

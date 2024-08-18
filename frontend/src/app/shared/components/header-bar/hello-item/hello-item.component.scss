@@ -5,12 +5,26 @@
   gap: 10px;
   border-radius: 180px;
   border: 1px solid black;
-  padding: 10px 20px;
+  padding: 10px 14px;
+
+  span {
+    cursor: pointer;
+  }
+}
+
+@media screen and (max-width: 1280px) {
+  :host {
+    .calendar-text {
+      display: none;
+    }
+  }
 }
 
 @media screen and (max-width: 768px) {
   :host {
     padding: 10px;
+    width: 55px;
+    height: 55px;
 
     p {
       display: none;
