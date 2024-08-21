@@ -15,4 +15,5 @@ public class ParameterDTO {
     private String unit;
     private String minValue;
     private String maxValue;
+    private String hint;
 }

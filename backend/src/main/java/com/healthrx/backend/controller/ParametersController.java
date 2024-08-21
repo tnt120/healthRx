@@ -17,6 +17,11 @@ public class ParametersController {
 
     private final ParametersService parametersService;
 
+    @GetMapping("/users")
+    public ResponseEntity<List<UserParametersResponse>> getUserParameters() {
+        return ResponseEntity.ok(parametersService.getUserParameters());
+    }
+
     @PatchMapping("/users")
     public ResponseEntity<List<ParameterDTO>> editUserParameters(@RequestBody List<ParameterDTO> request) {
         return ResponseEntity.ok(parametersService.editUserParameters(request));

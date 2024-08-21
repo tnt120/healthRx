@@ -8,6 +8,7 @@ import com.healthrx.backend.api.internal.ParameterLog;
 import com.healthrx.backend.api.internal.User;
 import com.healthrx.backend.api.internal.UserParameter;
 import com.healthrx.backend.mapper.ParameterMapper;
+import com.healthrx.backend.mapper.UserParameterMapper;
 import com.healthrx.backend.repository.ParameterLogRepository;
 import com.healthrx.backend.repository.ParameterRepository;
 import com.healthrx.backend.repository.UserParameterRepository;
@@ -34,6 +35,25 @@ public class ParametersServiceImpl implements ParametersService {
     private final UserParameterRepository userParameterRepository;
     private final ParameterLogRepository parameterLogRepository;
     private final ParameterMapper parameterMapper;
+    private final UserParameterMapper userParameterMapper;
+
+    @Override
+    @Transactional
+    public List<UserParametersResponse> getUserParameters() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        return userParameterRepository.findAllByUserId(user.getId())
+                .stream()
+                .map(userParameter -> {
+                    Double parameterValue = parameterLogRepository.findParameterLogValueByParameterIdAndUserIdAndToday(
+                            userParameter.getParameter().getId(),
+                            user.getId()
+                    ).orElse(null);
+
+                    return userParameterMapper.map(userParameter, parameterValue);
+                })
+                .toList();
+    }
 
     @Override
     @Transactional

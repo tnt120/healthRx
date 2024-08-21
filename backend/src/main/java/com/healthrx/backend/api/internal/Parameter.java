@@ -23,6 +23,9 @@ public class Parameter {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @Column(nullable = false)
+    private String hint;
+
     @ManyToOne
     @JoinColumn(name = "unit_id")
     private Unit unit;
