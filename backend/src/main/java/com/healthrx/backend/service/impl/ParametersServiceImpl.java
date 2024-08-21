@@ -110,7 +110,7 @@ public class ParametersServiceImpl implements ParametersService {
                     .parameter(parameter)
                     .user(user)
                     .value(userParameterReq.getValue())
-                    .build())));
+                    .build()), userParameterReq.getId()));
         });
 
         return response;
@@ -130,6 +130,6 @@ public class ParametersServiceImpl implements ParametersService {
 
         parameterLog.setValue(request.getValue());
 
-        return this.parameterMapper.map(this.parameterLogRepository.save(parameterLog));
+        return this.parameterMapper.map(this.parameterLogRepository.save(parameterLog), request.getId());
     }
 }

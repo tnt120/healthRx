@@ -20,9 +20,9 @@ public class ParameterMapper {
                 .build();
     }
 
-    public UserParametersResponse map(ParameterLog parameterLog) {
+    public UserParametersResponse map(ParameterLog parameterLog, String userParameterId) {
         return UserParametersResponse.builder()
-                .id(parameterLog.getId())
+                .id(userParameterId)
                 .parameter(map(parameterLog.getParameter()))
                 .value(parameterLog.getValue())
                 .build();
