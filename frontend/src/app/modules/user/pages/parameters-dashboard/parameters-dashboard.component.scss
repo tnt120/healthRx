@@ -1,0 +1,32 @@
+:host {
+  .grid-parameters {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+
+  .buttons-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .setted-parameters {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+
+    .parameter {
+      display: flex;
+      gap: 10px;
+
+      .parameter-name {
+        font-weight: bold;
+      }
+
+      .parameter-value {}
+    }
+  }
+
+}

@@ -26,6 +26,7 @@ import { CoreModule } from './core/core.module';
 import { firstValueFrom, take } from 'rxjs';
 import localePl from '@angular/common/locales/pl';
 import { registerLocaleData } from '@angular/common';
+import { UserParametersEffects } from './core/state/user-parameters/user-parameters.effects';
 
 function initializeAppFactory(store: Store, router: Router, actions$: Actions): () => void {
   return async () => {
@@ -62,7 +63,7 @@ function initializeAppFactory(store: Store, router: Router, actions$: Actions): 
       specializations: specializationsReducer,
       userParameters: userParametersReducer,
     }, {}),
-    EffectsModule.forRoot([configEffects]),
+    EffectsModule.forRoot([configEffects, UserParametersEffects]),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode(), autoPause: true, trace: true, traceLimit: 75 }),
   ],
   providers: [

@@ -1,1 +1,35 @@
-<p>parameters-dashboard works!</p>
+<div class="main-container">
+  <app-container-layout>
+    <app-section-layout title="Parametry do uzupełnienia">
+      <div class="grid-parameters">
+        @for (param of parametersToSet; track param.id) {
+          <mat-form-field appearance="outline" subscriptSizing="fixed">
+            <mat-label>{{ param.parameter.name }}</mat-label>
+            <input min="0" matInput type="number" [placeholder]="param.parameter.name" [(ngModel)]="param.value">
+            <mat-hint>{{ param.parameter.hint }}</mat-hint>
+            @if (param.value && param.value < 0) {
+              <mat-error>Wartość nie może być ujemna</mat-error>
+            }
+          </mat-form-field>
+        }
+      </div>
+      <div class="buttons-container">
+        <button mat-stroked-button (click)="reset()" [disabled]="checkSaveButtonDisabled()">Zresetuj</button>
+        <button mat-flat-button color="primary" (click)="save()" [disabled]="checkSaveButtonDisabled()">Zapisz</button>
+      </div>
+    </app-section-layout>
+  </app-container-layout>
+
+  <app-container-layout>
+    <app-section-layout title="Dzisiejsze parametry">
+      <div class="setted-parameters">
+        @for (param of settedParameters; track param.id) {
+          <div class="parameter">
+            <div class="parameter-name">{{ param.parameter.name }}:</div>
+            <div class="parameter-value">{{ param.value }}</div>
+          </div>
+        }
+      </div>
+    </app-section-layout>
+  </app-container-layout>
+</div>

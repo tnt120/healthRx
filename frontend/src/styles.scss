@@ -82,3 +82,9 @@ mat-stepper {
 .calendar-mat-menu {
   --mat-menu-item-hover-state-layer-color: transparent;
 }
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}

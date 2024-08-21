@@ -8,6 +8,8 @@ import { ParameterTailComponent } from './components/parameter-tail/parameter-ta
 import { SettingsComponent } from './components/settings/settings.component';
 import { HeaderBarComponent } from './components/header-bar/header-bar.component';
 import { HelloItemComponent } from './components/header-bar/hello-item/hello-item.component';
+import { ContainerLayoutComponent } from './components/container-layout/container-layout.component';
+import { SectionLayoutComponent } from './components/container-layout/section-layout/section-layout.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +19,9 @@ import { HelloItemComponent } from './components/header-bar/hello-item/hello-ite
     ParameterTailComponent,
     SettingsComponent,
     HeaderBarComponent,
-    HelloItemComponent
+    HelloItemComponent,
+    ContainerLayoutComponent,
+    SectionLayoutComponent
   ],
   imports: [
     CommonModule,
@@ -29,7 +33,9 @@ import { HelloItemComponent } from './components/header-bar/hello-item/hello-ite
     RepeatPasswordValidatorDirective,
     ParameterTailComponent,
     SettingsComponent,
-    HeaderBarComponent
+    HeaderBarComponent,
+    ContainerLayoutComponent,
+    SectionLayoutComponent
   ]
 })
 export class SharedModule { }
