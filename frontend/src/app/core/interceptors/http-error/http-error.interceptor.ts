@@ -1,5 +1,5 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
-import { catchError, retry, switchMap, tap, throwError } from 'rxjs';
+import { catchError, EMPTY, retry, switchMap, tap, throwError } from 'rxjs';
 import { inject } from '@angular/core';
 import { AuthService } from '../../services/auth/auth.service';
 import { Router } from '@angular/router';
@@ -21,11 +21,13 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
               return next(req.clone());
             }),
             catchError((err) => {
-              router.navigate(['/login']);
-
-              // tutaj notifikacja o błędzie
-
-              return throwError(() => err);
+              return authService.logout().pipe(
+                tap(() => {
+                  // tutaj notifikacja o błędzie
+                  router.navigate(['login']);
+                }),
+                switchMap(() => EMPTY)
+              );
             })
           );
         }
