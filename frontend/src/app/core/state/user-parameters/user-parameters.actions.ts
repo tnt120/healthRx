@@ -5,6 +5,10 @@ import { UserParameterResponse } from "../../models/user-parameter-response.mode
 export const userParametersActions = createActionGroup({
   source: 'user parameters',
   events: {
+    'get': emptyProps(),
+    'get success': props<{ userParameters: UserParameterResponse[] }>(),
+    'get error': props<{ error: any }>(),
+
     'set': props<{ request: UserParameterRequest[] }>(),
     'set success': props<{ userParameters: UserParameterResponse[] }>(),
     'set error': props<{ error: any }>(),

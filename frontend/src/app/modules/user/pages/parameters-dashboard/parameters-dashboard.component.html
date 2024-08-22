@@ -21,8 +21,8 @@
           }
         </div>
         <div class="buttons-container">
-          <button mat-stroked-button (click)="reset()" [disabled]="checkSaveButtonDisabled()">Zresetuj</button>
-          <button mat-flat-button color="primary" (click)="save()" [disabled]="checkSaveButtonDisabled()">Zapisz</button>
+          <button mat-stroked-button (click)="reset()" [disabled]="checkSaveButtonDisabled(true)">Zresetuj</button>
+          <button mat-flat-button color="primary" (click)="save()" [disabled]="checkSaveButtonDisabled(false)">Zapisz</button>
         </div>
       }
     </app-section-layout>

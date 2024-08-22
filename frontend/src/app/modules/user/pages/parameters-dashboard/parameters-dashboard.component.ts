@@ -9,6 +9,7 @@ import { Actions, ofType } from '@ngrx/effects';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { EditParameterMonitorDialogComponent, EditParameterMonitorDialogData } from '../../components/edit-parameter-monitor-dialog/edit-parameter-monitor-dialog.component';
 import { CustomSnackbarService } from '../../../../core/services/custom-snackbar/custom-snackbar.service';
+import { ParametersService } from '../../../../core/services/parameters/parameters.service';
 
 @Component({
   selector: 'app-parameters-dashboard',
@@ -24,11 +25,11 @@ export class ParametersDashboardComponent implements OnInit, OnDestroy {
 
   private readonly customSnackbarService = inject(CustomSnackbarService);
 
+  private readonly parameterService = inject(ParametersService);
+
   parameters$: Observable<Parameter[]>;
 
   userParameters$: Observable<UserParameterResponse[]>;
-
-  matchingUserParameters: UserParameterResponse[] = [];
 
   parametersToSet: UserParameterResponse[] = [];
 
@@ -44,27 +45,27 @@ export class ParametersDashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.matchingUserParameters = this.filterMatchingUserParameters();
-    this.parametersToSet = [...this.matchingUserParameters.filter(param => param.value === null)];
-    this.settedParameters = [...this.matchingUserParameters.filter(param => param.value !== null)];
+    this.filterMatchingUserParameters();
   }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
-  filterMatchingUserParameters(): UserParameterResponse[] {
-    let matchingParams: UserParameterResponse[] = [];
+  filterMatchingUserParameters(): void {
+    this.subscriptions.push(
+      this.parameterService.getUserParameters().subscribe(userParams => {
+        this.store.dispatch(userParametersActions.getSuccess({ userParameters: userParams }));
+        this.subscriptions.push(this.parameters$.subscribe(params => {
+          const matchingParams: UserParameterResponse[] = userParams
+            .filter(userParam => params.some(param => param.id === userParam.parameter.id))
+            .map(param => ({...param, value: param.value}));
 
-    this.subscriptions.push(this.userParameters$.subscribe(userParams => {
-      this.subscriptions.push(this.parameters$.subscribe(params => {
-        matchingParams = userParams
-          .filter(userParam => params.some(param => param.id === userParam.parameter.id))
-          .map(param => ({...param, value: param.value}));
-      }));
-    }));
-
-    return matchingParams;
+            this.parametersToSet = [...matchingParams.filter(param => param.value === null)];
+            this.settedParameters = [...matchingParams.filter(param => param.value !== null)];
+        }));
+      })
+    );
   }
 
   save() {
@@ -90,8 +91,17 @@ export class ParametersDashboardComponent implements OnInit, OnDestroy {
     this.parametersToSet = this.parametersToSet.map(param => ({...param, value: null}));
   }
 
-  checkSaveButtonDisabled(): boolean {
-    return !this.parametersToSet.some(param => param.value !== null);
+  checkSaveButtonDisabled(resetButton: boolean): boolean {
+    const singleParamExist = !this.parametersToSet.some(param => param.value !== null);
+
+    if (resetButton) {
+      return singleParamExist;
+    }
+
+    const anyNegativeValue = this.parametersToSet.some(param => param.value && param.value <= 0);
+    const anyPositiveValue = this.parametersToSet.some(param => param.value && param.value > 0);
+
+    return singleParamExist || anyNegativeValue || !anyPositiveValue;
   }
 
   getTooltipText(param: UserParameterResponse): string {
