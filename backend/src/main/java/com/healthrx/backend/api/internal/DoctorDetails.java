@@ -25,7 +25,7 @@ public class DoctorDetails {
     private String idPhotoFrontUrl;
     private String idPhotoBackUrl;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "city_id")
     private City city;
 
