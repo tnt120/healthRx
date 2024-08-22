@@ -14,4 +14,10 @@ public interface ParameterLogRepository extends JpaRepository<ParameterLog, Stri
             @Param("parameterId") String parameterId,
             @Param("userId") String userId
     );
+
+    @Query("SELECT pl FROM ParameterLog pl  WHERE pl.parameter.id = :parameterId AND pl.user.id = :userId AND FUNCTION('DATE', pl.createdAt) = CURRENT_DATE")
+    Optional<ParameterLog> findParameterLogByParameterIdAndUserIdAndToday(
+            @Param("parameterId") String parameterId,
+            @Param("userId") String userId
+    );
 }

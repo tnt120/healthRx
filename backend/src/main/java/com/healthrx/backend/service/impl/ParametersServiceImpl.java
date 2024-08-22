@@ -121,12 +121,10 @@ public class ParametersServiceImpl implements ParametersService {
 
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        ParameterLog parameterLog = this.parameterLogRepository.findById(request.getId())
-                .orElseThrow(PARAMETER_LOG_NOT_FOUND::getError);
-
-        if (parameterLog.getUser().getId().equals(user.getId())) {
-            throw INVALID_USER_REQUEST.getError();
-        }
+        ParameterLog parameterLog = this.parameterLogRepository.findParameterLogByParameterIdAndUserIdAndToday(
+                request.getParameterId(),
+                user.getId()
+        ).orElseThrow(PARAMETER_LOG_NOT_FOUND::getError);
 
         parameterLog.setValue(request.getValue());
 
