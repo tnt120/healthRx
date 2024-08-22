@@ -12,21 +12,49 @@
     gap: 10px;
   }
 
-  .setted-parameters {
+  .no-parameters {
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
     gap: 24px;
 
-    .parameter {
+    .notifications {
+      width: 100%;
       display: flex;
-      gap: 10px;
-
-      .parameter-name {
-        font-weight: bold;
-      }
-
-      .parameter-value {}
+      justify-content: space-between;
+      align-items: center;
     }
   }
 
+  .setted-parameters {
+    display: flex;
+
+    .parameters-table {
+      text-align: left;
+
+      th, td {
+        padding: 0 24px 8px 0;
+      }
+
+      .edit-parameter-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  :host {
+    .no-parameters {
+      .notifications {
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-end;
+        gap: 10px;
+      }
+    }
+  }
 }

@@ -6,7 +6,7 @@ import { Component, input } from '@angular/core';
   styleUrl: './section-layout.component.scss'
 })
 export class SectionLayoutComponent {
-  title = input.required<string>();
+  sectionTitle = input.required<string>();
 
   description = input<string>('');
 }

@@ -86,4 +86,8 @@ export class ParametersDashboardComponent implements OnInit, OnDestroy {
   checkSaveButtonDisabled(): boolean {
     return !this.parametersToSet.some(param => param.value !== null);
   }
+
+  getTooltipText(param: UserParameterResponse): string {
+    return `Wartość prawidłowa wynosi pomiędzy: ${param.parameter.minValue} a ${param.parameter.maxValue}`;
+  }
 }
