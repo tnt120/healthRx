@@ -8,6 +8,7 @@ import { UserParameterRequest } from '../../../../core/models/user-parameter-req
 import { Actions, ofType } from '@ngrx/effects';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { EditParameterMonitorDialogComponent, EditParameterMonitorDialogData } from '../../components/edit-parameter-monitor-dialog/edit-parameter-monitor-dialog.component';
+import { CustomSnackbarService } from '../../../../core/services/custom-snackbar/custom-snackbar.service';
 
 @Component({
   selector: 'app-parameters-dashboard',
@@ -20,6 +21,8 @@ export class ParametersDashboardComponent implements OnInit, OnDestroy {
   private readonly actions$ = inject(Actions);
 
   private readonly dialog = inject(MatDialog);
+
+  private readonly customSnackbarService = inject(CustomSnackbarService);
 
   parameters$: Observable<Parameter[]>;
 
@@ -79,7 +82,7 @@ export class ParametersDashboardComponent implements OnInit, OnDestroy {
     ).subscribe((res) => {
       this.parametersToSet = this.parametersToSet.filter(v => !res.userParameters.some(v1 => v1.id === v.id));
       this.settedParameters = [...this.settedParameters, ...res.userParameters];
-      console.log(res, this.parametersToSet, this.settedParameters);
+      this.customSnackbarService.openCustomSnackbar({ title: 'Sukces', message: 'Wybrane parametry zostały zapisane', type: 'success', duration: 5000 });
     }));
   }
 
@@ -117,6 +120,7 @@ export class ParametersDashboardComponent implements OnInit, OnDestroy {
               take(1)
             ).subscribe((res) => {
               this.settedParameters = this.settedParameters.map(param => param.id === res.userParameter.id ? res.userParameter : param);
+              this.customSnackbarService.openCustomSnackbar({ title: 'Sukces', message: 'Parametr został zaktualizowany', type: 'success', duration: 5000 });
             })
           );
         }

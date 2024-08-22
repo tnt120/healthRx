@@ -10,6 +10,7 @@ import { HeaderBarComponent } from './components/header-bar/header-bar.component
 import { HelloItemComponent } from './components/header-bar/hello-item/hello-item.component';
 import { ContainerLayoutComponent } from './components/container-layout/container-layout.component';
 import { SectionLayoutComponent } from './components/container-layout/section-layout/section-layout.component';
+import { CustomSnackbarComponent } from './components/custom-snackbar/custom-snackbar.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { SectionLayoutComponent } from './components/container-layout/section-la
     HeaderBarComponent,
     HelloItemComponent,
     ContainerLayoutComponent,
-    SectionLayoutComponent
+    SectionLayoutComponent,
+    CustomSnackbarComponent
   ],
   imports: [
     CommonModule,

@@ -12,6 +12,7 @@ import { Roles } from '../../../../core/enums/roles.enum';
 import { UserVerificationRequest } from '../../../../core/models/user/user-verification-request.model';
 import { UserSummary } from '../../models/user-summary-model';
 import { Sex } from '../../../../core/enums/sex.enum';
+import { CustomSnackbarService } from '../../../../core/services/custom-snackbar/custom-snackbar.service';
 
 @Component({
   selector: 'app-verification',
@@ -30,6 +31,8 @@ export class VerificationComponent implements OnInit, OnDestroy {
   private readonly userService = inject(UserService);
 
   private readonly errorCodesService = inject(ErrorCodesService);
+
+  private readonly customSnackbarService = inject(CustomSnackbarService);
 
   personalDataForm = new FormGroup({
     firstName: new FormControl('', Validators.required),
@@ -235,7 +238,7 @@ export class VerificationComponent implements OnInit, OnDestroy {
   verify() {
     this.subscription = this.userService.verifyUser(this.userData).subscribe({
       next: () => {
-        alert('Konto zostało zweryfikowane. Możesz się zalogować');
+        this.customSnackbarService.openCustomSnackbar({ title: 'Weryfikacja', message: 'Konto zostało zweryfikowane. Możesz się zalogować', type: 'success', duration: 5000 });
         this.router.navigate(['/login']);
       },
       error: (err) => {

@@ -88,3 +88,24 @@ mat-stepper {
   flex-direction: column;
   gap: 16px;
 }
+
+.success-snackbar, .error-snackbar, .warning-snackbar {
+  border-radius: 15px;
+}
+
+.success-snackbar {
+  background-color: #4CAF50;
+}
+
+.error-snackbar {
+  background: #f44336;
+}
+
+.warning-snackbar {
+  background: #ff9800;
+}
+
+.mat-mdc-snack-bar-container .mdc-snackbar__surface {
+  background: transparent !important;
+  border-radius: 15px !important;
+}

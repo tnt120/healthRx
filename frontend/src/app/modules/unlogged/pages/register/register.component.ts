@@ -6,6 +6,7 @@ import { FormErrorsService } from '../../../../core/services/form-errors/form-er
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { RegisterRequest } from '../../../../core/models/auth/register-request.model';
 import { ErrorCodesService } from '../../../../core/services/error-codes/error-codes.service';
+import { CustomSnackbarService } from '../../../../core/services/custom-snackbar/custom-snackbar.service';
 
 interface ErrorsTypes {
   email: string,
@@ -27,6 +28,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
   private readonly authService = inject(AuthService);
 
   private readonly errorCodesService = inject(ErrorCodesService);
+
+  private readonly customSnackbarService = inject(CustomSnackbarService);
 
   registerForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
@@ -99,7 +102,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
       this.subscription = this.authService.register(credentials).subscribe({
         next: () => {
           this.router.navigate(['/login']);
-          alert('Rejestracja przebiegła pomyślnie. Na podany adres email został wysłany link aktywacyjny.');
+          this.customSnackbarService.openCustomSnackbar({ title: 'Rejestracja', message: 'Rejestracja przebiegła pomyślnie. Na podany adres email został wysłany link aktywacyjny.', type: 'success', duration: 5000 });
         },
         error: (err) => {
           if ([303].includes(err.error.code)) {
