@@ -30,7 +30,7 @@ export class UserParametersEffects {
       ofType(userParametersActions.edit),
       mergeMap((action) => {
         return this.parameterService.editUserParametersMonitor(action.request).pipe(
-          map(userParameters => userParametersActions.editSuccess({ userParameters })),
+          map(userParameter => userParametersActions.editSuccess({ userParameter })),
           catchError(err => {
             console.error('Error editing user parameters', err);
 

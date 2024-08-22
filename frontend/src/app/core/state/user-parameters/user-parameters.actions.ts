@@ -9,8 +9,8 @@ export const userParametersActions = createActionGroup({
     'set success': props<{ userParameters: UserParameterResponse[] }>(),
     'set error': props<{ error: any }>(),
 
-    'edit': props<{ request: UserParameterRequest[] }>(),
-    'edit success': props<{ userParameters: UserParameterResponse[] }>(),
+    'edit': props<{ request: UserParameterRequest }>(),
+    'edit success': props<{ userParameter: UserParameterResponse }>(),
     'edit error': props<{ error: any }>(),
   }
 })

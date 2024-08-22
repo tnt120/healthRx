@@ -27,7 +27,7 @@ export class ParametersService {
     return this.http.post<UserParameterResponse[]>(`${this.apiUrl}/monitor`, request);
   }
 
-  editUserParametersMonitor(request: UserParameterRequest[]): Observable<UserParameterResponse[]> {
-    return this.http.patch<UserParameterResponse[]>(`${this.apiUrl}/monitor`, request);
+  editUserParametersMonitor(request: UserParameterRequest): Observable<UserParameterResponse> {
+    return this.http.patch<UserParameterResponse>(`${this.apiUrl}/monitor`, request);
   }
 }

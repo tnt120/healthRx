@@ -6,6 +6,8 @@ import { Store } from '@ngrx/store';
 import { userParametersActions } from '../../../../core/state/user-parameters/user-parameters.actions';
 import { UserParameterRequest } from '../../../../core/models/user-parameter-request.model';
 import { Actions, ofType } from '@ngrx/effects';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { EditParameterMonitorDialogComponent, EditParameterMonitorDialogData } from '../../components/edit-parameter-monitor-dialog/edit-parameter-monitor-dialog.component';
 
 @Component({
   selector: 'app-parameters-dashboard',
@@ -16,6 +18,8 @@ export class ParametersDashboardComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);
 
   private readonly actions$ = inject(Actions);
+
+  private readonly dialog = inject(MatDialog);
 
   parameters$: Observable<Parameter[]>;
 
@@ -89,5 +93,34 @@ export class ParametersDashboardComponent implements OnInit, OnDestroy {
 
   getTooltipText(param: UserParameterResponse): string {
     return `Wartość prawidłowa wynosi pomiędzy: ${param.parameter.minValue} a ${param.parameter.maxValue}`;
+  }
+
+  editParameter(param: UserParameterResponse) {
+    const data: EditParameterMonitorDialogData = { userParameter: param };
+
+    const dialogRef: MatDialogRef<EditParameterMonitorDialogComponent, UserParameterResponse> = this.dialog.open(EditParameterMonitorDialogComponent, { data, width: '400px',  });
+
+    this.subscriptions.push(
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          const request: UserParameterRequest = {
+            id: result.id,
+            parameterId: result.parameter.id,
+            value: result.value as number,
+          };
+
+          this.store.dispatch(userParametersActions.edit({ request }));
+
+          this.subscriptions.push(
+            this.actions$.pipe(
+              ofType(userParametersActions.editSuccess),
+              take(1)
+            ).subscribe((res) => {
+              this.settedParameters = this.settedParameters.map(param => param.id === res.userParameter.id ? res.userParameter : param);
+            })
+          );
+        }
+      })
+    )
   }
 }

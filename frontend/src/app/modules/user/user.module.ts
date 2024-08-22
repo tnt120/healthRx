@@ -13,6 +13,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { MyMaterialModule } from '../../material';
 import { CoreModule } from '../../core/core.module';
 import { UserStatisticsComponent } from './pages/user-statistics/user-statistics.component';
+import { EditParameterMonitorDialogComponent } from './components/edit-parameter-monitor-dialog/edit-parameter-monitor-dialog.component';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { UserStatisticsComponent } from './pages/user-statistics/user-statistics
     UserMessagesComponent,
     ParametersDashboardComponent,
     ActivitesDashboardComponent,
-    UserStatisticsComponent
+    UserStatisticsComponent,
+    EditParameterMonitorDialogComponent
   ],
   imports: [
     CommonModule,
