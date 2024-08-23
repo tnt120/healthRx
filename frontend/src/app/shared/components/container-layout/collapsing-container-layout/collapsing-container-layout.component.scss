@@ -1,0 +1,20 @@
+:host {
+  .section {
+    display: flex;
+    flex-direction: column;
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+
+      .collapse-icon {
+        cursor: pointer;
+      }
+    }
+
+    .content {
+      padding-top: 36px;
+    }
+  }
+}

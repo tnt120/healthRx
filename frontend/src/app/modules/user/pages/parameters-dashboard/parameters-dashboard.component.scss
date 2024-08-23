@@ -1,4 +1,9 @@
 :host {
+  .top-button-container {
+    display: flex;
+    justify-content: flex-end;
+  }
+
   .grid-parameters {
     display: grid;
     gap: 10px;
