@@ -134,9 +134,8 @@ public class UserServiceImpl implements UserService {
              );
 
              response.setParameters(
-                     userParameterRepository.findAll()
+                     parameterRepository.findAll()
                              .stream()
-                             .map(UserParameter::getParameter)
                              .map(parameterMapper::map)
                              .toList()
              );
