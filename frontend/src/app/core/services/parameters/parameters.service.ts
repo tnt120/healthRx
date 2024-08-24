@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environments';
 import { UserParameterResponse } from '../../models/user-parameter-response.model';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, finalize, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { Parameter } from '../../models/parameter.model';
@@ -15,10 +15,21 @@ export class ParametersService {
 
   private readonly http = inject(HttpClient);
 
-  private readonly store = inject(Store);
+  private loadingSubject = new BehaviorSubject<boolean>(false);
+
+  getLoadingState() {
+    return this.loadingSubject.asObservable();
+  }
+
+  setLoadingState(loading: boolean) {
+    this.loadingSubject.next(loading);
+  }
 
   getUserParameters(): Observable<UserParameterResponse[]> {
-    return this.http.get<UserParameterResponse[]>(`${this.apiUrl}/users`);
+    this.setLoadingState(true);
+    return this.http.get<UserParameterResponse[]>(`${this.apiUrl}/users`).pipe(
+      finalize(() => this.setLoadingState(false))
+    );
   }
 
   // editUserParameters(parameters: Parameter[]): Observable<

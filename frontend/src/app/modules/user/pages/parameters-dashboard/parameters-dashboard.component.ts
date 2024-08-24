@@ -10,6 +10,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { EditParameterMonitorDialogComponent, EditParameterMonitorDialogData } from '../../components/edit-parameter-monitor-dialog/edit-parameter-monitor-dialog.component';
 import { CustomSnackbarService } from '../../../../core/services/custom-snackbar/custom-snackbar.service';
 import { ParametersService } from '../../../../core/services/parameters/parameters.service';
+import { SpinnerService } from '../../../../core/services/spinner/spinner.service';
 
 @Component({
   selector: 'app-parameters-dashboard',
@@ -39,6 +40,8 @@ export class ParametersDashboardComponent implements OnInit, OnDestroy {
 
   subscriptions: Subscription[] = [];
 
+  protected isLoading$ = this.parameterService.getLoadingState();
+
   constructor() {
     this.parameters$ = this.store.select('parameters');
     this.userParameters$ = this.store.select('userParameters');
@@ -63,6 +66,7 @@ export class ParametersDashboardComponent implements OnInit, OnDestroy {
 
             this.parametersToSet = [...matchingParams.filter(param => param.value === null)];
             this.settedParameters = [...matchingParams.filter(param => param.value !== null)];
+            this.isFirstLoad = false;
         }));
       })
     );

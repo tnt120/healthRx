@@ -27,6 +27,7 @@ import { firstValueFrom, take } from 'rxjs';
 import localePl from '@angular/common/locales/pl';
 import { registerLocaleData } from '@angular/common';
 import { UserParametersEffects } from './core/state/user-parameters/user-parameters.effects';
+import { spinnerInterceptor } from './core/interceptors/spinner/spinner.interceptor';
 
 function initializeAppFactory(store: Store, router: Router, actions$: Actions): () => void {
   return async () => {
@@ -70,7 +71,7 @@ function initializeAppFactory(store: Store, router: Router, actions$: Actions): 
     provideAnimationsAsync(),
     provideHttpClient(
       withInterceptors(
-        [authInterceptor, httpErrorInterceptor]
+        [authInterceptor, httpErrorInterceptor, spinnerInterceptor]
       )
     ),
     provideNativeDateAdapter(),

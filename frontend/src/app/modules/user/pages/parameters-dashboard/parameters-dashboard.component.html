@@ -4,70 +4,82 @@
   </div>
   <app-container-layout>
     <app-section-layout sectionTitle="Parametry do uzupełnienia">
-      @if (parametersToSet.length === 0) {
-        <div class="no-parameters">
-          <div>
-            <p class="text-1" style="text-align: center;">Gratulacje, uzupełniłeś/aś dziś wszystkie wymagane parametry! Trzymaj tak dalej!</p>
-          </div>
+      @if ((isLoading$ | async) && isFirstLoad) {
+        <div class="spinner-container">
+          <mat-spinner></mat-spinner>
         </div>
       } @else {
-        <div class="grid-parameters">
-          @for (param of parametersToSet; track param.id) {
-            <mat-form-field appearance="outline">
-              <mat-label>{{ param.parameter.name }}</mat-label>
-              <input matInput type="number" min="0" [placeholder]="param.parameter.name" [(ngModel)]="param.value">
-              <mat-hint>{{ param.parameter.hint }}</mat-hint>
-              @if (param.value && param.value < 0) {
-                <mat-error>Wartość nie może być ujemna</mat-error>
-              }
-            </mat-form-field>
-          }
-        </div>
-        <div class="buttons-container">
-          <button mat-stroked-button (click)="reset()" [disabled]="checkSaveButtonDisabled(true)">Zresetuj</button>
-          <button mat-flat-button color="primary" (click)="save()" [disabled]="checkSaveButtonDisabled(false)">Zapisz</button>
-        </div>
+        @if (parametersToSet.length === 0) {
+          <div class="no-parameters">
+            <div>
+              <p class="text-1" style="text-align: center;">Gratulacje, uzupełniłeś/aś dziś wszystkie wymagane parametry! Trzymaj tak dalej!</p>
+            </div>
+          </div>
+        } @else {
+          <div class="grid-parameters">
+            @for (param of parametersToSet; track param.id) {
+              <mat-form-field appearance="outline">
+                <mat-label>{{ param.parameter.name }}</mat-label>
+                <input matInput type="number" min="0" [placeholder]="param.parameter.name" [(ngModel)]="param.value">
+                <mat-hint>{{ param.parameter.hint }}</mat-hint>
+                @if (param.value && param.value < 0) {
+                  <mat-error>Wartość nie może być ujemna</mat-error>
+                }
+              </mat-form-field>
+            }
+          </div>
+          <div class="buttons-container">
+            <button mat-stroked-button (click)="reset()" [disabled]="checkSaveButtonDisabled(true)">Zresetuj</button>
+            <button mat-flat-button color="primary" (click)="save()" [disabled]="checkSaveButtonDisabled(false)">Zapisz</button>
+          </div>
+        }
       }
     </app-section-layout>
   </app-container-layout>
 
   <app-container-layout>
     <app-section-layout sectionTitle="Dzisiejsze parametry">
-      @if (settedParameters.length === 0) {
-        <div class="no-parameters">
-          <div>
-            <p class="text-2">Brak uzupełnionych parametrów</p>
-          </div>
-          <div class="notifications">
-            <p class="text-1">W przypadku nieuzupełnienia parametrów powiadomienie zostanie wysłane o ...</p>
-            <button mat-button>Edycja powiadomień</button>
-          </div>
+      @if ((isLoading$ | async) && isFirstLoad) {
+        <div class="spinner-container">
+          <mat-spinner></mat-spinner>
         </div>
       } @else {
-        <div class="setted-parameters">
-          <table class="parameters-table">
-            <tbody>
-              @for (param of settedParameters; track param.id) {
-                <tr>
-                  <th>{{ param.parameter.name }}:</th>
-                  <td>{{ param.value }} {{ param.parameter.unit }}</td>
-                  <td>
-                    <div class="edit-parameter-container">
-                      <div [matTooltip]="getTooltipText(param)">
-                        @if (param.value! <= param.parameter.maxValue && param.value! >= param.parameter.minValue) {
-                          <mat-icon class="green" aria-hidden="true" matListItemIcon fontSet="material-symbols-outlined">check_circle</mat-icon>
-                        } @else {
-                          <mat-icon class="yellow" aria-hidden="true" matListItemIcon fontSet="material-symbols-outlined">warning</mat-icon>
-                        }
+        @if (settedParameters.length === 0) {
+          <div class="no-parameters">
+            <div>
+              <p class="text-2">Brak uzupełnionych parametrów</p>
+            </div>
+            <div class="notifications">
+              <p class="text-1">W przypadku nieuzupełnienia parametrów powiadomienie zostanie wysłane o ...</p>
+              <button mat-button>Edycja powiadomień</button>
+            </div>
+          </div>
+        } @else {
+          <div class="setted-parameters">
+            <table class="parameters-table">
+              <tbody>
+                @for (param of settedParameters; track param.id) {
+                  <tr>
+                    <th>{{ param.parameter.name }}:</th>
+                    <td>{{ param.value }} {{ param.parameter.unit }}</td>
+                    <td>
+                      <div class="edit-parameter-container">
+                        <div [matTooltip]="getTooltipText(param)">
+                          @if (param.value! <= param.parameter.maxValue && param.value! >= param.parameter.minValue) {
+                            <mat-icon class="green" aria-hidden="true" matListItemIcon fontSet="material-symbols-outlined">check_circle</mat-icon>
+                          } @else {
+                            <mat-icon class="yellow" aria-hidden="true" matListItemIcon fontSet="material-symbols-outlined">warning</mat-icon>
+                          }
+                        </div>
+                        <button mat-button (click)="editParameter(param)">edytuj</button>
                       </div>
-                      <button mat-button (click)="editParameter(param)">edytuj</button>
-                    </div>
-                  </td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
       }
     </app-section-layout>
   </app-container-layout>

@@ -1,2 +1,4 @@
-
+<div class="spinner-container" *ngIf="isLoading$ | async">
+  <mat-spinner></mat-spinner>
+</div>
 <router-outlet />
