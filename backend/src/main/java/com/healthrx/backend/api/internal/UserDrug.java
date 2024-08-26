@@ -36,6 +36,7 @@ public class UserDrug {
     private Double doseSize;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Priority priority;
 
     @Column(nullable = false)

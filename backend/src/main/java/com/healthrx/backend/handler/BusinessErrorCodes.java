@@ -30,6 +30,8 @@ public enum BusinessErrorCodes {
     PARAMETER_LOG_ALREADY_EXISTS(310, "Parameter log already exists. Post message incorrect", HttpStatus.BAD_REQUEST),
     PARAMETER_LOG_NOT_FOUND(311, "Parameter log not found", HttpStatus.NOT_FOUND),
     INVALID_USER_REQUEST(312, "User try to modify someone else data", HttpStatus.FORBIDDEN),
+    DRUG_NOT_FOUND(313, "Drug not found", HttpStatus.NOT_FOUND),
+    USER_DRUG_ALREADY_EXISTS(314, "User drug already exists", HttpStatus.CONFLICT),
     ;
 
     private final int code;
