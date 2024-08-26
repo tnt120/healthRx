@@ -26,6 +26,16 @@ public class DrugsController {
         return ResponseEntity.ok(drugsService.getAllDrugs(page, size, sortBy, order, name));
     }
 
+    @GetMapping("/user")
+    public ResponseEntity<PageResponse<UserDrugsResponse>> getUserDrugs(
+            @RequestParam(name = "page", defaultValue = "0", required = false) Integer page,
+            @RequestParam(name = "size", defaultValue = "10", required = false) Integer size,
+            @RequestParam(name = "sort", defaultValue = "id", required = false) String sortBy,
+            @RequestParam(name = "order", defaultValue = "desc", required = false) String order
+    ) {
+        return ResponseEntity.ok(drugsService.getUserDrugs(page, size, sortBy, order));
+    }
+
     @PostMapping("/user")
     public ResponseEntity<UserDrugsResponse> addUserDrug(@RequestBody UserDrugsRequest userDrugsResponse) {
         return ResponseEntity.ok(drugsService.addUserDrug(userDrugsResponse));

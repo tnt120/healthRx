@@ -65,6 +65,34 @@ public class DrugsServiceImpl implements DrugsService {
     }
 
     @Override
+    public PageResponse<UserDrugsResponse> getUserDrugs(Integer page, Integer size, String sortBy, String order) {
+
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Sort sort = order.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<UserDrug> userDrugs = userDrugRepository.findByUser(user, pageable);
+
+        List<UserDrugsResponse> userDrugsResponses = userDrugs.stream()
+                .map(userDrug -> userDrugMapper.map(
+                        userDrug,
+                        drugPackRepository.findPackUnitByDrugId(userDrug.getDrug().getId()).getFirst()
+                ))
+                .toList();
+
+
+        return new PageResponse<UserDrugsResponse>()
+                .setContent(userDrugsResponses)
+                .setCurrentPage(userDrugs.getNumber())
+                .setPageSize(userDrugs.getSize())
+                .setTotalElements(userDrugs.getTotalElements())
+                .setTotalPages(userDrugs.getTotalPages())
+                .setLast(userDrugs.isLast())
+                .setFirst(userDrugs.isFirst());
+    }
+
+    @Override
     @Transactional
     public UserDrugsResponse addUserDrug(UserDrugsRequest request) {
 
