@@ -33,6 +33,7 @@ public enum BusinessErrorCodes {
     DRUG_NOT_FOUND(313, "Drug not found", HttpStatus.NOT_FOUND),
     USER_DRUG_ALREADY_EXISTS(314, "User drug already exists", HttpStatus.CONFLICT),
     USER_NOT_PERMITTED(315, "User not permitted", HttpStatus.FORBIDDEN),
+    USER_DRUG_NOT_FOUND(316, "User drug not found", HttpStatus.NOT_FOUND),
     ;
 
     private final int code;

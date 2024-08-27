@@ -15,12 +15,12 @@ import com.healthrx.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import static com.healthrx.backend.handler.BusinessErrorCodes.*;
 import static com.healthrx.backend.security.util.TokenType.VERIFICATION;
@@ -46,6 +46,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final ActivityMapper activityMapper;
     private final KafkaTemplate<String, KafkaReceiveModel> kafkaTemplate;
+    private final Supplier<User> principalSupplier;
 
     @Override
     public User verifyUser(UserVerificationRequest request) {
@@ -119,7 +120,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public InitAndConfigResponse getInitAndConfigData() {
 
-        var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = principalSupplier.get();
 
          InitAndConfigResponse response = new InitAndConfigResponse();
 

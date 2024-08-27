@@ -16,12 +16,12 @@ import com.healthrx.backend.service.ParametersService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.healthrx.backend.handler.BusinessErrorCodes.*;
@@ -36,11 +36,12 @@ public class ParametersServiceImpl implements ParametersService {
     private final ParameterLogRepository parameterLogRepository;
     private final ParameterMapper parameterMapper;
     private final UserParameterMapper userParameterMapper;
+    private final Supplier<User> principalSupplier;
 
     @Override
     @Transactional
     public List<UserParametersResponse> getUserParameters() {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = principalSupplier.get();
 
         return userParameterRepository.findAllByUserId(user.getId())
                 .stream()
@@ -59,7 +60,7 @@ public class ParametersServiceImpl implements ParametersService {
     @Transactional
     public List<ParameterDTO> editUserParameters(List<ParameterDTO> request) {
 
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = principalSupplier.get();
 
         List<UserParameter> existingUserParameters = this.userParameterRepository.findAllByUserId(user.getId());
         Map<String, UserParameter> existingUserParametersMap = existingUserParameters.stream()
@@ -89,7 +90,7 @@ public class ParametersServiceImpl implements ParametersService {
     @Transactional
     public List<UserParametersResponse> setMonitorUserParameters(List<UserParametersRequest> request) {
 
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = principalSupplier.get();
 
         List<UserParametersResponse> response = new ArrayList<>();
 
@@ -119,7 +120,7 @@ public class ParametersServiceImpl implements ParametersService {
     @Override
     public UserParametersResponse editMonitorUserParameters(UserParametersRequest request) {
 
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = principalSupplier.get();
 
         ParameterLog parameterLog = this.parameterLogRepository.findParameterLogByParameterIdAndUserIdAndToday(
                 request.getParameterId(),

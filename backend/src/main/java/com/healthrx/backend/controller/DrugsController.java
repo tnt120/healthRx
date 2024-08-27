@@ -41,6 +41,11 @@ public class DrugsController {
         return ResponseEntity.ok(drugsService.addUserDrug(userDrugsResponse));
     }
 
+    @PutMapping("/user/{id}")
+    public ResponseEntity<UserDrugsResponse> updateUserDrug(@RequestBody UserDrugsRequest userDrugsResponse, @PathVariable String id) {
+        return ResponseEntity.ok(drugsService.editUserDrug(userDrugsResponse, id));
+    }
+
     @DeleteMapping("/user/{id}")
     public ResponseEntity<Void> deleteUserDrug(@PathVariable String id) {
         return ResponseEntity.ok(drugsService.deleteUserDrug(id));

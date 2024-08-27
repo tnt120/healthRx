@@ -17,11 +17,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 import static com.healthrx.backend.handler.BusinessErrorCodes.*;
 
@@ -35,6 +38,7 @@ public class DrugsServiceImpl implements DrugsService {
     private final DrugDoseTimeRepository drugDoseTimeRepository;
     private final DrugMapper drugMapper;
     private final UserDrugMapper userDrugMapper;
+    private final Supplier<User> principalSupplier;
 
     @Override
     public PageResponse<DrugResponse> getAllDrugs(Integer page, Integer size, String sortBy, String order, String name) {
@@ -66,7 +70,7 @@ public class DrugsServiceImpl implements DrugsService {
     @Override
     public PageResponse<UserDrugsResponse> getUserDrugs(Integer page, Integer size, String sortBy, String order) {
 
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = principalSupplier.get();
 
         Sort sort = order.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
@@ -95,7 +99,7 @@ public class DrugsServiceImpl implements DrugsService {
     @Transactional
     public UserDrugsResponse addUserDrug(UserDrugsRequest request) {
 
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = principalSupplier.get();
 
         Drug drug = drugRepository.findById(request.getDrugId())
                 .orElseThrow(DRUG_NOT_FOUND::getError);
@@ -109,31 +113,19 @@ public class DrugsServiceImpl implements DrugsService {
 
         userDrugRepository.save(userDrug);
 
-        List<DrugDoseDay> drugDoseDays = new ArrayList<>();
+        List<DrugDoseDay> drugDoseDays = addAllDoseEntities(
+                userDrug,
+                request.getDoseDays(),
+                (ud, day) -> DrugDoseDay.builder().day(day).userDrugs(ud).build(),
+                drugDoseDayRepository
+        );
 
-        request.getDoseDays().forEach(day -> {
-            DrugDoseDay drugDoseDay = DrugDoseDay.builder()
-                    .day(day)
-                    .userDrugs(userDrug)
-                    .build();
-
-            drugDoseDays.add(drugDoseDay);
-
-            drugDoseDayRepository.save(drugDoseDay);
-        });
-
-        List<DrugDoseTime> drugDoseTimes = new ArrayList<>();
-
-        request.getDoseTimes().forEach(time -> {
-            DrugDoseTime drugDoseTime = DrugDoseTime.builder()
-                    .doseTime(time)
-                    .userDrugs(userDrug)
-                    .build();
-
-            drugDoseTimes.add(drugDoseTime);
-
-            drugDoseTimeRepository.save(drugDoseTime);
-        });
+        List<DrugDoseTime> drugDoseTimes = addAllDoseEntities(
+                userDrug,
+                request.getDoseTimes(),
+                (ud, time) -> DrugDoseTime.builder().doseTime(time).userDrugs(ud).build(),
+                drugDoseTimeRepository
+        );
 
         userDrug.setDrugDoseDays(drugDoseDays);
         userDrug.setDrugDoseTimes(drugDoseTimes);
@@ -142,9 +134,69 @@ public class DrugsServiceImpl implements DrugsService {
     }
 
     @Override
+    @Transactional
+    public UserDrugsResponse editUserDrug(UserDrugsRequest request, String userDrugId) {
+
+        User user = principalSupplier.get();
+
+        UserDrug userDrug = userDrugRepository.findById(userDrugId)
+                .orElseThrow(USER_DRUG_NOT_FOUND::getError);
+
+        if (!userDrug.getUser().getId().equals(user.getId())) {
+            throw USER_NOT_PERMITTED.getError();
+        }
+
+        Optional.ofNullable(request.getAmount())
+                .ifPresent(userDrug::setAmount);
+
+        Optional.ofNullable(request.getStartDate())
+                .ifPresent(userDrug::setStartDate);
+
+        userDrug.setEndDate(request.getEndDate());
+
+        Optional.ofNullable(request.getPriority())
+                .ifPresent(userDrug::setPriority);
+
+        Optional.ofNullable(request.getDoseSize())
+                .ifPresent(userDrug::setDoseSize);
+
+        Optional.ofNullable(request.getDoseTimes())
+                .ifPresent(doseTimes -> {
+                    drugDoseTimeRepository.deleteAll(userDrug.getDrugDoseTimes());
+
+                    List<DrugDoseTime> drugDoseTimes = addAllDoseEntities(
+                            userDrug,
+                            request.getDoseTimes(),
+                            (ud, time) -> DrugDoseTime.builder().doseTime(time).userDrugs(ud).build(),
+                            drugDoseTimeRepository
+                    );
+
+                    userDrug.setDrugDoseTimes(drugDoseTimes);
+                });
+
+        Optional.ofNullable(request.getDoseDays())
+                .ifPresent(doseDays -> {
+                    drugDoseDayRepository.deleteAll(userDrug.getDrugDoseDays());
+
+                    List<DrugDoseDay> drugDoseDays = addAllDoseEntities(
+                            userDrug,
+                            request.getDoseDays(),
+                            (ud, day) -> DrugDoseDay.builder().day(day).userDrugs(ud).build(),
+                            drugDoseDayRepository
+                    );
+
+                    userDrug.setDrugDoseDays(drugDoseDays);
+                });
+
+        userDrugRepository.save(userDrug);
+
+        return userDrugMapper.map(userDrug, drugPackRepository.findPackUnitByDrugId(userDrug.getDrug().getId()).getFirst());
+    }
+
+    @Override
     public Void deleteUserDrug(String id) {
 
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = principalSupplier.get();
 
         UserDrug userDrug = userDrugRepository.findById(id)
                 .orElseThrow(DRUG_NOT_FOUND::getError);
@@ -155,5 +207,17 @@ public class DrugsServiceImpl implements DrugsService {
 
         userDrugRepository.delete(userDrug);
         return null;
+    }
+
+    private <T, U> List<T> addAllDoseEntities(UserDrug userDrug, List<U> doseValues, BiFunction<UserDrug, U, T> entityBuilder, JpaRepository<T, String> repository) {
+        List<T> doseEntities = new ArrayList<>();
+
+        doseValues.forEach(value -> {
+            T doseEntity = entityBuilder.apply(userDrug, value);
+            doseEntities.add(doseEntity);
+            repository.save(doseEntity);
+        });
+
+        return doseEntities;
     }
 }
