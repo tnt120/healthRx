@@ -23,8 +23,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.healthrx.backend.handler.BusinessErrorCodes.DRUG_NOT_FOUND;
-import static com.healthrx.backend.handler.BusinessErrorCodes.USER_DRUG_ALREADY_EXISTS;
+import static com.healthrx.backend.handler.BusinessErrorCodes.*;
 
 @Service
 @RequiredArgsConstructor
@@ -140,5 +139,21 @@ public class DrugsServiceImpl implements DrugsService {
         userDrug.setDrugDoseTimes(drugDoseTimes);
 
         return userDrugMapper.map(userDrug, drugPackRepository.findPackUnitByDrugId(drug.getId()).getFirst());
+    }
+
+    @Override
+    public Void deleteUserDrug(String id) {
+
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        UserDrug userDrug = userDrugRepository.findById(id)
+                .orElseThrow(DRUG_NOT_FOUND::getError);
+
+        if (!userDrug.getUser().getId().equals(user.getId())) {
+            throw USER_NOT_PERMITTED.getError();
+        }
+
+        userDrugRepository.delete(userDrug);
+        return null;
     }
 }

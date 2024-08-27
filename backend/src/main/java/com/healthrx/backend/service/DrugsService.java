@@ -9,4 +9,5 @@ public interface DrugsService {
     PageResponse<DrugResponse> getAllDrugs(Integer page, Integer size, String sortBy, String order, String name);
     PageResponse<UserDrugsResponse> getUserDrugs(Integer page, Integer size, String sortBy, String order);
     UserDrugsResponse addUserDrug(UserDrugsRequest userDrugsRequest);
+    Void deleteUserDrug(String id);
 }

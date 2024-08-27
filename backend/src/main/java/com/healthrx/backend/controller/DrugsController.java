@@ -40,4 +40,10 @@ public class DrugsController {
     public ResponseEntity<UserDrugsResponse> addUserDrug(@RequestBody UserDrugsRequest userDrugsResponse) {
         return ResponseEntity.ok(drugsService.addUserDrug(userDrugsResponse));
     }
+
+    @DeleteMapping("/user/{id}")
+    public ResponseEntity<Void> deleteUserDrug(@PathVariable String id) {
+        return ResponseEntity.ok(drugsService.deleteUserDrug(id));
+    }
+
 }
