@@ -1,10 +1,8 @@
 package com.healthrx.backend.service.impl;
 
-import com.healthrx.backend.api.external.DrugResponse;
-import com.healthrx.backend.api.external.PageResponse;
-import com.healthrx.backend.api.external.UserDrugsRequest;
-import com.healthrx.backend.api.external.UserDrugsResponse;
+import com.healthrx.backend.api.external.*;
 import com.healthrx.backend.api.internal.*;
+import com.healthrx.backend.api.internal.enums.Days;
 import com.healthrx.backend.mapper.DrugMapper;
 import com.healthrx.backend.mapper.UserDrugMapper;
 import com.healthrx.backend.repository.*;
@@ -20,6 +18,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +36,7 @@ public class DrugsServiceImpl implements DrugsService {
     private final UserDrugRepository userDrugRepository;
     private final DrugDoseDayRepository drugDoseDayRepository;
     private final DrugDoseTimeRepository drugDoseTimeRepository;
+    private final DrugLogRepository drugLogRepository;
     private final DrugMapper drugMapper;
     private final UserDrugMapper userDrugMapper;
     private final Supplier<User> principalSupplier;
@@ -93,6 +94,35 @@ public class DrugsServiceImpl implements DrugsService {
                 .setTotalPages(userDrugs.getTotalPages())
                 .setLast(userDrugs.isLast())
                 .setFirst(userDrugs.isFirst());
+    }
+
+    @Override
+    public List<UserDrugMonitorResponse> getUserDrugMonitor() {
+
+        User user = principalSupplier.get();
+
+        Days today = Days.from(LocalDate.now().getDayOfWeek());
+
+        return userDrugRepository.findAllByUserId(user.getId()).stream()
+                .filter(userDrug -> userDrug.getDrugDoseDays().stream().map(DrugDoseDay::getDay).toList().contains(today))
+                .flatMap(userDrug -> userDrug.getDrugDoseTimes().stream()
+                        .map(time -> {
+                            LocalTime takenTime = drugLogRepository.findDrugLogByDrugIdAndUserIdAndTimeToday(
+                                    userDrug.getDrug().getId(),
+                                    user.getId(),
+                                    time.getDoseTime()
+                            ).stream().map(DrugLog::getTakenTime).findFirst().orElse(null);
+
+                            return UserDrugMonitorResponse.builder()
+                                    .id(userDrug.getId())
+                                    .drug(drugMapper.map(userDrug.getDrug(), drugPackRepository.findPackUnitByDrugId(userDrug.getDrug().getId()).getFirst()))
+                                    .doseSize(userDrug.getDoseSize())
+                                    .priority(userDrug.getPriority())
+                                    .time(time.getDoseTime())
+                                    .takenTime(takenTime)
+                                    .build();
+                        })
+                ).toList();
     }
 
     @Override

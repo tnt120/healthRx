@@ -33,6 +33,9 @@ public class DrugLog {
     @Column(nullable = false)
     private LocalTime time;
 
+    @Column(nullable = false)
+    private LocalTime takenTime;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

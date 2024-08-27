@@ -1,13 +1,12 @@
 package com.healthrx.backend.controller;
 
-import com.healthrx.backend.api.external.DrugResponse;
-import com.healthrx.backend.api.external.PageResponse;
-import com.healthrx.backend.api.external.UserDrugsRequest;
-import com.healthrx.backend.api.external.UserDrugsResponse;
+import com.healthrx.backend.api.external.*;
 import com.healthrx.backend.service.DrugsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/drugs")
@@ -34,6 +33,11 @@ public class DrugsController {
             @RequestParam(name = "order", defaultValue = "desc", required = false) String order
     ) {
         return ResponseEntity.ok(drugsService.getUserDrugs(page, size, sortBy, order));
+    }
+
+    @GetMapping("/monitor")
+    public ResponseEntity<List<UserDrugMonitorResponse>> getUserDrugMonitor() {
+        return ResponseEntity.ok(drugsService.getUserDrugMonitor());
     }
 
     @PostMapping("/user")
