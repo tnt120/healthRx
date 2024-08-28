@@ -1,1 +1,16 @@
-<p>cabinet-dashboard works!</p>
+<div class="main-container">
+  <div class="top-button-container">
+    <button mat-button><p class="text-2">Dodaj lek</p></button>
+  </div>
+  <app-container-layout>
+    <app-section-layout sectionTitle="Moje leki">
+      <app-table [data]="tableData" [columns]="userDrugsDisplayedColumns" type="editable" (edit)="onEdit($event)" (delete)="onDelete($event)"></app-table>
+    </app-section-layout>
+  </app-container-layout>
+
+  <app-container-layout>
+    <app-section-layout sectionTitle="Leki na dziś">
+
+    </app-section-layout>
+  </app-container-layout>
+</div>

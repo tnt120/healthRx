@@ -15,7 +15,9 @@ export class SpinnerService {
 
   loadingOn() {
     if (this.loadingCounter === 0) {
+      setTimeout(() => {
         this.loadingSubject.next(true);
+      }, 0);
     }
     this.loadingCounter++;
   }
@@ -26,7 +28,9 @@ export class SpinnerService {
 
     }
     if (this.loadingCounter === 0) {
+      setTimeout(() => {
         this.loadingSubject.next(false);
+      })
     }
   }
 }

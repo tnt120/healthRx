@@ -12,6 +12,7 @@ import { ContainerLayoutComponent } from './components/container-layout/containe
 import { SectionLayoutComponent } from './components/container-layout/section-layout/section-layout.component';
 import { CustomSnackbarComponent } from './components/custom-snackbar/custom-snackbar.component';
 import { CollapsingContainerLayoutComponent } from './components/container-layout/collapsing-container-layout/collapsing-container-layout.component';
+import { TableComponent } from './components/table/table.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { CollapsingContainerLayoutComponent } from './components/container-layou
     ContainerLayoutComponent,
     SectionLayoutComponent,
     CustomSnackbarComponent,
-    CollapsingContainerLayoutComponent
+    CollapsingContainerLayoutComponent,
+    TableComponent
   ],
   imports: [
     CommonModule,
@@ -40,7 +42,8 @@ import { CollapsingContainerLayoutComponent } from './components/container-layou
     HeaderBarComponent,
     ContainerLayoutComponent,
     SectionLayoutComponent,
-    CollapsingContainerLayoutComponent
+    CollapsingContainerLayoutComponent,
+    TableComponent
   ]
 })
 export class SharedModule { }
