@@ -1,0 +1,30 @@
+<div class="item-content-container">
+  <div class="titles-container">
+    <p class="subtitle-1">Nazwa:</p>
+    <p class="subtitle-1">Dawka:</p>
+    <p class="subtitle-1">Planowane przyjęcie:</p>
+    <p *ngIf="userDrug().takenTime" class="subtitle-1">Godzina przyjęcia:</p>
+    <p class="subtitle-1">Priorytet:</p>
+  </div>
+  <div class="values-container">
+    <p #name class="text-1" [matTooltip]="userDrug().drug.name" [matTooltipDisabled]="isOverflow(name)">
+      {{ userDrug().drug.name }}
+    </p>
+    <p #dose class="text-1" [matTooltip]="userDrug().doseSize + userDrug().drug.unit" [matTooltipDisabled]="isOverflow(dose)">
+      {{ userDrug().doseSize }} {{ userDrug().drug.unit }}</p>
+    <p #time class="text-1" [matTooltip]="userDrug().time.slice(0, 5)" [matTooltipDisabled]="isOverflow(time)">
+      {{ userDrug().time.slice(0, 5) }}
+    </p>
+    <p #takenTime *ngIf="userDrug().takenTime" class="text-1" [matTooltip]="userDrug().takenTime!.slice(0, 5)" [matTooltipDisabled]="isOverflow(takenTime)">
+      {{ userDrug().takenTime!.slice(0, 5) }}
+    </p>
+    <p #priority class="text-1" [matTooltip]="userDrug().priority" [matTooltipDisabled]="isOverflow(priority)">
+      {{ userDrug().priority }}
+    </p>
+  </div>
+</div>
+@if (userDrug().takenTime) {
+  <button mat-button>Edytuj</button>
+} @else {
+  <button mat-button>Przyjmij</button>
+}

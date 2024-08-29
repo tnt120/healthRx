@@ -1,0 +1,46 @@
+:host {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid black;
+  padding: 15px;
+  border-radius: 20px;
+  width: 360px;
+
+  .item-content-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .titles-container {
+      width: 160px;
+    }
+
+    .values-container {
+      width: 100px;
+    }
+
+    .titles-container, .values-container {
+      p {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 1280px) {
+  :host {
+    .titles-container {
+      // width: 100px;
+      width: auto;
+    }
+
+    .values-container {
+      // width: 75px;
+      width: auto;
+    }
+  }
+
+}

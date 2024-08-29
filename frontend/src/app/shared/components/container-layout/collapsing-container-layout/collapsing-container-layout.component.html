@@ -16,7 +16,7 @@
       @if (description()){
         <p class="text-1"><i>{{description()}}</i></p>
       }
-      <div @expandNestedMenu class="content">
+      <div [@expandNestedMenu]="!isFirstLoad() ? {} : null" class="content">
         <ng-content></ng-content>
       </div>
     }

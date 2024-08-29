@@ -3,4 +3,66 @@
     display: flex;
     justify-content: flex-end;
   }
+
+  .section-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .monitor-container {
+      display: flex;
+      width: 90%;
+      justify-content: space-between;
+
+      .monitor-sub-container {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        width: 48%;
+
+        div {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 1280px) {
+  :host {
+    .section-container {
+      width: 100%;
+
+      .monitor-container {
+        flex-direction: column;
+        gap: 24px;
+        align-items: flex-start;
+
+        .monitor-sub-container {
+          width: 100%;
+
+          div {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 12px;
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  :host {
+    .section-container {
+      width: 100%;
+      .monitor-container {
+        width: 100%;
+      }
+    }
+  }
+
 }

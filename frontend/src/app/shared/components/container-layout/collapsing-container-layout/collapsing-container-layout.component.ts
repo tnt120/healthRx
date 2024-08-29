@@ -1,5 +1,5 @@
 import { animate, style, transition, trigger } from '@angular/animations';
-import { Component, input, model } from '@angular/core';
+import { AfterViewInit, Component, input, model, signal } from '@angular/core';
 
 @Component({
   selector: 'app-collapsing-container-layout',
@@ -17,12 +17,18 @@ import { Component, input, model } from '@angular/core';
     ])
   ]
 })
-export class CollapsingContainerLayoutComponent {
+export class CollapsingContainerLayoutComponent implements AfterViewInit {
   sectionTitle = input.required<string>();
 
   description = input<string>('');
 
   isCollapsed = model<boolean>(false);
+
+  isFirstLoad = signal(true);
+
+  ngAfterViewInit(): void {
+    this.isFirstLoad.set(false);
+  }
 
   toggleCollapse(): void {
     this.isCollapsed.set(!this.isCollapsed());

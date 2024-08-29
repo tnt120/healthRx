@@ -14,6 +14,7 @@ import { MyMaterialModule } from '../../material';
 import { CoreModule } from '../../core/core.module';
 import { UserStatisticsComponent } from './pages/user-statistics/user-statistics.component';
 import { EditParameterMonitorDialogComponent } from './components/edit-parameter-monitor-dialog/edit-parameter-monitor-dialog.component';
+import { DrugItemComponent } from './components/drug-item/drug-item.component';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { EditParameterMonitorDialogComponent } from './components/edit-parameter
     ParametersDashboardComponent,
     ActivitesDashboardComponent,
     UserStatisticsComponent,
-    EditParameterMonitorDialogComponent
+    EditParameterMonitorDialogComponent,
+    DrugItemComponent,
   ],
   imports: [
     CommonModule,

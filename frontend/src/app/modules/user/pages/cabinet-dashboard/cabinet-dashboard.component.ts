@@ -10,6 +10,12 @@ import { getDayName } from '../../../../core/enums/days.enum';
 import { getPriorityName } from '../../../../core/enums/priority.enum';
 import { DatePipe } from '@angular/common';
 import { PageEvent } from '@angular/material/paginator';
+import { UserDrugMonitorResponse } from '../../../../core/models/user-drug-monitor-response.model';
+
+interface userDrugMonitor {
+  drugsToTake: UserDrugMonitorResponse[];
+  drugsTaken: UserDrugMonitorResponse[];
+}
 
 @Component({
   selector: 'app-cabinet-dashboard',
@@ -42,8 +48,11 @@ export class CabinetDashboardComponent implements OnInit {
     { title: 'Śledzenie zapasów', displayedColumn: 'tracking' },
   ];
 
+  userDrugMonitor: userDrugMonitor = { drugsToTake: [], drugsTaken: [] };
+
   ngOnInit(): void {
     this.drugsService.getFilterChange().subscribe(() => this.loadUserDrugs());
+    this.loadUserDrugMonitor();
   }
 
   loadUserDrugs(): void {
@@ -60,6 +69,15 @@ export class CabinetDashboardComponent implements OnInit {
       }));
       this.pagination.totalElements = res.totalElements;
       console.log(res, this.tableData, this.pagination);
+    });
+  }
+
+  loadUserDrugMonitor(): void {
+    this.drugsService.getUserDrugMonitor().subscribe(res => {
+      this.userDrugMonitor.drugsToTake = res.filter(drug => !drug.takenTime);
+      this.userDrugMonitor.drugsTaken = res.filter(drug => drug.takenTime);
+
+      console.log(this.userDrugMonitor);
     });
   }
 

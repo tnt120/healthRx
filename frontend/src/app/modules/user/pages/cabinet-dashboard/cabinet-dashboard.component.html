@@ -2,26 +2,49 @@
   <div class="top-button-container">
     <button mat-button><p class="text-2">Dodaj lek</p></button>
   </div>
-  <app-container-layout>
-    <app-section-layout sectionTitle="Moje leki">
-      <div>
-        <app-table
-          [data]="tableData"
-          [columns]="userDrugsDisplayedColumns"
-          [pagination]="pagination"
-          [isSearching]="isSearching$ | async"
-          type="editable"
-          (edit)="onEdit($event)"
-          (delete)="onDelete($event)"
-          (pageChange)="handlePageEvent($event)"
-        />
+  <app-collapsing-container-layout sectionTitle="Moje leki">
+    <div>
+      <app-table
+        [data]="tableData"
+        [columns]="userDrugsDisplayedColumns"
+        [pagination]="pagination"
+        [isSearching]="isSearching$ | async"
+        type="editable"
+        (edit)="onEdit($event)"
+        (delete)="onDelete($event)"
+        (pageChange)="handlePageEvent($event)"
+      />
+    </div>
+  </app-collapsing-container-layout>
+
+  <app-collapsing-container-layout sectionTitle="Leki na dziś" [isCollapsed]="true">
+    <div class="section-container">
+      <div class="monitor-container">
+        <div class="monitor-sub-container">
+          <p class="subtitle-3">Do zażycia</p>
+          <div>
+            @if (userDrugMonitor.drugsToTake.length > 0) {
+              @for (userDrug of userDrugMonitor.drugsToTake; track userDrug.id) {
+                <app-drug-item [userDrug]="userDrug"></app-drug-item>
+              }
+            } @else {
+              <p class="text-2">Brak leków do zażycia</p>
+            }
+          </div>
+        </div>
+        <div class="monitor-sub-container">
+          <p class="subtitle-3">Zażyte</p>
+          <div>
+            @if (userDrugMonitor.drugsTaken.length > 0) {
+              @for (userDrug of userDrugMonitor.drugsTaken; track userDrug.id) {
+                <app-drug-item [userDrug]="userDrug"></app-drug-item>
+              }
+            } @else {
+              <p class="text-2">Dziś nie zażyto żadnych leków</p>
+            }
+          </div>
+        </div>
       </div>
-    </app-section-layout>
-  </app-container-layout>
-
-  <app-container-layout>
-    <app-section-layout sectionTitle="Leki na dziś">
-
-    </app-section-layout>
-  </app-container-layout>
+    </div>
+  </app-collapsing-container-layout>
 </div>
