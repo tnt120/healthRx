@@ -1,3 +1,5 @@
+import { PageEvent } from '@angular/material/paginator';
+import { Pagination } from './../../../core/models/pagination.model';
 import { Component, computed, input, output } from '@angular/core';
 
 export interface TableColumn {
@@ -14,9 +16,12 @@ export class TableComponent {
   data = input.required<any[]>();
   columns = input.required<TableColumn[]>();
   type = input.required<'editable' | 'selectable'>();
+  pagination = input<Pagination | null>(null);
+  isSearching = input.required<boolean | null>();
   edit = output<any>();
   delete = output<any>();
   select = output<any>();
+  pageChange = output<PageEvent>();
   displayedColumns = computed(() => {
     let test = this.columns().map(column => column.displayedColumn);
 
@@ -41,5 +46,9 @@ export class TableComponent {
 
   onSelect(item: any): void {
     this.select.emit(item);
+  }
+
+  handlePageEvent(e: PageEvent): void {
+    this.pageChange.emit(e);
   }
 }

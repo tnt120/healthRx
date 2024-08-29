@@ -4,13 +4,12 @@ import { basePagination } from '../../../../core/constants/paginations-options';
 import { SortOption } from '../../../../core/models/sort-option.model';
 import { drugSortOptions } from '../../../../core/constants/sort-options';
 import { DrugsService } from '../../../../core/services/drugs/drugs.service';
-import { Observable, tap } from 'rxjs';
-import { PageResponse } from '../../../../core/models/page-response.model';
 import { UserDrugsResponse } from '../../../../core/models/user-drugs-response.model';
 import { TableColumn } from '../../../../shared/components/table/table.component';
 import { getDayName } from '../../../../core/enums/days.enum';
-import { getPriorityName, Priority } from '../../../../core/enums/priority.enum';
+import { getPriorityName } from '../../../../core/enums/priority.enum';
 import { DatePipe } from '@angular/common';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-cabinet-dashboard',
@@ -22,6 +21,8 @@ export class CabinetDashboardComponent implements OnInit {
   private readonly drugsService = inject(DrugsService);
 
   private readonly datePipe = inject(DatePipe);
+
+  isSearching$ = this.drugsService.getLoadingState();
 
   pagination: Pagination = {...basePagination};
 
@@ -42,6 +43,10 @@ export class CabinetDashboardComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.drugsService.getFilterChange().subscribe(() => this.loadUserDrugs());
+  }
+
+  loadUserDrugs(): void {
     this.drugsService.getUserDrugs(this.pagination.pageIndex, this.pagination.pageSize, this.sort).subscribe(res => {
       this.tableData = res.content.map(userDrug => ({
         id: userDrug.id,
@@ -56,6 +61,13 @@ export class CabinetDashboardComponent implements OnInit {
       this.pagination.totalElements = res.totalElements;
       console.log(res, this.tableData, this.pagination);
     });
+  }
+
+  handlePageEvent(e: PageEvent) {
+    this.pagination.pageEvent = e;
+    this.pagination.pageSize = e.pageSize;
+    this.pagination.pageIndex = e.pageIndex;
+    this.drugsService.emitFilterChange();
   }
 
   onEdit(userDrug: UserDrugsResponse): void {

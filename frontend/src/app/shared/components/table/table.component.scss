@@ -1,6 +1,15 @@
 :host {
+
   .table-container {
     overflow-x: auto;
+    position: relative;
+
+    .spinner-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-bottom: 16px;
+    }
 
     .fixed {
       position: sticky;

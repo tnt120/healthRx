@@ -4,7 +4,18 @@
   </div>
   <app-container-layout>
     <app-section-layout sectionTitle="Moje leki">
-      <app-table [data]="tableData" [columns]="userDrugsDisplayedColumns" type="editable" (edit)="onEdit($event)" (delete)="onDelete($event)"></app-table>
+      <div>
+        <app-table
+          [data]="tableData"
+          [columns]="userDrugsDisplayedColumns"
+          [pagination]="pagination"
+          [isSearching]="isSearching$ | async"
+          type="editable"
+          (edit)="onEdit($event)"
+          (delete)="onDelete($event)"
+          (pageChange)="handlePageEvent($event)"
+        />
+      </div>
     </app-section-layout>
   </app-container-layout>
 

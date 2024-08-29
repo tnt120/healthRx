@@ -28,7 +28,6 @@ $frontend-theme: mat.define-theme((
 // that you are using.
 :root {
   @include mat.all-component-themes($frontend-theme);
-  --mdc-list-list-item-label-text-color: white;
   --mdc-list-list-item-hover-label-text-color: white;
   --mdc-list-list-item-focus-label-text-color: white;
   --mdc-list-list-item-label-text-font: 'Inter', sans-serif;
@@ -37,6 +36,10 @@ $frontend-theme: mat.define-theme((
   --mdc-list-list-item-focus-icon-color: white;
   --mat-list-active-indicator-color: #003E7D;
   --mat-list-active-indicator-shape: 0;
+}
+
+mat-sidenav, mat-toolbar {
+  --mdc-list-list-item-label-text-color: white;
 }
 
 // Comment out the line below if you want to use the pre-defined typography utility classes.
