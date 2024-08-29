@@ -8,7 +8,7 @@
         [data]="tableData"
         [columns]="userDrugsDisplayedColumns"
         [pagination]="pagination"
-        [isSearching]="isSearching$ | async"
+        [isSearching]="isDrugsSearching$ | async"
         type="editable"
         (edit)="onEdit($event)"
         (delete)="onDelete($event)"
@@ -19,32 +19,40 @@
 
   <app-collapsing-container-layout sectionTitle="Leki na dziś" [isCollapsed]="true">
     <div class="section-container">
-      <div class="monitor-container">
-        <div class="monitor-sub-container">
-          <p class="subtitle-3">Do zażycia</p>
-          <div>
-            @if (userDrugMonitor.drugsToTake.length > 0) {
-              @for (userDrug of userDrugMonitor.drugsToTake; track userDrug.id) {
-                <app-drug-item [userDrug]="userDrug"></app-drug-item>
+      @if (isMonitorSeraching$ | async) {
+        <div class="basic-spinner-container">
+          <mat-spinner [diameter]="60"></mat-spinner>
+        </div>
+      } @else if (userDrugMonitor.drugsTaken.length > 0 || userDrugMonitor.drugsToTake.length > 0) {
+        <div class="monitor-container">
+          <div class="monitor-sub-container">
+            <p class="subtitle-3">Do zażycia</p>
+            <div>
+              @if (userDrugMonitor.drugsToTake.length > 0) {
+                @for (userDrug of userDrugMonitor.drugsToTake; track userDrug.id) {
+                  <app-drug-item [userDrug]="userDrug"></app-drug-item>
+                }
+              } @else {
+                <p class="text-2">Wszystkie leki na dziś zostały zażyte</p>
               }
-            } @else {
-              <p class="text-2">Brak leków do zażycia</p>
-            }
+            </div>
+          </div>
+          <div class="monitor-sub-container">
+            <p class="subtitle-3">Zażyte</p>
+            <div>
+              @if (userDrugMonitor.drugsTaken.length > 0) {
+                @for (userDrug of userDrugMonitor.drugsTaken; track userDrug.id) {
+                  <app-drug-item [userDrug]="userDrug"></app-drug-item>
+                }
+              } @else {
+                <p class="text-2">Dziś nie zażyto żadnych leków</p>
+              }
+            </div>
           </div>
         </div>
-        <div class="monitor-sub-container">
-          <p class="subtitle-3">Zażyte</p>
-          <div>
-            @if (userDrugMonitor.drugsTaken.length > 0) {
-              @for (userDrug of userDrugMonitor.drugsTaken; track userDrug.id) {
-                <app-drug-item [userDrug]="userDrug"></app-drug-item>
-              }
-            } @else {
-              <p class="text-2">Dziś nie zażyto żadnych leków</p>
-            }
-          </div>
-        </div>
-      </div>
+      } @else {
+        <p class="text-2">Brak leków na dziś</p>
+      }
     </div>
   </app-collapsing-container-layout>
 </div>

@@ -16,16 +16,26 @@ export class DrugsService {
 
   private readonly http = inject(HttpClient);
 
-  private loadingSubject = new BehaviorSubject<boolean>(false);
+  private loadingDrugsSubject = new BehaviorSubject<boolean>(false);
+
+  private loadingMonitorSubject = new BehaviorSubject<boolean>(false);
 
   private filterChange = new BehaviorSubject<boolean>(false);
 
-  getLoadingState() {
-    return this.loadingSubject.asObservable();
+  getLoadingDrugsState() {
+    return this.loadingDrugsSubject.asObservable();
   }
 
-  setLoadingState(loading: boolean) {
-    this.loadingSubject.next(loading);
+  setLoadingDrugsState(loading: boolean) {
+    this.loadingDrugsSubject.next(loading);
+  }
+
+  getLoadingMonitorState() {
+    return this.loadingMonitorSubject.asObservable();
+  }
+
+  setLoadingMonitorState(loading: boolean) {
+    this.loadingMonitorSubject.next(loading);
   }
 
   getFilterChange() {
@@ -55,15 +65,20 @@ export class DrugsService {
       .set('sortBy', sort.sortBy)
       .set('order', sort.order);
 
-    this.setLoadingState(true);
+    this.setLoadingDrugsState(true);
     return this.http.get<PageResponse<UserDrugsResponse>>(`${this.apiUrl}/user`, { params }).pipe(
       tap(() => {
-        this.setLoadingState(false);
+        this.setLoadingDrugsState(false);
       })
     );
   }
 
   getUserDrugMonitor(): Observable<UserDrugMonitorResponse[]> {
-    return this.http.get<UserDrugMonitorResponse[]>(`${this.apiUrl}/monitor`);
+    this.setLoadingMonitorState(true);
+    return this.http.get<UserDrugMonitorResponse[]>(`${this.apiUrl}/monitor`).pipe(
+      tap(() => {
+        this.setLoadingMonitorState(false);
+      })
+    );
   }
 }

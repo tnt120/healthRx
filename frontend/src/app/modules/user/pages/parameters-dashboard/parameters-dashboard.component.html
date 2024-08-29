@@ -5,7 +5,7 @@
   <app-container-layout>
     <app-section-layout sectionTitle="Parametry do uzupełnienia">
       @if ((isLoading$ | async) && isFirstLoad) {
-        <div class="spinner-container">
+        <div class="basic-spinner-container">
           <mat-spinner></mat-spinner>
         </div>
       } @else {
@@ -40,7 +40,7 @@
   <app-container-layout>
     <app-section-layout sectionTitle="Dzisiejsze parametry">
       @if ((isLoading$ | async) && isFirstLoad) {
-        <div class="spinner-container">
+        <div class="basic-spinner-container">
           <mat-spinner></mat-spinner>
         </div>
       } @else {

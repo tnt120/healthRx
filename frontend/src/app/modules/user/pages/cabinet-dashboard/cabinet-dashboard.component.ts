@@ -28,7 +28,9 @@ export class CabinetDashboardComponent implements OnInit {
 
   private readonly datePipe = inject(DatePipe);
 
-  isSearching$ = this.drugsService.getLoadingState();
+  isDrugsSearching$ = this.drugsService.getLoadingDrugsState();
+
+  isMonitorSeraching$ = this.drugsService.getLoadingMonitorState();
 
   pagination: Pagination = {...basePagination};
 

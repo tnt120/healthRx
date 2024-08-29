@@ -112,3 +112,10 @@ mat-stepper {
   background: transparent !important;
   border-radius: 15px !important;
 }
+
+.basic-spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 16px;
+}
