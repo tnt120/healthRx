@@ -18,8 +18,8 @@
     <p #takenTime *ngIf="userDrug().takenTime" class="text-1" [matTooltip]="userDrug().takenTime!.slice(0, 5)" [matTooltipDisabled]="isOverflow(takenTime)">
       {{ userDrug().takenTime!.slice(0, 5) }}
     </p>
-    <p #priority class="text-1" [matTooltip]="userDrug().priority" [matTooltipDisabled]="isOverflow(priority)">
-      {{ userDrug().priority }}
+    <p #priority class="text-1" [matTooltip]="getPriorityName(userDrug().priority)" [matTooltipDisabled]="isOverflow(priority)">
+      {{ getPriorityName(userDrug().priority) }}
     </p>
   </div>
 </div>

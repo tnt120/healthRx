@@ -3,7 +3,7 @@
     <div class="basic-spinner-container">
       <mat-spinner [diameter]="60"></mat-spinner>
     </div>
-  } @else {
+  } @else if (data().length > 0) {
     <table mat-table [dataSource]="data()">
       <ng-container *ngIf="type() === 'editable'" matColumnDef="actionButtons">
         <th mat-header-cell *matHeaderCellDef class="fixed"></th>
@@ -35,6 +35,8 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns()"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns();"></tr>
     </table>
+  } @else {
+    <p class="text2" style="text-align: center;">Brak leków w apteczce</p>
   }
 
 </div>
