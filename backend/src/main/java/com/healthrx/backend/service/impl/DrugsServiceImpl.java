@@ -127,6 +127,51 @@ public class DrugsServiceImpl implements DrugsService {
 
     @Override
     @Transactional
+    public UserDrugMonitorResponse setUserDrugMonitor(UserDrugMonitorRequest request) {
+        User user = principalSupplier.get();
+
+        UserDrug userDrug = userDrugRepository.findById(request.getId())
+                .orElseThrow(USER_DRUG_NOT_FOUND::getError);
+
+        if (!userDrug.getUser().getId().equals(user.getId())) {
+            throw USER_NOT_PERMITTED.getError();
+        }
+
+        if (
+                !userDrug.getDrugDoseTimes().stream().map(DrugDoseTime::getDoseTime).toList().contains(request.getTime()) ||
+                !userDrug.getDrugDoseDays().stream().map(DrugDoseDay::getDay).toList().contains(request.getDay()) ||
+                !userDrug.getDrug().getId().equals(request.getDrugId())
+        ) {
+            throw WRONG_DRUG_MONITOR_DATA.getError();
+        }
+
+        DrugLog drugLog = drugLogRepository.findDrugLogByDrugIdAndUserIdAndTimeToday(request.getDrugId(), user.getId(), request.getTime())
+                .orElse(null);
+
+        if (drugLog != null) {
+            throw DRUG_LOG_ALREADY_EXISTS.getError();
+        }
+
+        this.drugLogRepository.save(DrugLog.builder()
+                .user(user)
+                .drug(userDrug.getDrug())
+                .day(request.getDay())
+                .time(request.getTime())
+                .takenTime(request.getTakenTime())
+                .build());
+
+        return UserDrugMonitorResponse.builder()
+                .id(request.getId())
+                .drug(drugMapper.map(userDrug.getDrug(), drugPackRepository.findPackUnitByDrugId(userDrug.getDrug().getId()).getFirst()))
+                .doseSize(userDrug.getDoseSize())
+                .priority(userDrug.getPriority())
+                .time(request.getTime())
+                .takenTime(request.getTakenTime())
+                .build();
+    }
+
+    @Override
+    @Transactional
     public UserDrugsResponse addUserDrug(UserDrugsRequest request) {
 
         User user = principalSupplier.get();

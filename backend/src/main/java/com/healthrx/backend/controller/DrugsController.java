@@ -35,11 +35,6 @@ public class DrugsController {
         return ResponseEntity.ok(drugsService.getUserDrugs(page, size, sortBy, order));
     }
 
-    @GetMapping("/monitor")
-    public ResponseEntity<List<UserDrugMonitorResponse>> getUserDrugMonitor() {
-        return ResponseEntity.ok(drugsService.getUserDrugMonitor());
-    }
-
     @PostMapping("/user")
     public ResponseEntity<UserDrugsResponse> addUserDrug(@RequestBody UserDrugsRequest userDrugsResponse) {
         return ResponseEntity.ok(drugsService.addUserDrug(userDrugsResponse));
@@ -55,4 +50,13 @@ public class DrugsController {
         return ResponseEntity.ok(drugsService.deleteUserDrug(id));
     }
 
+    @GetMapping("/monitor")
+    public ResponseEntity<List<UserDrugMonitorResponse>> getUserDrugMonitor() {
+        return ResponseEntity.ok(drugsService.getUserDrugMonitor());
+    }
+
+    @PostMapping("/monitor")
+    public ResponseEntity<UserDrugMonitorResponse> setMonitorParameter(@RequestBody UserDrugMonitorRequest request) {
+        return ResponseEntity.ok(drugsService.setUserDrugMonitor(request));
+    }
 }
