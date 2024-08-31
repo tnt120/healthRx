@@ -113,14 +113,7 @@ public class DrugsServiceImpl implements DrugsService {
                                     time.getDoseTime()
                             ).stream().map(DrugLog::getTakenTime).findFirst().orElse(null);
 
-                            return UserDrugMonitorResponse.builder()
-                                    .id(userDrug.getId())
-                                    .drug(drugMapper.map(userDrug.getDrug(), drugPackRepository.findPackUnitByDrugId(userDrug.getDrug().getId()).getFirst()))
-                                    .doseSize(userDrug.getDoseSize())
-                                    .priority(userDrug.getPriority())
-                                    .time(time.getDoseTime())
-                                    .takenTime(takenTime)
-                                    .build();
+                            return drugMapper.map(userDrug, drugPackRepository.findPackUnitByDrugId(userDrug.getDrug().getId()).getFirst(), time.getDoseTime(), takenTime);
                         })
                 ).toList();
     }
@@ -160,14 +153,33 @@ public class DrugsServiceImpl implements DrugsService {
                 .takenTime(request.getTakenTime())
                 .build());
 
-        return UserDrugMonitorResponse.builder()
-                .id(request.getId())
-                .drug(drugMapper.map(userDrug.getDrug(), drugPackRepository.findPackUnitByDrugId(userDrug.getDrug().getId()).getFirst()))
-                .doseSize(userDrug.getDoseSize())
-                .priority(userDrug.getPriority())
-                .time(request.getTime())
-                .takenTime(request.getTakenTime())
-                .build();
+        return this.drugMapper.map(userDrug, drugPackRepository.findPackUnitByDrugId(userDrug.getDrug().getId()).getFirst(), request.getTime(), request.getTakenTime());
+    }
+
+    @Override
+    @Transactional
+    public UserDrugMonitorResponse editUserDrugMonitor(UserDrugMonitorRequest request) {
+        User user = principalSupplier.get();
+
+        DrugLog drugLog = drugLogRepository.findDrugLogByDrugIdAndUserIdAndTimeToday(request.getDrugId(), user.getId(), request.getTime())
+                .orElseThrow(DRUG_LOG_NOT_FOUND::getError);
+
+        if (!drugLog.getDay().equals(request.getDay())) {
+            throw WRONG_DRUG_MONITOR_DATA.getError();
+        }
+
+        drugLog.setTakenTime(request.getTakenTime());
+
+        drugLogRepository.save(drugLog);
+
+        UserDrug userDrug = userDrugRepository.findById(request.getId())
+                .orElseThrow(USER_DRUG_NOT_FOUND::getError);
+
+        if (!userDrug.getDrug().getId().equals(request.getDrugId())) {
+            throw WRONG_DRUG_MONITOR_DATA.getError();
+        }
+
+        return drugMapper.map(userDrug, drugPackRepository.findPackUnitByDrugId(userDrug.getDrug().getId()).getFirst(), request.getTime(), request.getTakenTime());
     }
 
     @Override
