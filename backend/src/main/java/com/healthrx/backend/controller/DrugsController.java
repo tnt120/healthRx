@@ -59,4 +59,9 @@ public class DrugsController {
     public ResponseEntity<UserDrugMonitorResponse> setMonitorParameter(@RequestBody UserDrugMonitorRequest request) {
         return ResponseEntity.ok(drugsService.setUserDrugMonitor(request));
     }
+
+    @PatchMapping("/monitor")
+    public ResponseEntity<UserDrugMonitorResponse> editMonitorParameter(@RequestBody UserDrugMonitorRequest request) {
+        return ResponseEntity.ok(drugsService.editUserDrugMonitor(request));
+    }
 }

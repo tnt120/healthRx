@@ -36,6 +36,7 @@ public enum BusinessErrorCodes {
     USER_DRUG_NOT_FOUND(316, "User drug not found", HttpStatus.NOT_FOUND),
     DRUG_LOG_ALREADY_EXISTS(317, "Drug log already exists. Post message incorrect", HttpStatus.BAD_REQUEST),
     WRONG_DRUG_MONITOR_DATA(318, "Provided date and/or time are incorrect", HttpStatus.BAD_REQUEST),
+    DRUG_LOG_NOT_FOUND(319, "Drug log not found", HttpStatus.NOT_FOUND),
     ;
 
     private final int code;
