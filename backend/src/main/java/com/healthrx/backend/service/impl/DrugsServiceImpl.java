@@ -130,10 +130,13 @@ public class DrugsServiceImpl implements DrugsService {
             throw USER_NOT_PERMITTED.getError();
         }
 
+        Days today = Days.from(LocalDate.now().getDayOfWeek());
+
         if (
                 !userDrug.getDrugDoseTimes().stream().map(DrugDoseTime::getDoseTime).toList().contains(request.getTime()) ||
                 !userDrug.getDrugDoseDays().stream().map(DrugDoseDay::getDay).toList().contains(request.getDay()) ||
-                !userDrug.getDrug().getId().equals(request.getDrugId())
+                !userDrug.getDrug().getId().equals(request.getDrugId()) ||
+                !request.getDay().equals(today)
         ) {
             throw WRONG_DRUG_MONITOR_DATA.getError();
         }
@@ -164,7 +167,9 @@ public class DrugsServiceImpl implements DrugsService {
         DrugLog drugLog = drugLogRepository.findDrugLogByDrugIdAndUserIdAndTimeToday(request.getDrugId(), user.getId(), request.getTime())
                 .orElseThrow(DRUG_LOG_NOT_FOUND::getError);
 
-        if (!drugLog.getDay().equals(request.getDay())) {
+        Days today = Days.from(LocalDate.now().getDayOfWeek());
+
+        if (!drugLog.getDay().equals(request.getDay()) || !request.getDay().equals(today)) {
             throw WRONG_DRUG_MONITOR_DATA.getError();
         }
 
