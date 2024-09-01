@@ -7,6 +7,7 @@ import { PageResponse } from '../../models/page-response.model';
 import { DrugResponse } from '../../models/drug-response.model';
 import { UserDrugsResponse } from '../../models/user-drugs-response.model';
 import { UserDrugMonitorResponse } from '../../models/user-drug-monitor-response.model';
+import { UserDrugMonitorRequest } from '../../models/user-drug-monitor-request.model';
 
 @Injectable({
   providedIn: 'root'
@@ -80,5 +81,13 @@ export class DrugsService {
         this.setLoadingMonitorState(false);
       })
     );
+  }
+
+  setMonitorParameter(request: UserDrugMonitorRequest): Observable<UserDrugMonitorResponse> {
+    return this.http.post<UserDrugMonitorResponse>(`${this.apiUrl}/monitor`, request);
+  }
+
+  editMonitorParameter(request: UserDrugMonitorRequest): Observable<UserDrugMonitorResponse> {
+    return this.http.patch<UserDrugMonitorResponse>(`${this.apiUrl}/monitor`, request);
   }
 }

@@ -24,7 +24,7 @@
   </div>
 </div>
 @if (userDrug().takenTime) {
-  <button mat-button>Edytuj</button>
+  <button mat-button (click)="onEdit()">Edytuj</button>
 } @else {
-  <button mat-button>Przyjmij</button>
+  <button mat-button (click)="onSet()">Przyjmij</button>
 }

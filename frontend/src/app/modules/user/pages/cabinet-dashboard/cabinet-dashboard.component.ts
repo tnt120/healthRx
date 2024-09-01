@@ -1,3 +1,6 @@
+import { Subscription } from 'rxjs';
+import { on } from '@ngrx/store';
+import { TakeDrugMonitorDialogComponent, TakeDrugMonitorDialogData } from './../../components/take-drug-monitor-dialog/take-drug-monitor-dialog.component';
 import { Component, inject, OnInit } from '@angular/core';
 import { Pagination } from '../../../../core/models/pagination.model';
 import { basePagination } from '../../../../core/constants/paginations-options';
@@ -6,11 +9,13 @@ import { drugSortOptions } from '../../../../core/constants/sort-options';
 import { DrugsService } from '../../../../core/services/drugs/drugs.service';
 import { UserDrugsResponse } from '../../../../core/models/user-drugs-response.model';
 import { TableColumn } from '../../../../shared/components/table/table.component';
-import { getDayName } from '../../../../core/enums/days.enum';
+import { getCurrentDay, getDayName } from '../../../../core/enums/days.enum';
 import { getPriorityName } from '../../../../core/enums/priority.enum';
 import { DatePipe } from '@angular/common';
 import { PageEvent } from '@angular/material/paginator';
 import { UserDrugMonitorResponse } from '../../../../core/models/user-drug-monitor-response.model';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { UserDrugMonitorRequest } from '../../../../core/models/user-drug-monitor-request.model';
 
 interface userDrugMonitor {
   drugsToTake: UserDrugMonitorResponse[];
@@ -27,6 +32,8 @@ export class CabinetDashboardComponent implements OnInit {
   private readonly drugsService = inject(DrugsService);
 
   private readonly datePipe = inject(DatePipe);
+
+  private readonly dialog = inject(MatDialog);
 
   isDrugsSearching$ = this.drugsService.getLoadingDrugsState();
 
@@ -51,6 +58,8 @@ export class CabinetDashboardComponent implements OnInit {
   ];
 
   userDrugMonitor: userDrugMonitor = { drugsToTake: [], drugsTaken: [] };
+
+  subscriptions: Subscription[] = [];
 
   ngOnInit(): void {
     this.drugsService.getFilterChange().subscribe(() => this.loadUserDrugs());
@@ -96,5 +105,48 @@ export class CabinetDashboardComponent implements OnInit {
 
   onDelete(userDrug: UserDrugsResponse): void {
     console.log(userDrug);
+  }
+
+  onSetDrugMonitor(userDrug: UserDrugMonitorResponse): void {
+    const data: TakeDrugMonitorDialogData = { userDrug };
+
+    const dialogRef: MatDialogRef<TakeDrugMonitorDialogComponent, UserDrugMonitorResponse> = this.dialog.open(TakeDrugMonitorDialogComponent, { data, width: '400px' });
+
+    this.subscriptions.push(dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        const request: UserDrugMonitorRequest = this.prepareMonitorRequest(result);
+
+        this.drugsService.setMonitorParameter(request).subscribe(res => {
+          this.userDrugMonitor.drugsToTake = this.userDrugMonitor.drugsToTake.filter(drug => !(drug.id === res.id && drug.time === res.time));
+          this.userDrugMonitor.drugsTaken = [...this.userDrugMonitor.drugsTaken, res];
+        })
+      }
+    }))
+  }
+
+  onEditDrugMonitor(userDrug: UserDrugMonitorResponse): void {
+    const data: TakeDrugMonitorDialogData = { userDrug };
+
+    const dialogRef: MatDialogRef<TakeDrugMonitorDialogComponent, UserDrugMonitorResponse> = this.dialog.open(TakeDrugMonitorDialogComponent, { data, width: '400px' });
+
+    this.subscriptions.push(dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        const request: UserDrugMonitorRequest = this.prepareMonitorRequest(result);
+
+        this.drugsService.editMonitorParameter(request).subscribe(res => {
+          this.userDrugMonitor.drugsTaken = this.userDrugMonitor.drugsTaken.map(userDrug => userDrug.id === res.id && userDrug.time === res.time ? res : userDrug);
+        });
+      }
+    }));
+  }
+
+  prepareMonitorRequest(result: UserDrugMonitorResponse): UserDrugMonitorRequest {
+    return {
+      id: result.id,
+      drugId: result.drug.id,
+      day: getCurrentDay(),
+      time: result.time,
+      takenTime: result.takenTime,
+    }
   }
 }

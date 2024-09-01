@@ -29,8 +29,8 @@
             <p class="subtitle-3">Do zażycia</p>
             <div>
               @if (userDrugMonitor.drugsToTake.length > 0) {
-                @for (userDrug of userDrugMonitor.drugsToTake; track userDrug.id) {
-                  <app-drug-item [userDrug]="userDrug"></app-drug-item>
+                @for (userDrug of userDrugMonitor.drugsToTake; track userDrug) {
+                  <app-drug-item [userDrug]="userDrug" (setDrugMonitor)="onSetDrugMonitor($event)" (editDrugMonitor)="onEditDrugMonitor($event)" />
                 }
               } @else {
                 <p class="text-2">Wszystkie leki na dziś zostały zażyte</p>
@@ -41,8 +41,8 @@
             <p class="subtitle-3">Zażyte</p>
             <div>
               @if (userDrugMonitor.drugsTaken.length > 0) {
-                @for (userDrug of userDrugMonitor.drugsTaken; track userDrug.id) {
-                  <app-drug-item [userDrug]="userDrug"></app-drug-item>
+                @for (userDrug of userDrugMonitor.drugsTaken; track userDrug) {
+                  <app-drug-item [userDrug]="userDrug" (setDrugMonitor)="onSetDrugMonitor($event)" (editDrugMonitor)="onEditDrugMonitor($event)" />
                 }
               } @else {
                 <p class="text-2">Dziś nie zażyto żadnych leków</p>
