@@ -1,0 +1,23 @@
+@use '@angular/material' as mat;
+
+:host {
+  display: flex;
+  width: 160px;
+
+  div {
+    @include mat.elevation(2);
+    padding: 0.5rem;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  :host {
+    width: 130px;
+  }
+}

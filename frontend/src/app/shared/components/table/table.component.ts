@@ -1,3 +1,4 @@
+import { on } from '@ngrx/store';
 import { PageEvent } from '@angular/material/paginator';
 import { Pagination } from './../../../core/models/pagination.model';
 import { Component, computed, input, output } from '@angular/core';
@@ -16,12 +17,17 @@ export class TableComponent {
   data = input.required<any[]>();
   columns = input.required<TableColumn[]>();
   type = input.required<'editable' | 'selectable'>();
+  emptyInfo = input.required<string>();
   pagination = input<Pagination | null>(null);
   isSearching = input.required<boolean | null>();
+  searchable = input.required<boolean>();
+
   edit = output<any>();
   delete = output<any>();
-  select = output<any>();
+  onSelectEmit = output<any>();
+  onSearchEmit = output<string>();
   pageChange = output<PageEvent>();
+
   displayedColumns = computed(() => {
     let test = this.columns().map(column => column.displayedColumn);
 
@@ -36,6 +42,13 @@ export class TableComponent {
     return test;
   });
 
+  searchString = '';
+
+  onSearch(): void {
+    console.log('search', this.searchString);
+    this.onSearchEmit.emit(this.searchString);
+  }
+
   onEdit(item: any): void {
     this.edit.emit(item);
   }
@@ -45,7 +58,8 @@ export class TableComponent {
   }
 
   onSelect(item: any): void {
-    this.select.emit(item);
+    console.log('table select', item);
+    this.onSelectEmit.emit(item);
   }
 
   handlePageEvent(e: PageEvent): void {

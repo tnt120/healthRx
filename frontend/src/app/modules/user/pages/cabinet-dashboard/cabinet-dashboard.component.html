@@ -1,6 +1,6 @@
 <div class="main-container">
   <div class="top-button-container">
-    <button mat-button><p class="text-2">Dodaj lek</p></button>
+    <button mat-button (click)="nagivateToAdd()"><p class="text-2">Dodaj lek</p></button>
   </div>
   <app-collapsing-container-layout sectionTitle="Moje leki">
     <div>
@@ -9,6 +9,8 @@
         [columns]="userDrugsDisplayedColumns"
         [pagination]="pagination"
         [isSearching]="isDrugsSearching$ | async"
+        [searchable]="false"
+        emptyInfo="Brak leków w apteczce"
         type="editable"
         (edit)="onEdit($event)"
         (delete)="onDelete($event)"

@@ -1,4 +1,10 @@
 :host {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  mat-form-field {
+    width: 30%;
+  }
 
   .table-container {
     overflow-x: auto;
@@ -28,6 +34,14 @@
 
     &::-webkit-scrollbar-thumb:hover {
       background-color: #555;
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  :host {
+    mat-form-field {
+      width: 100%;
     }
   }
 }

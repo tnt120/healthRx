@@ -13,6 +13,7 @@ import { SectionLayoutComponent } from './components/container-layout/section-la
 import { CustomSnackbarComponent } from './components/custom-snackbar/custom-snackbar.component';
 import { CollapsingContainerLayoutComponent } from './components/container-layout/collapsing-container-layout/collapsing-container-layout.component';
 import { TableComponent } from './components/table/table.component';
+import { DayTailComponent } from './components/day-tail/day-tail.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { TableComponent } from './components/table/table.component';
     SectionLayoutComponent,
     CustomSnackbarComponent,
     CollapsingContainerLayoutComponent,
-    TableComponent
+    TableComponent,
+    DayTailComponent
   ],
   imports: [
     CommonModule,
@@ -43,7 +45,8 @@ import { TableComponent } from './components/table/table.component';
     ContainerLayoutComponent,
     SectionLayoutComponent,
     CollapsingContainerLayoutComponent,
-    TableComponent
+    TableComponent,
+    DayTailComponent
   ]
 })
 export class SharedModule { }

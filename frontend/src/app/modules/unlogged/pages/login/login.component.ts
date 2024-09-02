@@ -114,7 +114,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   redirectTo(path: string) {
-    console.log('Redirecting to', path);
     this.router.navigate([path]);
   }
 

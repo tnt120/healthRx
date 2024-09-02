@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environments';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, finalize, Observable, tap } from 'rxjs';
 import { SortOption } from '../../models/sort-option.model';
 import { PageResponse } from '../../models/page-response.model';
 import { DrugResponse } from '../../models/drug-response.model';
@@ -56,7 +56,12 @@ export class DrugsService {
 
     if (searchName) params = params.set('name', searchName);
 
-    return this.http.get<PageResponse<DrugResponse>>(`${this.apiUrl}`, { params });
+    this.setLoadingDrugsState(true);
+    return this.http.get<PageResponse<DrugResponse>>(`${this.apiUrl}`, { params }).pipe(
+      finalize(() => {
+        this.setLoadingDrugsState(false);
+      })
+    );
   }
 
   getUserDrugs(page: number, size: number, sort: SortOption): Observable<PageResponse<UserDrugsResponse>> {
@@ -68,7 +73,7 @@ export class DrugsService {
 
     this.setLoadingDrugsState(true);
     return this.http.get<PageResponse<UserDrugsResponse>>(`${this.apiUrl}/user`, { params }).pipe(
-      tap(() => {
+      finalize(() => {
         this.setLoadingDrugsState(false);
       })
     );

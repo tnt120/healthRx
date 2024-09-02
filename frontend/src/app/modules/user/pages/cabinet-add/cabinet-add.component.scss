@@ -1,0 +1,32 @@
+:host {
+  .selected-drug-container {
+    display: flex;
+    // justify-content: center;
+    align-items: center;
+    gap: 24px;
+
+  }
+
+  .section-container {
+    padding: 0 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, 160px);
+      gap: 1rem;
+    }
+
+    .dose-time-container {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+
+      mat-form-field {
+        height: 48px;
+      }
+    }
+  }
+}

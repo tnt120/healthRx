@@ -117,6 +117,14 @@ mat-stepper {
   --mdc-filled-button-container-color: #F44336;
 }
 
+.remove-text-btn {
+  --mdc-text-button-label-text-color: #F44336;
+}
+
+.search-input {
+  --mdc-filled-text-field-container-color: #fdfbff;
+}
+
 .basic-spinner-container {
   display: flex;
   justify-content: center;

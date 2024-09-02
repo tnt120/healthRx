@@ -16,6 +16,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { UserDrugMonitorResponse } from '../../../../core/models/user-drug-monitor-response.model';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { UserDrugMonitorRequest } from '../../../../core/models/user-drug-monitor-request.model';
+import { Router } from '@angular/router';
 
 interface userDrugMonitor {
   drugsToTake: UserDrugMonitorResponse[];
@@ -34,6 +35,8 @@ export class CabinetDashboardComponent implements OnInit {
   private readonly datePipe = inject(DatePipe);
 
   private readonly dialog = inject(MatDialog);
+
+  private readonly router = inject(Router);
 
   isDrugsSearching$ = this.drugsService.getLoadingDrugsState();
 
@@ -66,6 +69,10 @@ export class CabinetDashboardComponent implements OnInit {
     this.loadUserDrugMonitor();
   }
 
+  nagivateToAdd() {
+    this.router.navigate(['/user/cabinet/add']);
+  }
+
   loadUserDrugs(): void {
     this.drugsService.getUserDrugs(this.pagination.pageIndex, this.pagination.pageSize, this.sort).subscribe(res => {
       this.tableData = res.content.map(userDrug => ({
@@ -79,7 +86,6 @@ export class CabinetDashboardComponent implements OnInit {
         tracking: userDrug.amount ? `${userDrug.amount} ${userDrug.drug.unit}` : 'Nie'
       }));
       this.pagination.totalElements = res.totalElements;
-      console.log(res, this.tableData, this.pagination);
     });
   }
 
@@ -87,8 +93,6 @@ export class CabinetDashboardComponent implements OnInit {
     this.drugsService.getUserDrugMonitor().subscribe(res => {
       this.userDrugMonitor.drugsToTake = res.filter(drug => !drug.takenTime);
       this.userDrugMonitor.drugsTaken = res.filter(drug => drug.takenTime);
-
-      console.log(this.userDrugMonitor);
     });
   }
 

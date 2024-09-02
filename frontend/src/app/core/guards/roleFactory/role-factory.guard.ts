@@ -10,8 +10,7 @@ export function roleFactoryGuard(role: Roles): CanActivateFn {
     const store = inject(Store);
 
     return store.select('user').pipe(
-      map((user) => {
-        console.log('authguard:', user);
+      map((user) => {;
         if (user.role !== role) {
           router.navigate(['/login']);
           return false;
@@ -28,7 +27,6 @@ export const notAuthorizedGuard: CanActivateFn = (route, state) => {
 
   return store.select('user').pipe(
     map((user) => {
-      console.log('notauthguard:', user);
       switch (user.role) {
         case Roles.HEAD_ADMIN:
         case Roles.ADMIN:

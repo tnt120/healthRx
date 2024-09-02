@@ -84,10 +84,8 @@ export class SideNavComponent implements OnInit, OnDestroy {
       this.toggleMenu();
     }
 
-    
+
     setTimeout(() => {
-      
-      console.log('item clicked', ROUTE_TITLES[this.router.url.slice(1)]);
       this.pageTitle.set(ROUTE_TITLES[this.router.url.slice(1)]);
     })
   }
