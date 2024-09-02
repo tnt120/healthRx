@@ -83,11 +83,11 @@ export class DrugsService {
     );
   }
 
-  setMonitorParameter(request: UserDrugMonitorRequest): Observable<UserDrugMonitorResponse> {
+  setMonitorDrug(request: UserDrugMonitorRequest): Observable<UserDrugMonitorResponse> {
     return this.http.post<UserDrugMonitorResponse>(`${this.apiUrl}/monitor`, request);
   }
 
-  editMonitorParameter(request: UserDrugMonitorRequest): Observable<UserDrugMonitorResponse> {
+  editMonitorDrug(request: UserDrugMonitorRequest): Observable<UserDrugMonitorResponse> {
     return this.http.patch<UserDrugMonitorResponse>(`${this.apiUrl}/monitor`, request);
   }
 }

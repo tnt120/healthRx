@@ -188,6 +188,18 @@ public class DrugsServiceImpl implements DrugsService {
     }
 
     @Override
+    public Void deleteUserDrugMonitor(Integer drugId, String time) {
+        User user = principalSupplier.get();
+
+        DrugLog drugLog = drugLogRepository.findDrugLogByDrugIdAndUserIdAndTimeToday(drugId, user.getId(), LocalTime.parse(time))
+                .orElseThrow(DRUG_LOG_NOT_FOUND::getError);
+
+        drugLogRepository.delete(drugLog);
+
+        return null;
+    }
+
+    @Override
     @Transactional
     public UserDrugsResponse addUserDrug(UserDrugsRequest request) {
 

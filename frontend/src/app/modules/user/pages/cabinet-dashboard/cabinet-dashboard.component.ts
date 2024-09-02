@@ -116,7 +116,7 @@ export class CabinetDashboardComponent implements OnInit {
       if (result) {
         const request: UserDrugMonitorRequest = this.prepareMonitorRequest(result);
 
-        this.drugsService.setMonitorParameter(request).subscribe(res => {
+        this.drugsService.setMonitorDrug(request).subscribe(res => {
           this.userDrugMonitor.drugsToTake = this.userDrugMonitor.drugsToTake.filter(drug => !(drug.id === res.id && drug.time === res.time));
           this.userDrugMonitor.drugsTaken = [...this.userDrugMonitor.drugsTaken, res];
         })
@@ -133,7 +133,7 @@ export class CabinetDashboardComponent implements OnInit {
       if (result) {
         const request: UserDrugMonitorRequest = this.prepareMonitorRequest(result);
 
-        this.drugsService.editMonitorParameter(request).subscribe(res => {
+        this.drugsService.editMonitorDrug(request).subscribe(res => {
           this.userDrugMonitor.drugsTaken = this.userDrugMonitor.drugsTaken.map(userDrug => userDrug.id === res.id && userDrug.time === res.time ? res : userDrug);
         });
       }

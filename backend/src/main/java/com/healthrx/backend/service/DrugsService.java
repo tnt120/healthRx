@@ -10,6 +10,7 @@ public interface DrugsService {
     List<UserDrugMonitorResponse> getUserDrugMonitor();
     UserDrugMonitorResponse setUserDrugMonitor(UserDrugMonitorRequest userDrugMonitorRequest);
     UserDrugMonitorResponse editUserDrugMonitor(UserDrugMonitorRequest userDrugMonitorRequest);
+    Void deleteUserDrugMonitor(Integer drugId, String time);
     UserDrugsResponse addUserDrug(UserDrugsRequest userDrugsRequest);
     UserDrugsResponse editUserDrug(UserDrugsRequest userDrugsRequest, String userDrugId);
     Void deleteUserDrug(String id);

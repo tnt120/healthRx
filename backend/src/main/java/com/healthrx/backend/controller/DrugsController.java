@@ -56,12 +56,17 @@ public class DrugsController {
     }
 
     @PostMapping("/monitor")
-    public ResponseEntity<UserDrugMonitorResponse> setMonitorParameter(@RequestBody UserDrugMonitorRequest request) {
+    public ResponseEntity<UserDrugMonitorResponse> setMonitorDrug(@RequestBody UserDrugMonitorRequest request) {
         return ResponseEntity.ok(drugsService.setUserDrugMonitor(request));
     }
 
     @PatchMapping("/monitor")
-    public ResponseEntity<UserDrugMonitorResponse> editMonitorParameter(@RequestBody UserDrugMonitorRequest request) {
+    public ResponseEntity<UserDrugMonitorResponse> editMonitorDrug(@RequestBody UserDrugMonitorRequest request) {
         return ResponseEntity.ok(drugsService.editUserDrugMonitor(request));
+    }
+
+    @DeleteMapping("/monitor")
+    public ResponseEntity<Void> deleteMonitorDrug(@RequestParam Integer drugId, @RequestParam String time) {
+        return ResponseEntity.ok(drugsService.deleteUserDrugMonitor(drugId, time));
     }
 }
