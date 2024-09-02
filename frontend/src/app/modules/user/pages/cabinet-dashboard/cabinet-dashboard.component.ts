@@ -73,7 +73,7 @@ export class CabinetDashboardComponent implements OnInit {
         name: userDrug.drug.name,
         pharmaceuticalFormName: userDrug.drug.pharmaceuticalFormName,
         doseDays: userDrug.doseDays.map(day => getDayName(day, true)).join(', '),
-        doseTimes: userDrug.doseTimes.join(', '),
+        doseTimes: userDrug.doseTimes.map(time => time.substring(0, 5)).join(', '),
         takingPeriod: `${this.datePipe.transform(userDrug.startDate, 'dd/MM/YYYY')} - ${userDrug.endDate ? this.datePipe.transform(userDrug.endDate, 'dd/MM/YYYY') : ''}`,
         priority: getPriorityName(userDrug.priority),
         tracking: userDrug.amount ? `${userDrug.amount} ${userDrug.drug.unit}` : 'Nie'
