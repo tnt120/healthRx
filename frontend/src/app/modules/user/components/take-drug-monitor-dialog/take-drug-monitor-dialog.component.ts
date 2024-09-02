@@ -37,12 +37,11 @@ export class TakeDrugMonitorDialogComponent implements OnInit {
     }
 
     this.generateHoursAndMinutes();
-    console.log('this.userDrug', this.userDrug);
+    this.updateTakenTime();
   }
 
   updateTakenTime(): void {
     this.userDrug.takenTime = this.takenTime.hours + ':' + this.takenTime.minutes + ':00';
-    console.log('this.userDrug', this.userDrug);
   }
 
   generateHoursAndMinutes() {

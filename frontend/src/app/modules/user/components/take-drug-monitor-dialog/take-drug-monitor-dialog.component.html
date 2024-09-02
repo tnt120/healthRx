@@ -15,7 +15,12 @@
     </mat-form-field>
   </div>
 </mat-dialog-content>
-<mat-dialog-actions align="end">
+<mat-dialog-actions>
   <button mat-stroked-button mat-dialog-close>Anuluj</button>
-  <button mat-flat-button [mat-dialog-close]="userDrug" [disabled]="!isValid()">Zapisz</button>
+  <div>
+    @if (data.userDrug.takenTime) {
+      <button class="error-btn" mat-flat-button [mat-dialog-close]="{ delete: true }" color="tertiary">Usuń</button>
+    }
+    <button mat-flat-button [mat-dialog-close]="userDrug" [disabled]="!isValid()">Zapisz</button>
+  </div>
 </mat-dialog-actions>

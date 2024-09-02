@@ -113,6 +113,10 @@ mat-stepper {
   border-radius: 15px !important;
 }
 
+.error-btn {
+  --mdc-filled-button-container-color: #F44336;
+}
+
 .basic-spinner-container {
   display: flex;
   justify-content: center;

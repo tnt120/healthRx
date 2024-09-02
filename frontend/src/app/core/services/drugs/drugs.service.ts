@@ -90,4 +90,12 @@ export class DrugsService {
   editMonitorDrug(request: UserDrugMonitorRequest): Observable<UserDrugMonitorResponse> {
     return this.http.patch<UserDrugMonitorResponse>(`${this.apiUrl}/monitor`, request);
   }
+
+  deleteMonitorDrug(drugId: number, time: string): Observable<void> {
+    let params = new HttpParams()
+      .set('drugId', drugId)
+      .set('time', time);
+
+    return this.http.delete<void>(`${this.apiUrl}/monitor`, { params });
+  }
 }
