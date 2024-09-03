@@ -1,4 +1,4 @@
-import { FormErrorsService } from './../../../../core/services/form-errors/form-errors.service';
+import { CustomSnackbarService } from './../../../../core/services/custom-snackbar/custom-snackbar.service';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { DrugResponse } from '../../../../core/models/drug-response.model';
 import { Pagination } from '../../../../core/models/pagination.model';
@@ -9,8 +9,9 @@ import { DrugsService } from '../../../../core/services/drugs/drugs.service';
 import { PageEvent } from '@angular/material/paginator';
 import { TableColumn } from '../../../../shared/components/table/table.component';
 import { animate, style, transition, trigger } from '@angular/animations';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Days, getDayName } from '../../../../core/enums/days.enum';
+import { Router } from '@angular/router';
+import { UserDrugsRequest } from '../../../../core/models/user-drugs-request.mode';
+import { SnackBarData } from '../../../../core/models/snackbar-data.model';
 
 @Component({
   selector: 'app-cabinet-add',
@@ -30,6 +31,10 @@ import { Days, getDayName } from '../../../../core/enums/days.enum';
 })
 export class CabinetAddComponent implements OnInit {
   private readonly drugsService = inject(DrugsService);
+
+  private readonly router = inject(Router);
+
+  private readonly customSnackbarService = inject(CustomSnackbarService);
 
   isDrugsSearching$ = this.drugsService.getLoadingDrugsState();
 
@@ -57,13 +62,13 @@ export class CabinetAddComponent implements OnInit {
     days: string[],
     doseSize: number | null,
     times: { hours: string, minutes: string }[],
-    dates: string,
+    dates: { from: Date | null, to: Date | null },
     amount: number | null,
   }>({
     priority: '',
     days: [],
     doseSize: null,
-    dates: '',
+    dates: { from: null, to: null },
     times: [{ hours: '12', minutes: '00' }],
     amount: null,
   })
@@ -121,8 +126,6 @@ export class CabinetAddComponent implements OnInit {
     } else {
       this.data.set({ ...this.data(), days: [...this.data().days, day] });
     }
-
-    console.log(this.data().days);
   }
 
   updateTime(index: number): void {
@@ -142,6 +145,59 @@ export class CabinetAddComponent implements OnInit {
     if (times.length > 1) {
       times.splice(index, 1);
       this.data.set({ ...this.data(), times });
+    }
+  }
+
+  checkValidity(): boolean {
+    const { priority, days, doseSize, times, dates, amount } = this.data();
+
+    const timesNotEqual = times.map(time => `${time.hours}:${time.minutes}`).some((time, i, arr) => arr.indexOf(time) !== i);
+
+    if (!priority || days.length === 0 || !doseSize || doseSize <= 0 || !dates.from || timesNotEqual) {
+      return false;
+    }
+
+    return this.validateDates();
+  }
+
+  validateDates(): boolean {
+    const { from, to } = this.data().dates;
+
+    if ((to && !from) || (from && to && new Date(from) > new Date(to))) {
+      return false;
+    }
+
+    return true;
+  }
+
+  cancel(): void {
+    this.router.navigate(['/user/cabinet']);
+  }
+
+  save(): void {
+    if (this.checkValidity() && this.selectedDrug) {
+      const request: UserDrugsRequest = {
+        drugId: this.selectedDrug.id,
+        doseSize: this.data().doseSize!,
+        priority: this.data().priority,
+        startDate: this.data().dates.from?.toISOString()!,
+        endDate: this.data().dates.to?.toISOString() || null,
+        amount: this.data().amount,
+        doseTimes: this.data().times.map(time => `${time.hours}:${time.minutes}:00`),
+        doseDays: this.data().days,
+      };
+
+      this.drugsService.addUserDrug(request).subscribe(() => {
+        const snackBarData: SnackBarData = {
+          title: 'Sukces',
+          message: 'Lek został dodany do listy leków',
+          type: 'success',
+          duration: 3000
+        };
+
+        this.customSnackbarService.openCustomSnackbar(snackBarData);
+        this.router.navigate(['/user/cabinet']);
+      })
     }
   }
 }

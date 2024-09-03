@@ -2,7 +2,7 @@
 
 :host {
   display: flex;
-  width: 160px;
+  width: 150px;
 
   div {
     @include mat.elevation(2);
@@ -13,11 +13,5 @@
     justify-content: flex-start;
     align-items: center;
     width: 100%;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  :host {
-    width: 130px;
   }
 }

@@ -40,5 +40,16 @@
       width: auto;
     }
   }
+}
 
+@media screen and (max-width: 768px) {
+  :host {
+    width: 340px;
+
+    .item-content-container {
+      .values-container {
+        width: 60px;
+      }
+    }
+  }
 }

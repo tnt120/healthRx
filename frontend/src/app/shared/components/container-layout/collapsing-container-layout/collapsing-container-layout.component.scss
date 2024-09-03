@@ -2,6 +2,7 @@
   .section {
     display: flex;
     flex-direction: column;
+    gap: 16px;
 
     .header {
       display: flex;
@@ -14,8 +15,8 @@
     }
 
     .content {
-      padding-top: 16px;
       overflow: hidden;
+      padding: 0 16px;
     }
   }
 }
