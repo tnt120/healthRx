@@ -55,6 +55,8 @@ export class CabinetDashboardComponent implements OnInit {
 
   tableData: any[] = [];
 
+  userDrugs: UserDrugsResponse[] = [];
+
   userDrugsDisplayedColumns: TableColumn[] = [
     { title: 'Nazwa', displayedColumn: 'name' },
     { title: 'Forma farmaceutyczna', displayedColumn: 'pharmaceuticalFormName' },
@@ -90,6 +92,7 @@ export class CabinetDashboardComponent implements OnInit {
         priority: getPriorityName(userDrug.priority),
         tracking: userDrug.amount ? `${userDrug.amount} ${userDrug.drug.unit}` : 'Nie'
       }));
+      this.userDrugs = res.content;
       this.pagination.totalElements = res.totalElements;
     });
   }

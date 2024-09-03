@@ -1,0 +1,82 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .selected-drug-container {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+
+  }
+
+  mat-form-field {
+    max-width: 350px;
+    width: 100%;
+  }
+
+  .section-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, 150px);
+      gap: 1rem;
+    }
+
+    .dose-time-container, .dose-container {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+
+      mat-form-field {
+        // height: 48px;
+        width: 120px;
+      }
+    }
+
+    .dose-time-container {
+      .dose-time-content {
+        display: flex;
+        gap: 12px;
+        align-items: baseline;
+
+        div {
+          display: flex;
+          gap: 12px;
+        }
+      }
+    }
+  }
+
+  .buttons-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  :host {
+    .section-container {
+      .dose-container {
+        flex-direction: column;
+      }
+
+      .dose-time-container {
+        flex-direction: column;
+        width: 100%;
+
+        .dose-time-content{
+          flex-direction: column;
+          align-items: flex-end;
+          gap: 0;
+        }
+
+      }
+    }
+  }
+
+}
