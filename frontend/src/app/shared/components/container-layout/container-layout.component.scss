@@ -3,7 +3,7 @@
 :host {
   display: flex;
   flex-direction: column;
-  gap: 48px;
+  gap: 24px;
   padding: 24px;
   @include mat.elevation(3);
   border-radius: 4px;
