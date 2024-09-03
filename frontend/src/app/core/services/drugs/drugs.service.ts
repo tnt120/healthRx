@@ -84,6 +84,10 @@ export class DrugsService {
     return this.http.post<UserDrugsResponse>(`${this.apiUrl}/user`, request);
   }
 
+  deleteUserDrug(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/user/${id}`);
+  }
+
   getUserDrugMonitor(): Observable<UserDrugMonitorResponse[]> {
     this.setLoadingMonitorState(true);
     return this.http.get<UserDrugMonitorResponse[]>(`${this.apiUrl}/monitor`).pipe(

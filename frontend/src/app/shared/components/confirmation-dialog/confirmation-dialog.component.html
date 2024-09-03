@@ -1,0 +1,10 @@
+<h3 mat-dialog-title>{{ data.title }}</h3>
+<mat-dialog-content class="mat-typography">
+  <div class="content">
+    <p class="text-1">{{ data.message }}</p>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-stroked-button mat-dialog-close>Anuluj</button>
+  <button mat-flat-button [mat-dialog-close]="true">{{ data.acceptButton }}</button>
+</mat-dialog-actions>

@@ -17,6 +17,9 @@ import { UserDrugMonitorResponse } from '../../../../core/models/user-drug-monit
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { UserDrugMonitorRequest } from '../../../../core/models/user-drug-monitor-request.model';
 import { Router } from '@angular/router';
+import { CustomSnackbarService } from '../../../../core/services/custom-snackbar/custom-snackbar.service';
+import { SnackBarData } from '../../../../core/models/snackbar-data.model';
+import { ConfirmationDialogComponent, ConfirmationDialogData } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 
 interface userDrugMonitor {
   drugsToTake: UserDrugMonitorResponse[];
@@ -37,6 +40,8 @@ export class CabinetDashboardComponent implements OnInit {
   private readonly dialog = inject(MatDialog);
 
   private readonly router = inject(Router);
+
+  private readonly customSnackbarService = inject(CustomSnackbarService);
 
   isDrugsSearching$ = this.drugsService.getLoadingDrugsState();
 
@@ -107,8 +112,25 @@ export class CabinetDashboardComponent implements OnInit {
     console.log(userDrug);
   }
 
-  onDelete(userDrug: UserDrugsResponse): void {
-    console.log(userDrug);
+  onDelete(userDrug: any): void {
+    const dialogData: ConfirmationDialogData = {
+      title: `Usunięcie leku`,
+      message: `Czy na pewno chcesz usunąć lek "${userDrug.name}" ze swojej apteczki leków?`,
+      acceptButton: 'Usuń',
+    };
+
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: dialogData, width: '400px' });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.drugsService.deleteUserDrug(userDrug.id).subscribe(() => {
+          const data: SnackBarData = { title: 'Sukces', message: 'Lek został usunięty z Twojej apteczki leków', type: 'success', duration: 3000 };
+          this.customSnackbarService.openCustomSnackbar(data);
+          this.drugsService.emitFilterChange();
+          this.loadUserDrugMonitor();
+        });
+      }
+    });
   }
 
   onSetDrugMonitor(userDrug: UserDrugMonitorResponse): void {

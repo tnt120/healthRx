@@ -14,6 +14,7 @@ import { CustomSnackbarComponent } from './components/custom-snackbar/custom-sna
 import { CollapsingContainerLayoutComponent } from './components/container-layout/collapsing-container-layout/collapsing-container-layout.component';
 import { TableComponent } from './components/table/table.component';
 import { DayTailComponent } from './components/day-tail/day-tail.component';
+import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { DayTailComponent } from './components/day-tail/day-tail.component';
     CustomSnackbarComponent,
     CollapsingContainerLayoutComponent,
     TableComponent,
-    DayTailComponent
+    DayTailComponent,
+    ConfirmationDialogComponent
   ],
   imports: [
     CommonModule,

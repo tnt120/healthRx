@@ -3,7 +3,7 @@ import { Priority } from "../enums/priority.enum";
 import { DrugResponse } from "./drug-response.model";
 
 export interface UserDrugsResponse {
-  id: number;
+  id: string;
   drug: DrugResponse;
   doseSize: number;
   priority: Priority;
