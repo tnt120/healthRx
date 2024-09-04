@@ -30,6 +30,8 @@ export interface AddEditUserDrug {
 export class UserDrugsDetailsComponent {
   selectedDrug = input.required<DrugResponse>();
 
+  isDialog = input<boolean>(false);
+
   data = model<AddEditUserDrug>({
     priority: '',
     days: [],
@@ -38,6 +40,8 @@ export class UserDrugsDetailsComponent {
     times: [{ hours: '12', minutes: '00' }],
     amount: null,
   });
+
+  dataChange = output<AddEditUserDrug>();
 
   cancelEmit = output();
 
@@ -64,11 +68,14 @@ export class UserDrugsDetailsComponent {
     } else {
       this.data.set({ ...this.data(), days: [...this.data().days, day] });
     }
+
+    this.dataChange.emit(this.data());
   }
 
   updateTime(index: number): void {
     const times = [...this.data().times];
     times[index] = { hours: this.hours[index], minutes: this.minutes[index] };
+    this.dataChange.emit(this.data());
   }
 
   addTime(): void {
@@ -76,6 +83,7 @@ export class UserDrugsDetailsComponent {
       ...this.data(),
       times: [...this.data().times, { hours: '12', minutes: '00' }]
     });
+    this.dataChange.emit(this.data());
   }
 
   removeTime(index: number): void {
@@ -84,6 +92,7 @@ export class UserDrugsDetailsComponent {
       times.splice(index, 1);
       this.data.set({ ...this.data(), times });
     }
+    this.dataChange.emit(this.data());
   }
 
   checkValidity(): boolean {

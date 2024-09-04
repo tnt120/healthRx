@@ -1,10 +1,10 @@
 export interface UserDrugsRequest {
-  drugId: number;
-  doseSize: number;
-  priority: string;
-  startDate: string;
+  drugId?: number;
+  doseSize?: number;
+  priority?: string;
+  startDate?: string;
   endDate: string | null;
-  amount: number | null;
-  doseTimes: string[];
-  doseDays: string[];
+  amount?: number | null;
+  doseTimes?: string[];
+  doseDays?: string[];
 }

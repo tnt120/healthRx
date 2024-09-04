@@ -1,0 +1,10 @@
+<h3 mat-dialog-title>Edycja leku - {{ dialogData.userDrug.drug.name }}</h3>
+<mat-dialog-content class="mat-typography">
+  <div class="content">
+    <app-user-drugs-details [selectedDrug]="dialogData.userDrug.drug" [data]="data()" (dataChange)="changeData($event)" [isDialog]="true"></app-user-drugs-details>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Anuluj</button>
+  <button mat-flat-button [mat-dialog-close]="save()" [disabled]="!checkValidity()">Zapisz</button>
+</mat-dialog-actions>

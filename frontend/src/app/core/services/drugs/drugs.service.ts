@@ -84,6 +84,10 @@ export class DrugsService {
     return this.http.post<UserDrugsResponse>(`${this.apiUrl}/user`, request);
   }
 
+  updateUserDrug(request: UserDrugsRequest, id: string): Observable<UserDrugsResponse> {
+    return this.http.put<UserDrugsResponse>(`${this.apiUrl}/user/${id}`, request);
+  }
+
   deleteUserDrug(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/user/${id}`);
   }

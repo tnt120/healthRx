@@ -1,5 +1,4 @@
 import { Subscription } from 'rxjs';
-import { on } from '@ngrx/store';
 import { TakeDrugMonitorDialogComponent, TakeDrugMonitorDialogData } from './../../components/take-drug-monitor-dialog/take-drug-monitor-dialog.component';
 import { Component, inject, OnInit } from '@angular/core';
 import { Pagination } from '../../../../core/models/pagination.model';
@@ -20,6 +19,8 @@ import { Router } from '@angular/router';
 import { CustomSnackbarService } from '../../../../core/services/custom-snackbar/custom-snackbar.service';
 import { SnackBarData } from '../../../../core/models/snackbar-data.model';
 import { ConfirmationDialogComponent, ConfirmationDialogData } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { EditUserDrug, EditUserDrugDialogComponent, EditUserDrugDialogData } from '../../components/edit-user-drug-dialog/edit-user-drug-dialog.component';
+import { UserDrugsRequest } from '../../../../core/models/user-drugs-request.mode';
 
 interface userDrugMonitor {
   drugsToTake: UserDrugMonitorResponse[];
@@ -111,8 +112,47 @@ export class CabinetDashboardComponent implements OnInit {
     this.drugsService.emitFilterChange();
   }
 
-  onEdit(userDrug: UserDrugsResponse): void {
-    console.log(userDrug);
+  onEdit(userDrug: any): void {
+    const data: EditUserDrugDialogData = { userDrug: this.userDrugs.find(drug => drug.id === userDrug.id)! };
+
+    const dialogRef: MatDialogRef<EditUserDrugDialogComponent, EditUserDrug> = this.dialog.open(EditUserDrugDialogComponent, { data, minWidth: '90vw' });
+
+    dialogRef.afterClosed().subscribe((res) => {
+      if (res) {
+        let dateTo: string | null = null;
+        if (!res.dates) {
+          dateTo = data.userDrug.endDate ? data.userDrug.endDate : null;
+        }
+
+        const request: UserDrugsRequest = {
+          drugId: data.userDrug.drug.id,
+          doseSize: res.doseSize ? res.doseSize : undefined,
+          priority: res.priority ? res.priority : undefined,
+          startDate: res.dates?.from ? res.dates.from.toISOString() : undefined,
+          endDate: res.dates?.to ? res.dates.to.toISOString() : dateTo,
+          amount: res.amount ? res.amount : null,
+          doseTimes: res.times ? res.times.map(time => `${time.hours}:${time.minutes}:00`) : undefined,
+          doseDays: res.days ? res.days : undefined,
+        };
+
+        this.drugsService.updateUserDrug(request, data.userDrug.id).subscribe(res => {
+          const data: SnackBarData = { title: 'Sukces', message: 'Lek został zaktualizowany', type: 'success', duration: 3000 };
+          this.customSnackbarService.openCustomSnackbar(data);
+          this.userDrugs = this.userDrugs.map(ud => ud.id === res.id ? res : ud);
+          this.tableData = this.tableData.map(ud => ud.id === res.id ? ({
+            id: res.id,
+            name: res.drug.name,
+            pharmaceuticalFormName: res.drug.pharmaceuticalFormName,
+            doseDays: res.doseDays.map(day => getDayName(day, true)).join(', '),
+            doseTimes: res.doseTimes.map(time => time.substring(0, 5)).join(', '),
+            takingPeriod: `${this.datePipe.transform(res.startDate, 'dd/MM/YYYY')} - ${res.endDate ? this.datePipe.transform(res.endDate, 'dd/MM/YYYY') : ''}`,
+            priority: getPriorityName(res.priority),
+            tracking: res.amount ? `${res.amount} ${res.drug.unit}` : 'Nie'
+          }) : ud);
+          this.loadUserDrugMonitor();
+        })
+      }
+    })
   }
 
   onDelete(userDrug: any): void {

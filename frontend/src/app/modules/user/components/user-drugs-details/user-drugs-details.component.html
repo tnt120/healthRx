@@ -1,7 +1,7 @@
 <app-section-layout sectionTitle="Priorytet">
   <mat-form-field appearance="outline">
     <mat-label>Priorytet</mat-label>
-    <mat-select [(ngModel)]="data().priority">
+    <mat-select [(ngModel)]="data().priority" (ngModelChange)="dataChange.emit(data())">
       <mat-option value="LOW">Niski</mat-option>
       <mat-option value="HIGH">Wysoki</mat-option>
     </mat-select>
@@ -20,7 +20,7 @@
       <p class="subtitle-1" style="min-width: 150px;">Wielkość dawki [{{ selectedDrug().unit }}]:</p>
       <mat-form-field appearance="outline">
         <mat-label>Dawka</mat-label>
-        <input matInput type="number" min="0.1" step="0.1" [(ngModel)]="data().doseSize" [placeholder]="selectedDrug().unit">
+        <input matInput type="number" min="0.1" step="0.1" [(ngModel)]="data().doseSize" [placeholder]="selectedDrug().unit" (ngModelChange)="dataChange.emit(data())">
       </mat-form-field>
     </div>
 
@@ -58,8 +58,8 @@
   <mat-form-field appearance="outline">
     <mat-label>Od - do</mat-label>
     <mat-date-range-input [rangePicker]="picker">
-      <input matStartDate [(ngModel)]="data().dates.from" placeholder="Od">
-      <input matEndDate [(ngModel)]="data().dates.to" placeholder="Do">
+      <input matStartDate [(ngModel)]="data().dates.from" placeholder="Od" (ngModelChange)="dataChange.emit(data())">
+      <input matEndDate [(ngModel)]="data().dates.to" placeholder="Do" (ngModelChange)="dataChange.emit(data())">
     </mat-date-range-input>
     <mat-hint>DD/MM/RRRR - DD/MM/RRRR</mat-hint>
     <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
@@ -70,7 +70,7 @@
 <app-section-layout sectionTitle="Śledzenie zapasów">
 
 </app-section-layout>
-<app-section-layout sectionTitle="">
+<app-section-layout sectionTitle="" *ngIf="!isDialog()">
   <div class="buttons-container">
     <button mat-button (click)="cancel()">Anuluj</button>
     <button mat-flat-button (click)="save()" [disabled]="!checkValidity()">Zapisz</button>
