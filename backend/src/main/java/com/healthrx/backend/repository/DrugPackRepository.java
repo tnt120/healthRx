@@ -13,4 +13,6 @@ public interface DrugPackRepository extends JpaRepository<DrugPack, Integer> {
     List<String> findPackUnitByDrugId(
             @Param("drugId") Integer drugId
     );
+
+    List<DrugPack> findAllByDrugId(Integer drugId);
 }

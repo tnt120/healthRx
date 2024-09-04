@@ -1,8 +1,10 @@
 package com.healthrx.backend.mapper;
 
+import com.healthrx.backend.api.external.DrugPackResponse;
 import com.healthrx.backend.api.external.DrugResponse;
 import com.healthrx.backend.api.external.UserDrugMonitorResponse;
 import com.healthrx.backend.api.internal.Drug;
+import com.healthrx.backend.api.internal.DrugPack;
 import com.healthrx.backend.api.internal.UserDrug;
 import org.springframework.stereotype.Component;
 
@@ -35,6 +37,18 @@ public class DrugMapper {
                 .priority(userDrug.getPriority())
                 .time(time)
                 .takenTime(takenTime)
+                .build();
+    }
+
+    public DrugPackResponse map(DrugPack drugPack) {
+        return DrugPackResponse.builder()
+                .id(drugPack.getId())
+                .gtinCode(drugPack.getGtinCode())
+                .accessibilityCategory(drugPack.getAccessibilityCategory())
+                .packType(drugPack.getPackType())
+                .packSize(drugPack.getPackSize())
+                .packagesQuantity(drugPack.getPackagesQuantity())
+                .packUnit(drugPack.getPackUnit())
                 .build();
     }
 }

@@ -69,6 +69,23 @@ public class DrugsServiceImpl implements DrugsService {
     }
 
     @Override
+    public DrugPacksResponse getDrugPacks(Integer id) {
+
+        Drug drug = drugRepository.findById(id)
+                .orElseThrow(DRUG_NOT_FOUND::getError);
+
+        List<DrugPackResponse> drugPacksResponse = drugPackRepository.findAllByDrugId(drug.getId())
+                .stream()
+                .map(drugMapper::map)
+                .toList();
+
+        return DrugPacksResponse.builder()
+                .drugId(drug.getId())
+                .drugPacks(drugPacksResponse)
+                .build();
+    }
+
+    @Override
     public PageResponse<UserDrugsResponse> getUserDrugs(Integer page, Integer size, String sortBy, String order) {
 
         User user = principalSupplier.get();
