@@ -1,6 +1,6 @@
 import { Subscription } from 'rxjs';
 import { TakeDrugMonitorDialogComponent, TakeDrugMonitorDialogData } from './../../components/take-drug-monitor-dialog/take-drug-monitor-dialog.component';
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { Pagination } from '../../../../core/models/pagination.model';
 import { basePagination } from '../../../../core/constants/paginations-options';
 import { SortOption } from '../../../../core/models/sort-option.model';
@@ -31,9 +31,12 @@ interface userDrugMonitor {
   selector: 'app-cabinet-dashboard',
   templateUrl: './cabinet-dashboard.component.html',
   styleUrl: './cabinet-dashboard.component.scss',
-  providers: [DatePipe]
+  providers: [DatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CabinetDashboardComponent implements OnInit {
+  private readonly cdRef = inject(ChangeDetectorRef);
+
   private readonly drugsService = inject(DrugsService);
 
   private readonly datePipe = inject(DatePipe);
@@ -102,6 +105,7 @@ export class CabinetDashboardComponent implements OnInit {
     this.drugsService.getUserDrugMonitor().subscribe(res => {
       this.userDrugMonitor.drugsToTake = res.filter(drug => !drug.takenTime);
       this.userDrugMonitor.drugsTaken = res.filter(drug => drug.takenTime);
+      this.cdRef.detectChanges();
     });
   }
 
@@ -188,6 +192,7 @@ export class CabinetDashboardComponent implements OnInit {
         this.drugsService.setMonitorDrug(request).subscribe(res => {
           this.userDrugMonitor.drugsToTake = this.userDrugMonitor.drugsToTake.filter(drug => !(drug.id === res.id && drug.time === res.time));
           this.userDrugMonitor.drugsTaken = [...this.userDrugMonitor.drugsTaken, res];
+          this.cdRef.detectChanges();
         })
       }
     }))
@@ -206,6 +211,7 @@ export class CabinetDashboardComponent implements OnInit {
           this.drugsService.deleteMonitorDrug(userDrug.drug.id, userDrug.time).subscribe(() => {
             this.userDrugMonitor.drugsTaken = this.userDrugMonitor.drugsTaken.filter(drug => !(drug.id === userDrug.id && drug.time === userDrug.time));
             this.userDrugMonitor.drugsToTake = [...this.userDrugMonitor.drugsToTake, {...userDrug, takenTime: null}];
+            this.cdRef.detectChanges();
           });
 
         } else {
@@ -213,6 +219,7 @@ export class CabinetDashboardComponent implements OnInit {
 
           this.drugsService.editMonitorDrug(request).subscribe(res => {
             this.userDrugMonitor.drugsTaken = this.userDrugMonitor.drugsTaken.map(userDrug => userDrug.id === res.id && userDrug.time === res.time ? res : userDrug);
+            this.cdRef.detectChanges();
           });
         }
       }
