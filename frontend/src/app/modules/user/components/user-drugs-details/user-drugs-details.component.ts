@@ -1,6 +1,11 @@
-import { Component, input, model, output } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { Component, inject, input, model, OnDestroy, OnInit, output, signal } from '@angular/core';
 import { DrugResponse } from '../../../../core/models/drug-response.model';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { DrugPack } from '../../../../core/models/drug-pack.model';
+import { DrugsService } from '../../../../core/services/drugs/drugs.service';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { EditDrugStockDialogComponent, EditDrugStockDialogData } from '../edit-drug-stock-dialog/edit-drug-stock-dialog.component';
 
 export interface AddEditUserDrug {
     priority: string,
@@ -27,8 +32,14 @@ export interface AddEditUserDrug {
     ])
   ]
 })
-export class UserDrugsDetailsComponent {
+export class UserDrugsDetailsComponent implements OnInit, OnDestroy {
+  private readonly drugService = inject(DrugsService);
+
+  private readonly dialog = inject(MatDialog);
+
   selectedDrug = input.required<DrugResponse>();
+
+  drugPacks: DrugPack[] = [];
 
   isDialog = input<boolean>(false);
 
@@ -40,6 +51,8 @@ export class UserDrugsDetailsComponent {
     times: [{ hours: '12', minutes: '00' }],
     amount: null,
   });
+
+  isTrackStock = signal<boolean>(false);
 
   dataChange = output<AddEditUserDrug>();
 
@@ -53,13 +66,52 @@ export class UserDrugsDetailsComponent {
 
   days: string[] = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
 
+  subscriptions: Subscription[] = [];
+
   ngOnInit(): void {
+    this.subscriptions.push(this.drugService.getDrugPacks(this.selectedDrug().id).subscribe(res => {
+      this.drugPacks = res.drugPacks;
+    }));
+
+    if (this.data().amount !== null) this.isTrackStock.set(true);
+
     this.generateHoursAndMinutes();
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(s => s.unsubscribe());
   }
 
   generateHoursAndMinutes() {
     this.hours = Array.from({ length: 24 }, (v, k) => k < 10 ? '0' + k : k.toString());
     this.minutes = Array.from({ length: 60 }, (v, k) => k < 10 ? '0' + k : k.toString());
+  }
+
+  setAmount() {
+    if (this.isTrackStock()) {
+      this.data.set({ ...this.data(), amount: 0});
+    } else {
+      this.data.set({ ...this.data(), amount: null });
+    }
+
+    this.dataChange.emit(this.data());
+  }
+
+  editStock(): void {
+    const data: EditDrugStockDialogData = {
+      amount: this.data().amount!,
+      drugPacks: this.drugPacks,
+      unit: this.selectedDrug().unit,
+    };
+
+    const dialogRef: MatDialogRef<EditDrugStockDialogComponent, number> = this.dialog.open(EditDrugStockDialogComponent, { data, width: '800px' });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result || result === 0) {
+        this.data.set({ ...this.data(), amount: result });
+        this.dataChange.emit(this.data());
+      }
+    });
   }
 
   toggleDay(isChecked: boolean, day: string): void {

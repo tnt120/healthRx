@@ -40,14 +40,13 @@ public class DrugMapper {
                 .build();
     }
 
-    public DrugPackResponse map(DrugPack drugPack) {
+    public DrugPackResponse map(DrugPack drugPack, Integer packSize) {
         return DrugPackResponse.builder()
                 .id(drugPack.getId())
                 .gtinCode(drugPack.getGtinCode())
                 .accessibilityCategory(drugPack.getAccessibilityCategory())
                 .packType(drugPack.getPackType())
-                .packSize(drugPack.getPackSize())
-                .packagesQuantity(drugPack.getPackagesQuantity())
+                .packSize(packSize)
                 .packUnit(drugPack.getPackUnit())
                 .build();
     }

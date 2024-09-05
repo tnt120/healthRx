@@ -10,7 +10,7 @@
       <mat-spinner [diameter]="60"></mat-spinner>
     </div>
   } @else if (data().length === 0) {
-    <p class="text2" style="text-align: center;">{{ emptyInfo() }}</p>
+    <p class="text-2" style="text-align: center;">{{ emptyInfo() }}</p>
   } @else {
     <table mat-table [dataSource]="data()">
       <ng-container *ngIf="type() === 'editable'" matColumnDef="actionButtons">

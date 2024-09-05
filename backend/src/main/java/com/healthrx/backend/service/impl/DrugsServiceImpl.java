@@ -76,7 +76,19 @@ public class DrugsServiceImpl implements DrugsService {
 
         List<DrugPackResponse> drugPacksResponse = drugPackRepository.findAllByDrugId(drug.getId())
                 .stream()
-                .map(drugMapper::map)
+                .map(pack -> {
+                    int quantity;
+
+                    if (pack.getPackagesQuantity() == null || pack.getPackagesQuantity().isEmpty()) {
+                        quantity = 1;
+                    } else {
+                        quantity = Integer.parseInt(pack.getPackagesQuantity());
+                    }
+
+                    int packSize = pack.getPackSize() != null && !pack.getPackSize().isEmpty() ? Integer.parseInt(pack.getPackSize()) : 0;
+
+                    return drugMapper.map(pack,packSize);
+                })
                 .toList();
 
         return DrugPacksResponse.builder()
@@ -267,8 +279,7 @@ public class DrugsServiceImpl implements DrugsService {
             throw USER_NOT_PERMITTED.getError();
         }
 
-        Optional.ofNullable(request.getAmount())
-                .ifPresent(userDrug::setAmount);
+        request.setAmount(userDrug.getAmount());
 
         Optional.ofNullable(request.getStartDate())
                 .ifPresent(userDrug::setStartDate);

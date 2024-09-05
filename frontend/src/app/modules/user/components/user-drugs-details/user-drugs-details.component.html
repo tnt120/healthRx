@@ -68,7 +68,20 @@
 </app-section-layout>
 
 <app-section-layout sectionTitle="Śledzenie zapasów">
-
+  <div class="stock-track-container">
+    <div class="toggle-button">
+      <mat-slide-toggle [(ngModel)]="isTrackStock" (ngModelChange)="setAmount()">{{ isTrackStock() ? 'Tak' : 'Nie' }}</mat-slide-toggle>
+      @if (isTrackStock()) {
+        <button mat-button (click)="editStock()"><p class="text-1">Edytuj zapas</p></button>
+      }
+    </div>
+    @if (isTrackStock()) {
+      <div class="track-size">
+        <p class="subtitle-1">Zapas:</p>
+        <p class="text-1">{{ data().amount }} [{{ selectedDrug().unit }}]</p>
+      </div>
+    }
+  </div>
 </app-section-layout>
 <app-section-layout sectionTitle="" *ngIf="!isDialog()">
   <div class="buttons-container">

@@ -18,6 +18,7 @@ import { DrugItemComponent } from './components/drug-item/drug-item.component';
 import { TakeDrugMonitorDialogComponent } from './components/take-drug-monitor-dialog/take-drug-monitor-dialog.component';
 import { UserDrugsDetailsComponent } from './components/user-drugs-details/user-drugs-details.component';
 import { EditUserDrugDialogComponent } from './components/edit-user-drug-dialog/edit-user-drug-dialog.component';
+import { EditDrugStockDialogComponent } from './components/edit-drug-stock-dialog/edit-drug-stock-dialog.component';
 
 
 @NgModule({
@@ -35,6 +36,7 @@ import { EditUserDrugDialogComponent } from './components/edit-user-drug-dialog/
     TakeDrugMonitorDialogComponent,
     UserDrugsDetailsComponent,
     EditUserDrugDialogComponent,
+    EditDrugStockDialogComponent,
   ],
   imports: [
     CommonModule,

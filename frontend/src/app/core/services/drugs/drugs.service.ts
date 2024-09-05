@@ -9,6 +9,7 @@ import { UserDrugsResponse } from '../../models/user-drugs-response.model';
 import { UserDrugMonitorResponse } from '../../models/user-drug-monitor-response.model';
 import { UserDrugMonitorRequest } from '../../models/user-drug-monitor-request.model';
 import { UserDrugsRequest } from '../../models/user-drugs-request.mode';
+import { DrugPacksResponse } from '../../models/drug-packs-response';
 
 @Injectable({
   providedIn: 'root'
@@ -63,6 +64,10 @@ export class DrugsService {
         this.setLoadingDrugsState(false);
       })
     );
+  }
+
+  getDrugPacks(drugId: number): Observable<DrugPacksResponse> {
+    return this.http.get<DrugPacksResponse>(`${this.apiUrl}/packs/${drugId}`);
   }
 
   getUserDrugs(page: number, size: number, sort: SortOption): Observable<PageResponse<UserDrugsResponse>> {

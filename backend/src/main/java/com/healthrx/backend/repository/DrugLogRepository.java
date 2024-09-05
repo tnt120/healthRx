@@ -15,4 +15,6 @@ public interface DrugLogRepository extends JpaRepository<DrugLog, String> {
             @Param("userId") String userId,
             @Param("time") LocalTime time
     );
+
+    void deleteAllByDrugId(Integer drugId);
 }

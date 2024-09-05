@@ -1,0 +1,45 @@
+<h3 mat-dialog-title>Edycja zapasu</h3>
+<mat-dialog-content class="mat-typography">
+  <div class="content">
+    <app-section-layout sectionTitle="Ilość zapasu" description="Początkowa wartość to ilość zapasu przed edycją - możesz ją zmienić ręcznie">
+      <div class="track-stock-container">
+        <mat-form-field class="search-input" appearance="outline">
+          <mat-label>Ilość [{{ dialogData.unit }}]</mat-label>
+          <input matInput type="number" min="0" [placeholder]="dialogData.unit" [(ngModel)]="dialogData.amount">
+        </mat-form-field>
+
+        <mat-checkbox [(ngModel)]="isPackAdd">Dodaj opakowania</mat-checkbox>
+      </div>
+    </app-section-layout>
+
+    @if (isPackAdd()) {
+      <app-section-layout sectionTitle="Dodanie opakowań" description="Liczba leku z opakowań zostanie obliczona i dodana do powyższej wartości zapasu jako suma">
+        <div class="track-stock-container">
+          <mat-form-field appearance="outline">
+            <mat-label>Wybierz opakowanie</mat-label>
+            <mat-select [(ngModel)]="selectedPack" (ngModelChange)="changeFirstPackAmount()">
+              @for (pack of dialogData.drugPacks; track pack) {
+                <mat-option [value]="pack">{{ getPackLabel(pack) }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="search-input" appearance="outline">
+            <mat-label>Ilość opakowań [minimum 1]</mat-label>
+            <input matInput type="number" min="0" placeholder="Nazwa" [(ngModel)]="numberOfPacks">
+          </mat-form-field>
+          <mat-form-field class="search-input" appearance="outline">
+            <mat-label>Zawartość pierwszego opakowania</mat-label>
+            <input matInput type="number" min="0" [max]="selectedPack() !== null ? selectedPack()!.packSize : 0" placeholder="Zawartość pierwszego opakowania" [(ngModel)]="firstPackAmount">
+            <mat-error *ngIf="firstPackAmount() < 0 || selectedPack() && (firstPackAmount() > selectedPack()!.packSize)">
+              <p class="text-1">Wartość musi być dodatnia oraz mniejsza od wielkości opakowania</p>
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </app-section-layout>
+    }
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Anuluj</button>
+  <button mat-flat-button [mat-dialog-close]="getAmount()" [disabled]="!isValid()">Zapisz</button>
+</mat-dialog-actions>

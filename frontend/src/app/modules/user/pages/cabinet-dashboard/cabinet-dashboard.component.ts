@@ -94,7 +94,7 @@ export class CabinetDashboardComponent implements OnInit {
         doseTimes: userDrug.doseTimes.map(time => time.substring(0, 5)).join(', '),
         takingPeriod: `${this.datePipe.transform(userDrug.startDate, 'dd/MM/YYYY')} - ${userDrug.endDate ? this.datePipe.transform(userDrug.endDate, 'dd/MM/YYYY') : ''}`,
         priority: getPriorityName(userDrug.priority),
-        tracking: userDrug.amount ? `${userDrug.amount} ${userDrug.drug.unit}` : 'Nie'
+        tracking: userDrug.amount !== null ? `${userDrug.amount} ${userDrug.drug.unit}` : 'Nie'
       }));
       this.userDrugs = res.content;
       this.pagination.totalElements = res.totalElements;
@@ -134,7 +134,7 @@ export class CabinetDashboardComponent implements OnInit {
           priority: res.priority ? res.priority : undefined,
           startDate: res.dates?.from ? res.dates.from.toISOString() : undefined,
           endDate: res.dates?.to ? res.dates.to.toISOString() : dateTo,
-          amount: res.amount ? res.amount : null,
+          amount: res.amount,
           doseTimes: res.times ? res.times.map(time => `${time.hours}:${time.minutes}:00`) : undefined,
           doseDays: res.days ? res.days : undefined,
         };
@@ -151,7 +151,7 @@ export class CabinetDashboardComponent implements OnInit {
             doseTimes: res.doseTimes.map(time => time.substring(0, 5)).join(', '),
             takingPeriod: `${this.datePipe.transform(res.startDate, 'dd/MM/YYYY')} - ${res.endDate ? this.datePipe.transform(res.endDate, 'dd/MM/YYYY') : ''}`,
             priority: getPriorityName(res.priority),
-            tracking: res.amount ? `${res.amount} ${res.drug.unit}` : 'Nie'
+            tracking: res.amount !== null ? `${res.amount} ${res.drug.unit}` : 'Nie'
           }) : ud);
           this.loadUserDrugMonitor();
         })

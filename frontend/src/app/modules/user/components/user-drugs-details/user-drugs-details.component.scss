@@ -51,6 +51,25 @@
     }
   }
 
+  .stock-track-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .toggle-button {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+    }
+
+    .track-size {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+  }
+
+
   .buttons-container {
     display: flex;
     justify-content: flex-end;

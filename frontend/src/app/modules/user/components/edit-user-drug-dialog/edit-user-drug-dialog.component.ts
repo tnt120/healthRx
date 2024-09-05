@@ -32,7 +32,7 @@ export class EditUserDrugDialogComponent implements OnInit {
     doseSize: null,
     dates: { from: null, to: null },
     times: [{ hours: '12', minutes: '00' }],
-    amount: null,
+    amount: 0,
   });
 
   prevData!: AddEditUserDrug;
@@ -52,8 +52,6 @@ export class EditUserDrugDialogComponent implements OnInit {
       dates: { ...this.data().dates },
       times: this.data().times.map(time => ({ ...time }))
     };
-
-    console.log(this.data());
   }
 
   isValid(): boolean {
@@ -119,6 +117,8 @@ export class EditUserDrugDialogComponent implements OnInit {
     Object.keys(this.prevData).forEach(key => {
       let prevValue = (this.prevData as { [key: string]: any })[key];
       let currentValue = (this.data() as { [key: string]: any })[key];
+
+      if (key === 'amount') return modifiedValues[key as keyof EditUserDrug] = currentValue;
 
       if (this.compareValues(key, prevValue, currentValue)) {
         modifiedValues[key as keyof EditUserDrug] = currentValue;

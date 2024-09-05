@@ -1,0 +1,18 @@
+:host {
+  .content {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 10px;
+
+    .track-stock-container {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+  h3 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

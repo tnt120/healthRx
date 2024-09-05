@@ -2,6 +2,7 @@ package com.healthrx.backend.batch;
 
 import com.healthrx.backend.api.internal.Drug;
 import com.healthrx.backend.api.internal.DrugPack;
+import com.healthrx.backend.repository.DrugLogRepository;
 import com.healthrx.backend.repository.DrugPackRepository;
 import com.healthrx.backend.repository.DrugRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ public class JobCompletionListener implements JobExecutionListener {
 
     private final DrugRepository drugRepository;
     private final DrugPackRepository drugPackRepository;
+    private final DrugLogRepository drugLogRepository;
     private static final String PROCESSED_DRUG_IDS_KEY = "processedDrugIds";
     private static final String PROCESSED_DRUG_PACK_IDS_KEY = "processedDrugPackIds";
 
@@ -39,6 +41,7 @@ public class JobCompletionListener implements JobExecutionListener {
                     .map(Drug::getId).collect(Collectors.toSet());
             existingDrugIds.removeAll(processedDrugIds);
             for (Integer drugId : existingDrugIds) {
+                drugLogRepository.deleteAllByDrugId(drugId);
                 drugRepository.deleteById(drugId);
             }
         }
