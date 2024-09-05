@@ -15,6 +15,7 @@ import { CollapsingContainerLayoutComponent } from './components/container-layou
 import { TableComponent } from './components/table/table.component';
 import { DayTailComponent } from './components/day-tail/day-tail.component';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
+import { OnlyNumbersDirective } from './directives/onlyNumbers/only-numbers.directive';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { ConfirmationDialogComponent } from './components/confirmation-dialog/co
     CollapsingContainerLayoutComponent,
     TableComponent,
     DayTailComponent,
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
+    OnlyNumbersDirective,
   ],
   imports: [
     CommonModule,
@@ -48,7 +50,8 @@ import { ConfirmationDialogComponent } from './components/confirmation-dialog/co
     SectionLayoutComponent,
     CollapsingContainerLayoutComponent,
     TableComponent,
-    DayTailComponent
+    DayTailComponent,
+    OnlyNumbersDirective,
   ]
 })
 export class SharedModule { }

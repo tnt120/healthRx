@@ -20,7 +20,7 @@
       <p class="subtitle-1" style="min-width: 150px;">Wielkość dawki [{{ selectedDrug().unit }}]:</p>
       <mat-form-field appearance="outline">
         <mat-label>Dawka</mat-label>
-        <input matInput type="number" min="0.1" step="0.1" [(ngModel)]="data().doseSize" [placeholder]="selectedDrug().unit" (ngModelChange)="dataChange.emit(data())">
+        <input matInput type="number" min="1" step="1" appOnlyNumbers [(ngModel)]="data().doseSize" [placeholder]="selectedDrug().unit" (ngModelChange)="dataChange.emit(data())">
       </mat-form-field>
     </div>
 
