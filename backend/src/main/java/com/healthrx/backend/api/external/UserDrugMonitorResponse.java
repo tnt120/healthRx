@@ -16,7 +16,7 @@ import java.time.LocalTime;
 public class UserDrugMonitorResponse {
     private String id;
     private DrugResponse drug;
-    private Double doseSize;
+    private Integer doseSize;
     private Priority priority;
     private LocalTime time;
     @JsonInclude()

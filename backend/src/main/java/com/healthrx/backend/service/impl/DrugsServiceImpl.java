@@ -185,6 +185,11 @@ public class DrugsServiceImpl implements DrugsService {
                 .takenTime(request.getTakenTime())
                 .build());
 
+        if (userDrug.getAmount() != null) {
+            userDrug.setAmount(Math.max(userDrug.getAmount() - userDrug.getDoseSize(), 0));
+            this.userDrugRepository.save(userDrug);
+        }
+
         return this.drugMapper.map(userDrug, drugPackRepository.findPackUnitByDrugId(userDrug.getDrug().getId()).getFirst(), request.getTime(), request.getTakenTime());
     }
 
@@ -224,6 +229,14 @@ public class DrugsServiceImpl implements DrugsService {
                 .orElseThrow(DRUG_LOG_NOT_FOUND::getError);
 
         drugLogRepository.delete(drugLog);
+
+        UserDrug userDrug = userDrugRepository.findUserDrugByUserIdAndDrugId(drugId, user.getId())
+                .orElseThrow(USER_DRUG_NOT_FOUND::getError);
+
+        if (userDrug.getAmount() != null) {
+            userDrug.setAmount(userDrug.getAmount() + userDrug.getDoseSize());
+            userDrugRepository.save(userDrug);
+        }
 
         return null;
     }
@@ -279,7 +292,7 @@ public class DrugsServiceImpl implements DrugsService {
             throw USER_NOT_PERMITTED.getError();
         }
 
-        request.setAmount(userDrug.getAmount());
+        userDrug.setAmount(request.getAmount());
 
         Optional.ofNullable(request.getStartDate())
                 .ifPresent(userDrug::setStartDate);

@@ -192,6 +192,9 @@ export class CabinetDashboardComponent implements OnInit {
         this.drugsService.setMonitorDrug(request).subscribe(res => {
           this.userDrugMonitor.drugsToTake = this.userDrugMonitor.drugsToTake.filter(drug => !(drug.id === res.id && drug.time === res.time));
           this.userDrugMonitor.drugsTaken = [...this.userDrugMonitor.drugsTaken, res];
+
+          this.updateTableAmount(res);
+
           this.cdRef.detectChanges();
         })
       }
@@ -211,6 +214,7 @@ export class CabinetDashboardComponent implements OnInit {
           this.drugsService.deleteMonitorDrug(userDrug.drug.id, userDrug.time).subscribe(() => {
             this.userDrugMonitor.drugsTaken = this.userDrugMonitor.drugsTaken.filter(drug => !(drug.id === userDrug.id && drug.time === userDrug.time));
             this.userDrugMonitor.drugsToTake = [...this.userDrugMonitor.drugsToTake, {...userDrug, takenTime: null}];
+            this.updateTableAmount(userDrug, false);
             this.cdRef.detectChanges();
           });
 
@@ -224,6 +228,30 @@ export class CabinetDashboardComponent implements OnInit {
         }
       }
     }));
+  }
+
+  private updateTableAmount(userDrug: UserDrugMonitorResponse, isOdd: boolean = true): void {
+    const findedUserDrug = this.userDrugs.find(ud => ud.id === userDrug.id)!;
+
+    if (findedUserDrug.amount !== null) {
+      let newAmount = 0;
+
+      if (isOdd) {
+        newAmount = findedUserDrug.amount - findedUserDrug.doseSize;
+      } else {
+        newAmount = findedUserDrug.amount + findedUserDrug.doseSize;
+      }
+
+      findedUserDrug.amount = newAmount < 0 ? 0 : newAmount;
+
+      this.userDrugs = this.userDrugs.map(ud => ud.id === userDrug.id ? findedUserDrug : ud);
+
+      this.tableData = this.tableData.map(ud => ud.id !== userDrug.id ? ud : ({
+        ...ud,
+        tracking: `${findedUserDrug.amount} ${findedUserDrug.drug.unit}`
+      }));
+
+    }
   }
 
   prepareMonitorRequest(result: UserDrugMonitorResponse): UserDrugMonitorRequest {

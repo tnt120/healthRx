@@ -19,7 +19,7 @@ import java.util.List;
 public class UserDrugsResponse {
     private String id;
     private DrugResponse drug;
-    private Double doseSize;
+    private Integer doseSize;
     private Priority priority;
     private LocalDateTime startDate;
     @JsonInclude()

@@ -33,7 +33,7 @@ public class UserDrug {
     private Drug drug;
 
     @Column(nullable = false)
-    private Double doseSize;
+    private Integer doseSize;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

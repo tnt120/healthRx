@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UserDrugsRequest {
     private Integer drugId;
-    private Double doseSize;
+    private Integer doseSize;
     private Priority priority;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
