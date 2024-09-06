@@ -5,11 +5,14 @@ import com.healthrx.backend.api.internal.*;
 import com.healthrx.backend.api.internal.enums.Days;
 import com.healthrx.backend.mapper.DrugMapper;
 import com.healthrx.backend.mapper.UserDrugMapper;
+import com.healthrx.backend.quartz.NotificationSchedulerService;
 import com.healthrx.backend.repository.*;
 import com.healthrx.backend.service.DrugsService;
 import com.healthrx.backend.specification.DrugSpecification;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.quartz.SchedulerException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +33,7 @@ import static com.healthrx.backend.handler.BusinessErrorCodes.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DrugsServiceImpl implements DrugsService {
     private final DrugRepository drugRepository;
     private final DrugPackRepository drugPackRepository;
@@ -40,6 +44,7 @@ public class DrugsServiceImpl implements DrugsService {
     private final DrugMapper drugMapper;
     private final UserDrugMapper userDrugMapper;
     private final Supplier<User> principalSupplier;
+    private final NotificationSchedulerService notificationSchedulerService;
 
     @Override
     public PageResponse<DrugResponse> getAllDrugs(Integer page, Integer size, String sortBy, String order, String name) {
@@ -257,7 +262,7 @@ public class DrugsServiceImpl implements DrugsService {
 
         UserDrug userDrug = userDrugMapper.map(request, drug, user);
 
-        userDrugRepository.save(userDrug);
+        UserDrug savedDrug = userDrugRepository.save(userDrug);
 
         List<DrugDoseDay> drugDoseDays = addAllDoseEntities(
                 userDrug,
@@ -275,6 +280,21 @@ public class DrugsServiceImpl implements DrugsService {
 
         userDrug.setDrugDoseDays(drugDoseDays);
         userDrug.setDrugDoseTimes(drugDoseTimes);
+
+        try {
+            this.notificationSchedulerService.scheduleNotification(
+                    "drugReminder",
+                    savedDrug.getId(),
+                    request.getDoseDays(),
+                    request.getDoseTimes(),
+                    request.getStartDate(),
+                    request.getEndDate(),
+                    user.getEmail(),
+                    drug.getName()
+            );
+        } catch (SchedulerException e) {
+            log.info("Problem with scheduling notification: {}", e.getMessage());
+        }
 
         return userDrugMapper.map(userDrug, drugPackRepository.findPackUnitByDrugId(drug.getId()).getFirst());
     }
@@ -348,6 +368,18 @@ public class DrugsServiceImpl implements DrugsService {
 
         if (!userDrug.getUser().getId().equals(user.getId())) {
             throw USER_NOT_PERMITTED.getError();
+        }
+
+        try {
+            notificationSchedulerService.deleteNotification(
+                    "drugReminder",
+                    id,
+                    userDrug.getDrugDoseDays().stream().map(DrugDoseDay::getDay).toList(),
+                    userDrug.getDrugDoseTimes().stream().map(DrugDoseTime::getDoseTime).toList()
+            );
+
+        } catch (SchedulerException e) {
+            log.info("Problem with deleting notification: {}", e.getMessage());
         }
 
         userDrugRepository.delete(userDrug);

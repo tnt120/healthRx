@@ -2,7 +2,7 @@ spring:
   jackson:
     defaultPropertyInclusion: "non_null"
   datasource:
-    driverClassName: 'org.postgresql.Driver'
+    driverClassName: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5433/${POSTGRES_DB}
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
@@ -36,12 +36,31 @@ spring:
       initialize-schema: always
     job:
       enabled: false
+  quartz:
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: always  # lub 'never' jeśli nie chcesz, aby Spring zarządzał schematem
+    properties:
+      org.quartz.scheduler.instanceName: MyScheduler
+      org.quartz.scheduler.instanceId: AUTO
+      org.quartz.jobStore.class: org.quartz.impl.jdbcjobstore.JobStoreTX
+      org.quartz.jobStore.driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
+      org.quartz.jobStore.tablePrefix: QRTZ_
+      org.quartz.jobStore.isClustered: false
+      org.quartz.threadPool.threadCount: 5
+      org.quartz.dataSource.quartzDS.driver: org.postgresql.Driver
+      org.quartz.dataSource.quartzDS.URL: jdbc:postgresql://localhost:5433/${POSTGRES_DB}
+      org.quartz.dataSource.quartzDS.user: ${POSTGRES_USER}
+      org.quartz.dataSource.quartzDS.password: ${POSTGRES_PASSWORD}
+      org.quartz.dataSource.quartzDS.maxConnections: 30
+      org.quartz.jobStore.dataSource: quartzDS
 
 application:
   security:
     access-jwt:
       secret-key: 4158465a2f6a272c253b4468423246663f3c4a7951673a544c452e2c4d36465c
-      expiration: 3600000
+      expiration: 600000 # 10 minutes
+#      expiration: 3600000 // 1 hour
     refresh-jwt:
       secret-key: 294C4D868F5CC153E538D5DD921B1612263C3D700EF1662E6C89903DE0FF3F9F
       expiration: 2592000000
