@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -18,66 +20,110 @@ public class NotificationSchedulerService {
     @Autowired
     private SchedulerFactoryBean schedulerFactory;
 
-    public void scheduleNotification(String jobName, String userDrugId, List<Days> days, List<LocalTime> times, LocalDateTime startDate, LocalDateTime endDate, String email, String drugName) throws SchedulerException {
+    public void scheduleDrugNotification(String jobName, String email, QuartzNotificationDrugsModel drugsModel) throws SchedulerException {
         Scheduler scheduler = schedulerFactory.getScheduler();
 
         LocalDateTime now = LocalDateTime.now();
-        if (startDate.isBefore(now)) {
+        LocalDateTime startDate = drugsModel.getStartDate();
+        if (drugsModel.getStartDate().isBefore(now)) {
             startDate = now.plusSeconds(5);
         }
 
-        for (Days day : days) {
-            for (LocalTime time : times) {
-                String jobKeyString = getJobKeyString(jobName, day, time, userDrugId);
-                JobDataMap jobDataMap = new JobDataMap();
-                jobDataMap.put("email", email);
-                jobDataMap.put("drugName", drugName);
-                jobDataMap.put("userDrugId", userDrugId);
+        for (Days day : drugsModel.getDays()) {
+            Collections.sort(drugsModel.getTimes());
+            LocalTime time = drugsModel.getTimes().getLast().plusMinutes(15);
 
-                JobDetail jobDetail = JobBuilder.newJob(ReminderJob.class)
-                        .withIdentity(jobKeyString, "drugReminder")
-                        .usingJobData(jobDataMap)
-                        .build();
+            String jobKeyString = getJobKeyString(jobName, day, time, drugsModel.getUserDrugId());
 
-                String cronExpression = createCronExpression(day, time);
+            JobDataMap jobDataMap = createBasicDataMap(email);
+            jobDataMap.put("drugName", drugsModel.getDrugName());
+            jobDataMap.put("userDrugId", drugsModel.getUserDrugId());
+            JobDetail jobDetail = createJobDetail(jobKeyString, "drugReminder", jobDataMap);
 
-                Trigger trigger = TriggerBuilder.newTrigger()
-                        .withIdentity(jobKeyString + "trigger", "drugReminder")
-                        .withSchedule(CronScheduleBuilder.cronSchedule(cronExpression))
-                        .startAt(java.sql.Date.valueOf(startDate.toLocalDate()))
-                        .endAt(endDate != null ? java.sql.Date.valueOf(endDate.toLocalDate()) : null)
-                        .build();
+            String cronExpression = createCronExpression(day, time);
 
-                scheduler.scheduleJob(jobDetail, trigger);
+            Trigger trigger = createTrigger(jobKeyString, "drugReminder", cronExpression, startDate, drugsModel.getEndDate());
 
-                log.info("Triggering email for day: {}, time: {}, email: {}, drug: {}, cron: {}", day, time, email, drugName, cronExpression);
-            }
+            scheduler.scheduleJob(jobDetail, trigger);
+
+            log.info("Triggering job for drugs:  day: {}, time: {}, email: {}, drug: {}, cron: {}", day, time, email, drugsModel.getDrugName(), cronExpression);
         }
     }
 
-    public void deleteNotification(String jobName, String userDrugId, List<Days> days, List<LocalTime> times) throws SchedulerException {
+    public void scheduleParameterNotification(String jobName, String email, QuartzNotificationParametersModel parametersModel) throws SchedulerException {
         Scheduler scheduler = schedulerFactory.getScheduler();
 
-        for (Days day: days) {
-            for (LocalTime time: times) {
-                String jobKeyString = getJobKeyString(jobName, day, time, userDrugId);
-                JobKey jobKey = new JobKey(jobKeyString, "drugReminder");
+        LocalDateTime startDate = LocalDateTime.now().plusSeconds(5);
 
-                if (scheduler.checkExists(jobKey)) {
-                    scheduler.deleteJob(jobKey);
-                }
+        String jobKeyString = getJobKeyString(jobName, null, parametersModel.getTime(), parametersModel.getUserId());
+
+        JobDataMap jobDataMap = createBasicDataMap(email);
+        jobDataMap.put("userId", parametersModel.getUserId());
+
+        JobDetail jobDetail = createJobDetail(jobKeyString, "parameterReminder", jobDataMap);
+
+        String cronExpression = createCronExpression(null, parametersModel.getTime());
+
+        Trigger trigger = createTrigger(jobKeyString, "parameterReminder", cronExpression, startDate, null);
+
+        scheduler.scheduleJob(jobDetail, trigger);
+
+        log.info("Triggering job for parameters: time: {}, email: {}, userId: {}, cron: {}", parametersModel.getTime(), email, parametersModel.getUserId(), cronExpression);
+    }
+
+    public void deleteDrugNotification(String jobName, String userDrugId, List<Days> days, List<LocalTime> times) throws SchedulerException {
+        Scheduler scheduler = schedulerFactory.getScheduler();
+
+        List<LocalTime> mutableTimes = new ArrayList<>(times);
+        Collections.sort(mutableTimes);
+        LocalTime time = mutableTimes.getLast().plusMinutes(15);
+
+        for (Days day: days) {
+            String jobKeyString = getJobKeyString(jobName, day, time, userDrugId);
+            JobKey jobKey = new JobKey(jobKeyString, "drugReminder");
+
+            if (scheduler.checkExists(jobKey)) {
+                scheduler.deleteJob(jobKey);
             }
         }
     }
 
-    private String getJobKeyString(String jobName, Days day, LocalTime time, String userDrugId) {
-        return jobName + "-" + userDrugId + "-" + day + "-" + time;
+    private JobDataMap createBasicDataMap(String email) {
+        JobDataMap jobDataMap = new JobDataMap();
+        jobDataMap.put("email", email);
+        return jobDataMap;
+    }
+
+    private JobDetail createJobDetail(String jobKeyString, String group, JobDataMap jobDataMap) {
+        return JobBuilder.newJob(ReminderJob.class)
+                .withIdentity(jobKeyString, group)
+                .usingJobData(jobDataMap)
+                .build();
+    }
+
+    private Trigger createTrigger(String jobKeyString, String group, String cronExpression, LocalDateTime startAt, LocalDateTime endAt) {
+        return TriggerBuilder.newTrigger()
+                .withIdentity(jobKeyString + "trigger", group)
+                .withSchedule(CronScheduleBuilder.cronSchedule(cronExpression))
+                .startAt(java.sql.Date.valueOf(startAt.toLocalDate()))
+                .endAt(endAt != null ? java.sql.Date.valueOf(endAt.toLocalDate()) : null)
+                .build();
+    }
+
+    private String getJobKeyString(String jobName, Days day, LocalTime time, String id) {
+        if (day == null) {
+            return jobName + "-" + id + "-" + time;
+        }
+        return jobName + "-" + id + "-" + day + "-" + time;
     }
 
     private String createCronExpression(Days day, LocalTime time) {
-        int dayOfWeek = day.ordinal() + 1;
-        return String.format("0 %d %d ? * %d", time.getMinute(), time.getHour(), dayOfWeek);
+        if (day != null) {
+            int dayOfWeek = day.ordinal() + 1;
+            return String.format("0 %d %d ? * %d", time.getMinute(), time.getHour(), dayOfWeek);
+        }
 
+        return String.format("0 %d %d ? * *", time.getMinute(), time.getHour());
     }
 
 }

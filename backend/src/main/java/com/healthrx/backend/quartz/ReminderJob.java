@@ -1,6 +1,8 @@
 package com.healthrx.backend.quartz;
 
 import com.healthrx.backend.kafka.KafkaReceiveModel;
+import com.healthrx.backend.service.ParametersService;
+import com.healthrx.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -15,6 +17,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ReminderJob implements Job {
     private final KafkaTemplate<String, KafkaReceiveModel> kafkaTemplate;
+    private final UserService userService;
+    private final ParametersService parametersService;
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {

@@ -6,6 +6,7 @@ import com.healthrx.backend.api.internal.enums.Days;
 import com.healthrx.backend.mapper.DrugMapper;
 import com.healthrx.backend.mapper.UserDrugMapper;
 import com.healthrx.backend.quartz.NotificationSchedulerService;
+import com.healthrx.backend.quartz.QuartzNotificationDrugsModel;
 import com.healthrx.backend.repository.*;
 import com.healthrx.backend.service.DrugsService;
 import com.healthrx.backend.specification.DrugSpecification;
@@ -281,16 +282,20 @@ public class DrugsServiceImpl implements DrugsService {
         userDrug.setDrugDoseDays(drugDoseDays);
         userDrug.setDrugDoseTimes(drugDoseTimes);
 
+        QuartzNotificationDrugsModel drugsModel = QuartzNotificationDrugsModel.builder()
+                .userDrugId(savedDrug.getId())
+                .drugName(drug.getName())
+                .days(request.getDoseDays())
+                .times(request.getDoseTimes())
+                .startDate(request.getStartDate())
+                .endDate(request.getEndDate())
+                .build();
+
         try {
-            this.notificationSchedulerService.scheduleNotification(
+            this.notificationSchedulerService.scheduleDrugNotification(
                     "drugReminder",
-                    savedDrug.getId(),
-                    request.getDoseDays(),
-                    request.getDoseTimes(),
-                    request.getStartDate(),
-                    request.getEndDate(),
                     user.getEmail(),
-                    drug.getName()
+                    drugsModel
             );
         } catch (SchedulerException e) {
             log.info("Problem with scheduling notification: {}", e.getMessage());
@@ -371,7 +376,7 @@ public class DrugsServiceImpl implements DrugsService {
         }
 
         try {
-            notificationSchedulerService.deleteNotification(
+            notificationSchedulerService.deleteDrugNotification(
                     "drugReminder",
                     id,
                     userDrug.getDrugDoseDays().stream().map(DrugDoseDay::getDay).toList(),
