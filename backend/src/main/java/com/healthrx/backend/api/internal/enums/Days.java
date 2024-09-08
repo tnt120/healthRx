@@ -3,13 +3,13 @@ package com.healthrx.backend.api.internal.enums;
 import java.time.DayOfWeek;
 
 public enum Days {
+    SUNDAY,
     MONDAY,
     TUESDAY,
     WEDNESDAY,
     THURSDAY,
     FRIDAY,
-    SATURDAY,
-    SUNDAY;
+    SATURDAY;
 
     public static Days from(DayOfWeek dayOfWeek) {
         return switch (dayOfWeek) {
