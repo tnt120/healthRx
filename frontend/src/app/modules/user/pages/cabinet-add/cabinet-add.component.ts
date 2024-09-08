@@ -12,11 +12,13 @@ import { Router } from '@angular/router';
 import { UserDrugsRequest } from '../../../../core/models/user-drugs-request.mode';
 import { SnackBarData } from '../../../../core/models/snackbar-data.model';
 import { AddEditUserDrug } from '../../components/user-drugs-details/user-drugs-details.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-cabinet-add',
   templateUrl: './cabinet-add.component.html',
-  styleUrl: './cabinet-add.component.scss'
+  styleUrl: './cabinet-add.component.scss',
+  providers: [DatePipe]
 })
 export class CabinetAddComponent implements OnInit {
   private readonly drugsService = inject(DrugsService);
@@ -24,6 +26,8 @@ export class CabinetAddComponent implements OnInit {
   private readonly router = inject(Router);
 
   private readonly customSnackbarService = inject(CustomSnackbarService);
+
+  private readonly datePipe = inject(DatePipe);
 
   isDrugsSearching$ = this.drugsService.getLoadingDrugsState();
 
@@ -91,8 +95,8 @@ export class CabinetAddComponent implements OnInit {
         drugId: this.selectedDrug.id,
         doseSize: data.doseSize!,
         priority: data.priority,
-        startDate: data.dates.from?.toISOString()!,
-        endDate: data.dates.to?.toISOString() || null,
+        startDate: this.datePipe.transform(data.dates.from, 'yyyy-MM-dd')!,
+        endDate: this.datePipe.transform(data.dates.to, 'yyyy-MM-dd') || null,
         amount: data.amount,
         doseTimes: data.times.map(time => `${time.hours}:${time.minutes}:00`),
         doseDays: data.days,

@@ -13,11 +13,13 @@ import { UserVerificationRequest } from '../../../../core/models/user/user-verif
 import { UserSummary } from '../../models/user-summary-model';
 import { Sex } from '../../../../core/enums/sex.enum';
 import { CustomSnackbarService } from '../../../../core/services/custom-snackbar/custom-snackbar.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-verification',
   templateUrl: './verification.component.html',
-  styleUrl: './verification.component.scss'
+  styleUrl: './verification.component.scss',
+  providers: [DatePipe]
 })
 export class VerificationComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
@@ -33,6 +35,8 @@ export class VerificationComponent implements OnInit, OnDestroy {
   private readonly errorCodesService = inject(ErrorCodesService);
 
   private readonly customSnackbarService = inject(CustomSnackbarService);
+
+  private readonly datePipe = inject(DatePipe);
 
   personalDataForm = new FormGroup({
     firstName: new FormControl('', Validators.required),
@@ -173,7 +177,7 @@ export class VerificationComponent implements OnInit, OnDestroy {
       firstName: personalControls.firstName.value!,
       lastName: personalControls.lastName.value!,
       sex: personalControls.sex.value!,
-      birthDate: (personalControls.birthDate.value as unknown as Date).toISOString(),
+      birthDate: this.datePipe.transform((personalControls.birthDate.value as unknown as Date), 'yyyy-MM-dd')!,
       phoneNumber: personalControls.phoneNumber.value!
     }
 
@@ -182,7 +186,7 @@ export class VerificationComponent implements OnInit, OnDestroy {
         { title: 'Imię', value: data.firstName },
         { title: 'Nazwisko', value: data.lastName },
         { title: 'Płeć', value: Sex[data.sex as keyof typeof Sex] },
-        { title: 'Data urodzenia', value: data.birthDate.split('T')[0] },
+        { title: 'Data urodzenia', value: data.birthDate },
         { title: 'Numer telefonu', value: data.phoneNumber },
       ]
     };

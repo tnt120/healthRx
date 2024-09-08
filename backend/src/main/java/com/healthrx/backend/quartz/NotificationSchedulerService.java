@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,10 +23,10 @@ public class NotificationSchedulerService {
     public void scheduleDrugNotification(String jobName, String email, QuartzNotificationDrugsModel drugsModel) throws SchedulerException {
         Scheduler scheduler = schedulerFactory.getScheduler();
 
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime startDate = drugsModel.getStartDate();
+        LocalDate now = LocalDate.now();
+        LocalDate startDate = drugsModel.getStartDate();
         if (drugsModel.getStartDate().isBefore(now)) {
-            startDate = now.plusSeconds(5);
+            startDate = now;
         }
 
         for (Days day : drugsModel.getDays()) {
@@ -53,7 +53,7 @@ public class NotificationSchedulerService {
     public void scheduleParameterNotification(String jobName, String email, QuartzNotificationParametersModel parametersModel) throws SchedulerException {
         Scheduler scheduler = schedulerFactory.getScheduler();
 
-        LocalDateTime startDate = LocalDateTime.now().plusSeconds(5);
+        LocalDate startDate = LocalDate.now();
 
         String jobKeyString = getJobKeyString(jobName, null, parametersModel.getTime(), parametersModel.getUserId());
 
@@ -101,12 +101,12 @@ public class NotificationSchedulerService {
                 .build();
     }
 
-    private Trigger createTrigger(String jobKeyString, String group, String cronExpression, LocalDateTime startAt, LocalDateTime endAt) {
+    private Trigger createTrigger(String jobKeyString, String group, String cronExpression, LocalDate startAt, LocalDate endAt) {
         return TriggerBuilder.newTrigger()
                 .withIdentity(jobKeyString + "trigger", group)
                 .withSchedule(CronScheduleBuilder.cronSchedule(cronExpression))
-                .startAt(java.sql.Date.valueOf(startAt.toLocalDate()))
-                .endAt(endAt != null ? java.sql.Date.valueOf(endAt.toLocalDate()) : null)
+                .startAt(java.sql.Date.valueOf(startAt))
+                .endAt(endAt != null ? java.sql.Date.valueOf(endAt) : null)
                 .build();
     }
 

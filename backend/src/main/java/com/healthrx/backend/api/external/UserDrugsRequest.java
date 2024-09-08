@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -19,8 +19,8 @@ public class UserDrugsRequest {
     private Integer drugId;
     private Integer doseSize;
     private Priority priority;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private Integer amount;
     private List<LocalTime> doseTimes;
     private List<Days> doseDays;

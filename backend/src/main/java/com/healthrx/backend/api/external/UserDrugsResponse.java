@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -21,9 +21,9 @@ public class UserDrugsResponse {
     private DrugResponse drug;
     private Integer doseSize;
     private Priority priority;
-    private LocalDateTime startDate;
+    private LocalDate startDate;
     @JsonInclude()
-    private LocalDateTime endDate;
+    private LocalDate endDate;
     @JsonInclude()
     private Integer amount;
     private List<LocalTime> doseTimes;

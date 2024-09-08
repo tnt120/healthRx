@@ -6,8 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.OffsetDateTime;
 import java.util.List;
 
 @Data
@@ -19,7 +19,7 @@ public class UserVerificationRequest {
     private String firstName;
     private String lastName;
     private Sex sex;
-    private OffsetDateTime birthDate;
+    private LocalDate birthDate;
     private String phoneNumber;
 
     private List<ParameterDTO> parameters;
