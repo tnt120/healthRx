@@ -50,6 +50,9 @@
         Przypominamy o zażyciu leku: <strong th:text="${drugName}">[DrugName]</strong></br>
     </p>
     <p>
+        Brakujące godziny zażycia to: <strong th:text="${missingTimes}">[missingTimes]</strong>
+    </p>
+    <p>
         Aby przejść do zażycia leku <a th:href="@{${link}}" class="primary-blue">kliknij tutaj</a></br>
     </p>
     <div class="footer">

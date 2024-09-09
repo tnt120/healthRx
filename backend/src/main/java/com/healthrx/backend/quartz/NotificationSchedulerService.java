@@ -12,6 +12,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -35,9 +36,13 @@ public class NotificationSchedulerService {
 
             String jobKeyString = getJobKeyString(jobName, day, time, drugsModel.getUserDrugId());
 
-            JobDataMap jobDataMap = createBasicDataMap(email);
+            JobDataMap jobDataMap = createBasicDataMap(email, "drugReminder");
             jobDataMap.put("drugName", drugsModel.getDrugName());
             jobDataMap.put("userDrugId", drugsModel.getUserDrugId());
+            jobDataMap.put("times", drugsModel.getTimes()
+                    .stream()
+                    .map(LocalTime::toString)
+                    .collect(Collectors.joining(",")));
             JobDetail jobDetail = createJobDetail(jobKeyString, "drugReminder", jobDataMap);
 
             String cronExpression = createCronExpression(day, time);
@@ -57,7 +62,7 @@ public class NotificationSchedulerService {
 
         String jobKeyString = getJobKeyString(jobName, null, parametersModel.getTime(), parametersModel.getUserId());
 
-        JobDataMap jobDataMap = createBasicDataMap(email);
+        JobDataMap jobDataMap = createBasicDataMap(email, "parameterReminder");
         jobDataMap.put("userId", parametersModel.getUserId());
 
         JobDetail jobDetail = createJobDetail(jobKeyString, "parameterReminder", jobDataMap);
@@ -88,8 +93,9 @@ public class NotificationSchedulerService {
         }
     }
 
-    private JobDataMap createBasicDataMap(String email) {
+    private JobDataMap createBasicDataMap(String email, String group) {
         JobDataMap jobDataMap = new JobDataMap();
+        jobDataMap.put("group", group);
         jobDataMap.put("email", email);
         return jobDataMap;
     }

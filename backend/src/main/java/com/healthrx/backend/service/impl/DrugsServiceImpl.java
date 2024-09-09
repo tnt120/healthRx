@@ -3,6 +3,7 @@ package com.healthrx.backend.service.impl;
 import com.healthrx.backend.api.external.*;
 import com.healthrx.backend.api.internal.*;
 import com.healthrx.backend.api.internal.enums.Days;
+import com.healthrx.backend.api.internal.enums.Priority;
 import com.healthrx.backend.mapper.DrugMapper;
 import com.healthrx.backend.mapper.UserDrugMapper;
 import com.healthrx.backend.quartz.NotificationSchedulerService;
@@ -42,6 +43,7 @@ public class DrugsServiceImpl implements DrugsService {
     private final DrugDoseDayRepository drugDoseDayRepository;
     private final DrugDoseTimeRepository drugDoseTimeRepository;
     private final DrugLogRepository drugLogRepository;
+    private final AccountSettingsRepository accountSettingsRepository;
     private final DrugMapper drugMapper;
     private final UserDrugMapper userDrugMapper;
     private final Supplier<User> principalSupplier;
@@ -282,21 +284,27 @@ public class DrugsServiceImpl implements DrugsService {
         userDrug.setDrugDoseDays(drugDoseDays);
         userDrug.setDrugDoseTimes(drugDoseTimes);
 
-        QuartzNotificationDrugsModel drugsModel = QuartzNotificationDrugsModel.builder()
-                .userDrugId(savedDrug.getId())
-                .drugName(drug.getName())
-                .days(request.getDoseDays())
-                .times(request.getDoseTimes())
-                .startDate(request.getStartDate())
-                .endDate(request.getEndDate())
-                .build();
-
         try {
-            this.notificationSchedulerService.scheduleDrugNotification(
-                    "drugReminder",
-                    user.getEmail(),
-                    drugsModel
-            );
+
+            AccountSettings accountSettings = accountSettingsRepository.findAccountSettingsByUserId(user.getId())
+                    .orElseThrow(ACCOUNT_SETTINGS_NOT_FOUND::getError);
+
+            if (request.getPriority().equals(Priority.HIGH) && accountSettings.isDrugNotificationsEnabled()) {
+                QuartzNotificationDrugsModel drugsModel = QuartzNotificationDrugsModel.builder()
+                        .userDrugId(savedDrug.getId())
+                        .drugName(drug.getName())
+                        .days(request.getDoseDays())
+                        .times(request.getDoseTimes())
+                        .startDate(request.getStartDate())
+                        .endDate(request.getEndDate())
+                        .build();
+
+                this.notificationSchedulerService.scheduleDrugNotification(
+                        "drugReminder",
+                        user.getEmail(),
+                        drugsModel
+                );
+            }
         } catch (SchedulerException e) {
             log.info("Problem with scheduling notification: {}", e.getMessage());
         }
