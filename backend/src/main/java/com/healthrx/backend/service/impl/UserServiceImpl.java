@@ -9,11 +9,14 @@ import com.healthrx.backend.api.internal.enums.Role;
 import com.healthrx.backend.handler.ExpiredTokenException;
 import com.healthrx.backend.kafka.KafkaReceiveModel;
 import com.healthrx.backend.mapper.*;
+import com.healthrx.backend.quartz.NotificationSchedulerService;
+import com.healthrx.backend.quartz.QuartzNotificationParametersModel;
 import com.healthrx.backend.repository.*;
 import com.healthrx.backend.security.service.JwtService;
 import com.healthrx.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.quartz.SchedulerException;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -47,6 +50,7 @@ public class UserServiceImpl implements UserService {
     private final ActivityMapper activityMapper;
     private final KafkaTemplate<String, KafkaReceiveModel> kafkaTemplate;
     private final Supplier<User> principalSupplier;
+    private final NotificationSchedulerService notificationSchedulerService;
 
     @Override
     public User verifyUser(UserVerificationRequest request) {
@@ -62,6 +66,24 @@ public class UserServiceImpl implements UserService {
         fillUserDetails(user, request);
 
         user.setConfigured(true);
+
+        if (user.getRole().equals(Role.USER) && request.getParametersNotifications() != null) {
+            try {
+                QuartzNotificationParametersModel quartzModel = QuartzNotificationParametersModel.builder()
+                        .userId(user.getId())
+                        .time(request.getParametersNotifications())
+                        .build();
+
+                notificationSchedulerService.scheduleParameterNotification(
+                        "parameterReminder",
+                        user.getEmail(),
+                        quartzModel
+                );
+            } catch (SchedulerException e) {
+                log.info("Problem with scheduling parameter notification: {}", e.getMessage());
+            }
+
+        }
 
         return userRepository.save(user);
     }

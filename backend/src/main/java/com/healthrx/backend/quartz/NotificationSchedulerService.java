@@ -93,6 +93,17 @@ public class NotificationSchedulerService {
         }
     }
 
+    public void deleteParameterNotification(String jobName, String userId, LocalTime time) throws SchedulerException {
+        Scheduler scheduler = schedulerFactory.getScheduler();
+
+        String jobKeyString = getJobKeyString(jobName, null, time, userId);
+        JobKey jobKey = new JobKey(jobKeyString, "parameterReminder");
+
+        if (scheduler.checkExists(jobKey)) {
+            scheduler.deleteJob(jobKey);
+        }
+    }
+
     private JobDataMap createBasicDataMap(String email, String group) {
         JobDataMap jobDataMap = new JobDataMap();
         jobDataMap.put("group", group);

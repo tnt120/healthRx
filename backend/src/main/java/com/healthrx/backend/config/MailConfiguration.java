@@ -37,7 +37,8 @@ public class MailConfiguration {
     public Map<String, String> templateDispatcher() {
         return Map.of(
                 "VERIFICATION", "accountVerification",
-                "DRUG_REMINDER", "drugReminder"
+                "DRUG_REMINDER", "drugReminder",
+                "PARAMETER_REMINDER", "parameterReminder"
         );
     }
 }

@@ -1,10 +1,11 @@
 package com.healthrx.backend.quartz;
 
-import com.healthrx.backend.api.internal.DrugLog;
-import com.healthrx.backend.api.internal.UserDrug;
+import com.healthrx.backend.api.internal.*;
 import com.healthrx.backend.kafka.KafkaReceiveModel;
 import com.healthrx.backend.repository.DrugLogRepository;
+import com.healthrx.backend.repository.ParameterLogRepository;
 import com.healthrx.backend.repository.UserDrugRepository;
+import com.healthrx.backend.repository.UserParameterRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,8 @@ public class ReminderJob implements Job {
     private final KafkaTemplate<String, KafkaReceiveModel> kafkaTemplate;
     private final UserDrugRepository userDrugRepository;
     private final DrugLogRepository drugLogRepository;
+    private final UserParameterRepository userParameterRepository;
+    private final ParameterLogRepository parameterLogRepository;
 
     @Override
     @SneakyThrows
@@ -48,6 +51,9 @@ public class ReminderJob implements Job {
                 break;
             }
             case "parameterReminder": {
+                String userId = (String) context.getJobDetail().getJobDataMap().get("userId");
+                handleParameterNotification(email, userId);
+
                 break;
             }
             default: {
@@ -87,14 +93,44 @@ public class ReminderJob implements Job {
                     "missingTimes", missingTimesString
             );
 
-            sendMail(Collections.singletonList(email), data);
+            sendMail(Collections.singletonList(email), data, "DRUG_REMINDER", "Drug reminder");
         }
     }
 
-    private void sendMail(List<String> emails, Map<String, String> data) {
+    private void handleParameterNotification(String email, String userId) {
+        List<UserParameter> userParameters = userParameterRepository.findAllByUserId(userId);
+
+        if (userParameters.isEmpty()) return;
+
+        List<String> missingParameters = new ArrayList<>();
+
+        userParameters.forEach(userParameter -> {
+            ParameterLog log =  parameterLogRepository.findParameterLogByParameterIdAndUserIdAndToday(
+                    userParameter.getParameter().getId(),
+                    userId
+            ).orElse(null);
+
+            if (log == null) {
+                missingParameters.add(userParameter.getParameter().getName());
+            }
+        });
+
+        if (!missingParameters.isEmpty()) {
+            String missingParametersString = String.join(",", missingParameters);
+
+            Map<String, String> data = Map.of(
+                    "link", "http://localhost:4200/user/parameters",
+                    "missingParameters", missingParametersString
+            );
+
+            sendMail(Collections.singletonList(email), data, "PARAMETER_REMINDER", "Parameter reminder");
+        }
+    }
+
+    private void sendMail(List<String> emails, Map<String, String> data, String strategy, String subject) {
         KafkaReceiveModel kafkaReceiveModel = new KafkaReceiveModel()
-                .setSubject("Drug reminder")
-                .setStrategy("DRUG_REMINDER")
+                .setSubject(subject)
+                .setStrategy(strategy)
                 .setEmails(emails)
                 .setData(data);
 

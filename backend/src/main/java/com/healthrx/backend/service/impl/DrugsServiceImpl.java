@@ -306,7 +306,7 @@ public class DrugsServiceImpl implements DrugsService {
                 );
             }
         } catch (SchedulerException e) {
-            log.info("Problem with scheduling notification: {}", e.getMessage());
+            log.info("Problem with scheduling drug notification: {}", e.getMessage());
         }
 
         return userDrugMapper.map(userDrug, drugPackRepository.findPackUnitByDrugId(drug.getId()).getFirst());
