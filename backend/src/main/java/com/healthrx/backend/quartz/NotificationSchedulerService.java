@@ -31,8 +31,9 @@ public class NotificationSchedulerService {
         }
 
         for (Days day : drugsModel.getDays()) {
-            Collections.sort(drugsModel.getTimes());
-            LocalTime time = drugsModel.getTimes().getLast().plusMinutes(15);
+            List<LocalTime> mutableTimes = new ArrayList<>(drugsModel.getTimes());
+            Collections.sort(mutableTimes);
+            LocalTime time = mutableTimes.getLast().plusMinutes(15);
 
             String jobKeyString = getJobKeyString(jobName, day, time, drugsModel.getUserDrugId());
 

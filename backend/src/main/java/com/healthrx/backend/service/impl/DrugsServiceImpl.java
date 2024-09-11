@@ -27,6 +27,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -321,8 +322,50 @@ public class DrugsServiceImpl implements DrugsService {
         UserDrug userDrug = userDrugRepository.findById(userDrugId)
                 .orElseThrow(USER_DRUG_NOT_FOUND::getError);
 
+        AccountSettings accountSettings = accountSettingsRepository.findAccountSettingsByUserId(user.getId())
+                .orElseThrow(ACCOUNT_SETTINGS_NOT_FOUND::getError);
+
         if (!userDrug.getUser().getId().equals(user.getId())) {
             throw USER_NOT_PERMITTED.getError();
+        }
+
+        if (
+                (request.getDoseDays() != null ||
+                request.getDoseTimes() != null ||
+                request.getStartDate() != null ||
+                !Objects.equals(request.getEndDate(), userDrug.getEndDate()) ||
+                request.getPriority() != null) && accountSettings.isDrugNotificationsEnabled()
+        ) {
+            try {
+                List<Days> userDrugDays = userDrug.getDrugDoseDays().stream().map(DrugDoseDay::getDay).toList();
+                List<LocalTime> userDrugTimes = userDrug.getDrugDoseTimes().stream().map(DrugDoseTime::getDoseTime).toList();
+
+                notificationSchedulerService.deleteDrugNotification(
+                        "drugReminder",
+                        userDrug.getId(),
+                        userDrugDays,
+                        userDrugTimes
+                );
+
+                if (request.getPriority() == Priority.HIGH || (request.getPriority() == null && userDrug.getPriority() == Priority.HIGH)) {
+                    QuartzNotificationDrugsModel quartzModel = QuartzNotificationDrugsModel.builder()
+                            .userDrugId(userDrug.getId())
+                            .drugName(userDrug.getDrug().getName())
+                            .days(request.getDoseDays() != null ? request.getDoseDays() : userDrugDays)
+                            .times(request.getDoseTimes() != null ? request.getDoseTimes() : userDrugTimes)
+                            .startDate(request.getStartDate() != null ? request.getStartDate() : userDrug.getStartDate())
+                            .endDate(request.getEndDate())
+                            .build();
+
+                    notificationSchedulerService.scheduleDrugNotification(
+                            "drugReminder",
+                            user.getEmail(),
+                            quartzModel
+                    );
+                }
+            } catch (SchedulerException e) {
+                log.info("Problem with updating drug notification: {}", e.getMessage());
+            }
         }
 
         userDrug.setAmount(request.getAmount());
