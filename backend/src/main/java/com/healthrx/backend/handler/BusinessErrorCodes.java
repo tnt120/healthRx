@@ -37,7 +37,10 @@ public enum BusinessErrorCodes {
     DRUG_LOG_ALREADY_EXISTS(317, "Drug log already exists. Post message incorrect", HttpStatus.BAD_REQUEST),
     WRONG_DRUG_MONITOR_DATA(318, "Provided date and/or time are incorrect", HttpStatus.BAD_REQUEST),
     DRUG_LOG_NOT_FOUND(319, "Drug log not found", HttpStatus.NOT_FOUND),
-    ACCOUNT_SETTINGS_NOT_FOUND(320, "Account settings not found", HttpStatus.NOT_FOUND)
+    ACCOUNT_SETTINGS_NOT_FOUND(320, "Account settings not found", HttpStatus.NOT_FOUND),
+    INCORRECT_CURRENT_PASSWORD(321, "Current password is incorrect", HttpStatus.BAD_REQUEST),
+    NEW_PASSWORDS_NOT_MATCH(322, "New passwords do not match", HttpStatus.BAD_REQUEST),
+    NO_DIFFERENT_NEW_PASSWORD(323, "New password is the same as the old one", HttpStatus.BAD_REQUEST),
     ;
 
     private final int code;
