@@ -1,14 +1,12 @@
 package com.healthrx.backend.controller;
 
+import com.healthrx.backend.api.external.settings.NotificationsData;
 import com.healthrx.backend.api.external.settings.PasswordChangeRequest;
 import com.healthrx.backend.api.external.settings.PersonalDataChangeRequest;
 import com.healthrx.backend.service.SettingsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/settings")
@@ -24,5 +22,10 @@ public class SettingsController {
     @PostMapping("/passwordChange")
     public ResponseEntity<Void> passwordChange(@RequestBody PasswordChangeRequest request) {
         return ResponseEntity.ok(settingsService.passwordChange(request));
+    }
+
+    @PutMapping("/notificationsChange")
+    public ResponseEntity<NotificationsData> notificationsChange(@RequestBody NotificationsData request) {
+        return ResponseEntity.ok(settingsService.notificationsChange(request));
     }
 }
