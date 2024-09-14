@@ -23,7 +23,7 @@ public class ParametersController {
     }
 
     @PatchMapping("/users")
-    public ResponseEntity<List<ParameterDTO>> editUserParameters(@RequestBody List<ParameterDTO> request) {
+    public ResponseEntity<List<UserParametersResponse>> editUserParameters(@RequestBody List<ParameterDTO> request) {
         return ResponseEntity.ok(parametersService.editUserParameters(request));
     }
 

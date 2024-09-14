@@ -58,7 +58,7 @@ public class ParametersServiceImpl implements ParametersService {
 
     @Override
     @Transactional
-    public List<ParameterDTO> editUserParameters(List<ParameterDTO> request) {
+    public List<UserParametersResponse> editUserParameters(List<ParameterDTO> request) {
 
         User user = principalSupplier.get();
 
@@ -66,6 +66,7 @@ public class ParametersServiceImpl implements ParametersService {
         Map<String, UserParameter> existingUserParametersMap = existingUserParameters.stream()
                 .collect(Collectors.toMap(up -> up.getParameter().getId(), up -> up));
 
+        List<UserParametersResponse> response = new ArrayList<>();
 
         request.forEach(parameterDTO -> {
             Parameter parameter = this.parameterRepository.findById(parameterDTO.getId())
@@ -79,11 +80,21 @@ public class ParametersServiceImpl implements ParametersService {
             } else {
                 existingUserParametersMap.remove(parameterDTO.getId());
             }
+
+            Double parameterValue = parameterLogRepository.findParameterLogValueByParameterIdAndUserIdAndToday(
+                    parameter.getId(),
+                    user.getId()
+            ).orElse(null);
+
+            response.add(userParameterMapper.map(UserParameter.builder()
+                    .parameter(parameter)
+                    .user(user)
+                    .build(), parameterValue));
         });
 
         userParameterRepository.deleteAll(existingUserParametersMap.values());
 
-        return request;
+        return response;
     }
 
     @Override

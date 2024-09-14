@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ParametersService {
     List<UserParametersResponse> getUserParameters();
-    List<ParameterDTO> editUserParameters(List<ParameterDTO> request);
+    List<UserParametersResponse> editUserParameters(List<ParameterDTO> request);
     List<UserParametersResponse> setMonitorUserParameters(List<UserParametersRequest> request);
     UserParametersResponse editMonitorUserParameters(UserParametersRequest request);
 }
