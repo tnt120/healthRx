@@ -41,6 +41,7 @@ public enum BusinessErrorCodes {
     INCORRECT_CURRENT_PASSWORD(321, "Current password is incorrect", HttpStatus.BAD_REQUEST),
     NEW_PASSWORDS_NOT_MATCH(322, "New passwords do not match", HttpStatus.BAD_REQUEST),
     NO_DIFFERENT_NEW_PASSWORD(323, "New password is the same as the old one", HttpStatus.BAD_REQUEST),
+    EMAIL_ALREADY_EXISTS(324, "Email already exists", HttpStatus.CONFLICT),
     ;
 
     private final int code;
