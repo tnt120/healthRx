@@ -10,7 +10,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { EditParameterMonitorDialogComponent, EditParameterMonitorDialogData } from '../../components/edit-parameter-monitor-dialog/edit-parameter-monitor-dialog.component';
 import { CustomSnackbarService } from '../../../../core/services/custom-snackbar/custom-snackbar.service';
 import { ParametersService } from '../../../../core/services/parameters/parameters.service';
-import { SpinnerService } from '../../../../core/services/spinner/spinner.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-parameters-dashboard',
@@ -27,6 +27,8 @@ export class ParametersDashboardComponent implements OnInit, OnDestroy {
   private readonly customSnackbarService = inject(CustomSnackbarService);
 
   private readonly parameterService = inject(ParametersService);
+
+  private readonly router = inject(Router);
 
   parameters$: Observable<Parameter[]>;
 
@@ -53,6 +55,10 @@ export class ParametersDashboardComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  goToSettings() {
+    this.router.navigate(['/user/settings'], { queryParams: { parametersChange: true } });
   }
 
   filterMatchingUserParameters(): void {

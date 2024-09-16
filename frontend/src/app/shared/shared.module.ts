@@ -16,6 +16,8 @@ import { TableComponent } from './components/table/table.component';
 import { DayTailComponent } from './components/day-tail/day-tail.component';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 import { OnlyNumbersDirective } from './directives/onlyNumbers/only-numbers.directive';
+import { TabsComponent } from './components/tabs/tabs.component';
+import { TabComponent } from './components/tabs/tab/tab.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +36,8 @@ import { OnlyNumbersDirective } from './directives/onlyNumbers/only-numbers.dire
     DayTailComponent,
     ConfirmationDialogComponent,
     OnlyNumbersDirective,
+    TabsComponent,
+    TabComponent,
   ],
   imports: [
     CommonModule,

@@ -1,1 +1,17 @@
-<p>settings works!</p>
+<app-tabs [test]="parametersChange">
+  <app-tab headerTitle="Profil" [padding]="tabPadding">
+    <p>Profil</p>
+  </app-tab>
+  <app-tab headerTitle="Zmiana hasła" [padding]="tabPadding">
+    <p>Zmiana hasła</p>
+  </app-tab>
+  <app-tab headerTitle="Zarządzanie powiadomieniami" *ngIf="role === 'USER'" [padding]="tabPadding">
+    <p>Zarządzanie powiadomieniami</p>
+  </app-tab>
+  <app-tab headerTitle="Zarządzanie parametrami" *ngIf="role === 'USER'" [padding]="tabPadding">
+    <p>Zarządzanie parametrami</p>
+  </app-tab>
+  <app-tab headerTitle="Zmiana zdjęcia profilowego" *ngIf="role === 'DOCTOR'" [padding]="tabPadding">
+    <p>Zmiana zdjęcia profilowego</p>
+  </app-tab>
+</app-tabs>

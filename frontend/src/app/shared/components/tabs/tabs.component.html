@@ -1,0 +1,8 @@
+<div class="tabs-container">
+  <div class="tabs">
+    @for (tab of tabs; track tab.headerTitle) {
+      <div class="tab" [ngClass]="{'active': tab.active === true }" [ngClass]="" (click)="selectTab(tab)">{{ tab.headerTitle() }}</div>
+    }
+  </div>
+  <ng-content></ng-content>
+</div>

@@ -1,0 +1,55 @@
+@use '@angular/material' as mat;
+@import '../../../../styles/variables';
+
+:host {
+    .tabs-container {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        user-select: none;
+
+        .tabs {
+            display: flex;
+            flex-direction: column;
+            width: 380px;
+
+            .tab {
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+                padding: 10px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+                transition: .15s;
+                border-radius: 5px;
+            }
+
+            .tab:hover {
+                cursor: pointer;
+            }
+
+            .tab.active {
+                background-color: rgb(20, 105, 192, 0.3);
+                font-weight: bold;
+            }
+        }
+
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    :host {
+        .tabs-container {
+          flex-direction: column;
+
+          .tabs {
+              width: 100%;
+
+              .tab {
+                justify-content: center;
+              }
+          }
+        }
+    }
+
+}
