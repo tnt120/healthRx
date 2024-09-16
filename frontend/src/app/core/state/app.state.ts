@@ -1,5 +1,6 @@
 import { Activity } from "../models/activity.model";
 import { City } from "../models/city.model";
+import { NotificationsData } from "../models/notifications-data.model";
 import { Parameter } from "../models/parameter.model";
 import { Specialization } from "../models/specialization.model";
 import { UserParameterResponse } from "../models/user-parameter-response.model";
@@ -12,4 +13,5 @@ export interface AppState {
   parameters: Parameter[];
   specializations: Specialization[];
   userParameters: UserParameterResponse[];
+  notificationsSettings: NotificationsData;
 }

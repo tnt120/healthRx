@@ -28,6 +28,7 @@ import localePl from '@angular/common/locales/pl';
 import { registerLocaleData } from '@angular/common';
 import { UserParametersEffects } from './core/state/user-parameters/user-parameters.effects';
 import { spinnerInterceptor } from './core/interceptors/spinner/spinner.interceptor';
+import { notificationsSettingsReducer } from './core/state/notifications-settings/notifications-settings.reducer';
 
 function initializeAppFactory(store: Store, router: Router, actions$: Actions): () => void {
   return async () => {
@@ -63,6 +64,7 @@ function initializeAppFactory(store: Store, router: Router, actions$: Actions): 
       parameters: parametersReducer,
       specializations: specializationsReducer,
       userParameters: userParametersReducer,
+      notificationsSettings: notificationsSettingsReducer,
     }, {}),
     EffectsModule.forRoot([configEffects, UserParametersEffects]),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode(), autoPause: true, trace: true, traceLimit: 75 }),
