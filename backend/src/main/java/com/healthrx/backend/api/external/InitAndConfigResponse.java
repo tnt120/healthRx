@@ -1,5 +1,6 @@
 package com.healthrx.backend.api.external;
 
+import com.healthrx.backend.api.external.settings.NotificationsData;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,4 +19,5 @@ public class InitAndConfigResponse {
     private List<ActivityDTO> activities;
     private List<CityDTO> cities;
     private List<UserParametersResponse> userParameters;
+    private NotificationsData notificationsSettings;
 }

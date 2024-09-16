@@ -15,4 +15,15 @@ public class UserMapper {
                 .pictureUrl(user.getPictureUrl())
                 .build();
     }
+
+    public UserResponse extendedMap(User user) {
+        UserResponse userResponse = map(user);
+        userResponse.setLastName(user.getLastName());
+        userResponse.setPhoneNumber(user.getPhoneNumber());
+        userResponse.setSex(user.getSex());
+        userResponse.setBirthDate(user.getBirthDate());
+        userResponse.setHeight(user.getHeight());
+
+        return userResponse;
+    }
 }

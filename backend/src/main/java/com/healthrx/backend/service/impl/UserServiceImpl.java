@@ -42,12 +42,14 @@ public class UserServiceImpl implements UserService {
     private final CityRepository cityRepository;
     private final ActivityRepository activityRepository;
     private final ParameterLogRepository parameterLogRepository;
+    private final AccountSettingsRepository accountSettingsRepository;
     private final ParameterMapper parameterMapper;
     private final SpecializationMapper specializationMapper;
     private final UserParameterMapper userParameterMapper;
     private final CityMapper cityMapper;
     private final UserMapper userMapper;
     private final ActivityMapper activityMapper;
+    private final NotificationsMapper notificationsMapper;
     private final KafkaTemplate<String, KafkaReceiveModel> kafkaTemplate;
     private final Supplier<User> principalSupplier;
     private final NotificationSchedulerService notificationSchedulerService;
@@ -146,7 +148,7 @@ public class UserServiceImpl implements UserService {
 
          InitAndConfigResponse response = new InitAndConfigResponse();
 
-         response.setUser(userMapper.map(user));
+         response.setUser(userMapper.extendedMap(user));
 
          if (user.getRole() == Role.USER) {
              response.setActivities(
@@ -189,6 +191,12 @@ public class UserServiceImpl implements UserService {
                                  return userParameterMapper.map(userParameter, parameterValue);
                              })
                              .toList()
+             );
+
+             response.setNotificationsSettings(
+                     accountSettingsRepository.findAccountSettingsByUserId(user.getId())
+                     .map(notificationsMapper::map)
+                     .orElseThrow(ACCOUNT_SETTINGS_NOT_FOUND::getError)
              );
          }
 
