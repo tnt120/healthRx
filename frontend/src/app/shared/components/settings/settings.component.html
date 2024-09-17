@@ -6,7 +6,7 @@
     <app-password-change-dialog></app-password-change-dialog>
   </app-tab>
   <app-tab headerTitle="Zarządzanie powiadomieniami" *ngIf="role === 'USER'" [padding]="tabPadding">
-    <p>Zarządzanie powiadomieniami</p>
+    <app-notifications-manage [notificationsSettings]="notificationsSettings$ | async"></app-notifications-manage>
   </app-tab>
   <app-tab headerTitle="Zarządzanie parametrami" *ngIf="role === 'USER'" [padding]="tabPadding">
     <p>Zarządzanie parametrami</p>

@@ -21,6 +21,8 @@ import { TabComponent } from './components/tabs/tab/tab.component';
 import { SettingsUserProfileComponent } from './components/settings/settings-user-profile/settings-user-profile.component';
 import { UserProfileEditDialogComponent } from './components/settings/user-profile-edit-dialog/user-profile-edit-dialog.component';
 import { PasswordChangeDialogComponent } from './components/settings/password-change-dialog/password-change-dialog.component';
+import { NotificationsManageComponent } from './components/settings/notifications-manage/notifications-manage.component';
+import { NotificationsManageDialogComponent } from './components/settings/notifications-manage/notifications-manage-dialog/notifications-manage-dialog.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +46,8 @@ import { PasswordChangeDialogComponent } from './components/settings/password-ch
     SettingsUserProfileComponent,
     UserProfileEditDialogComponent,
     PasswordChangeDialogComponent,
+    NotificationsManageComponent,
+    NotificationsManageDialogComponent,
   ],
   imports: [
     CommonModule,

@@ -5,6 +5,7 @@ import { Roles } from '../../../core/enums/roles.enum';
 import { UserResponse } from '../../../core/models/user/user-response.model';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { ActivatedRoute } from '@angular/router';
+import { NotificationsData } from '../../../core/models/notifications-data.model';
 
 @Component({
   selector: 'app-settings',
@@ -29,6 +30,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
   parametersChange = false;
 
   userData$: Observable<UserResponse> = this.store.select('user');
+
+  notificationsSettings$: Observable<NotificationsData> = this.store.select('notificationsSettings');
 
   ngOnInit(): void {
     this.parametersChange = this.route.snapshot?.queryParams['parametersChange'];

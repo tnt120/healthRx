@@ -1,0 +1,25 @@
+<div class="data-container">
+  <div class="labels">
+    <div>
+      <p class="subtitle-1">Przypominanie o uzupełnieniu parametrów:</p>
+    </div>
+    <div>
+      <p class="subtitle-1">Powiadamianie o niepokojących wynikach: </p>
+    </div>
+    <div>
+      <p class="subtitle-1">Powiadamianie o zażyciu leku wysokiego priorytetu:</p>
+    </div>
+  </div>
+  <div class="values">
+    <div>
+      <p>{{ notificationsSettings()?.parametersNotifications ? 'Tak, ' + notificationsSettings()?.parametersNotifications?.substring(0, 5) : 'Nie' }}</p>
+    </div>
+    <div>
+      <p>{{ notificationsSettings()?.isBadResultsNotificationsEnabled ? 'Tak' : 'Nie' }}</p>
+    </div>
+    <div>
+      <p>{{ notificationsSettings()?.isDrugNotificationsEnabled ? 'Tak' : 'Nie' }}</p>
+    </div>
+  </div>
+</div>
+<button mat-flat-button>Edytuj</button>

@@ -1,0 +1,30 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .data-container {
+    display: flex;
+    gap: 10px;
+
+    .labels {
+      div {
+        display: flex;
+        height: 40px;
+        align-items: center;
+      }
+    }
+
+    .values {
+      div {
+        display: flex;
+        height: 40px;
+        align-items: center;
+      }
+    }
+  }
+
+  button {
+    width: 100px;
+  }
+}
