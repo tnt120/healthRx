@@ -27,6 +27,9 @@ export class ErrorCodesService {
     310: { message: 'Log parametrów już istnieje. Nieprawidłowa wiadomość', status: 'BAD_REQUEST' },
     311: { message: 'Log parametrów nie znaleziony', status: 'NOT_FOUND' },
     312: { message: 'Użytkownik próbuje zmodyfikować dane innej osoby', status: 'FORBIDDEN' },
+    321: { message: 'Niepoprawne aktualne hasło', status: 'BAD_REQUEST' },
+    322: { message: 'Hasła do siebie nie pasują', status: 'BAD_REQUEST' },
+    323: { message: 'Nowe hasło jest takie samo jak stare hasło', status: 'BAD_REQUEST' },
     500: { message: 'Błąd serwera', status: 'NOT_IMPLEMENTED' }
   };
 
