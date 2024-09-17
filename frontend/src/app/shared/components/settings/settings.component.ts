@@ -28,6 +28,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   parametersChange = false;
 
+  userData$: Observable<UserResponse> = this.store.select('user');
+
   ngOnInit(): void {
     this.parametersChange = this.route.snapshot?.queryParams['parametersChange'];
 

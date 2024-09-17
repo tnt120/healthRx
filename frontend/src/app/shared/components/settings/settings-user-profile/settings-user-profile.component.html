@@ -1,0 +1,55 @@
+@if (userProfileData()) {
+  <div class="labels">
+    <div>
+      <p class="subtitle-1">Imię:</p>
+    </div>
+    <div>
+      <p class="subtitle-1">Nazwisko: </p>
+    </div>
+    <div>
+      <p class="subtitle-1">Adres email:</p>
+    </div>
+    <div>
+      <p class="subtitle-1">Płeć:</p>
+    </div>
+    <div>
+      <p class="subtitle-1">Data urodzenia:</p>
+    </div>
+    <div>
+      <p class="subtitle-1">Numer telefonu: </p>
+    </div>
+    <div>
+      <p *ngIf="userProfileData()?.role === 'USER'" class="subtitle-1">Wzrost: </p>
+    </div>
+  </div>
+  <div class="values">
+    <div>
+      <p #firstName [matTooltip]="userProfileData()?.firstName || ''" [matTooltipDisabled]="isOverflow(firstName)">{{ userProfileData()?.firstName }}</p>
+      <button mat-button (click)="onEdit('firstName')">edytuj</button>
+    </div>
+    <div>
+      <p #lastName [matTooltip]="userProfileData()?.lastName || ''" [matTooltipDisabled]="isOverflow(lastName)">{{ userProfileData()?.lastName }}</p>
+      <button mat-button (click)="onEdit('lastName')">edytuj</button>
+    </div>
+    <div>
+      <p #email [matTooltip]="userProfileData()?.email || ''" [matTooltipDisabled]="isOverflow(email)">{{ userProfileData()?.email }}</p>
+      <button mat-button (click)="onEdit('email')">edytuj</button>
+    </div>
+    <div>
+      <p #sex [matTooltip]="getSex() || ''" [matTooltipDisabled]="isOverflow(sex)">{{ getSex() }}</p>
+      <button mat-button (click)="onEdit('sex')">edytuj</button>
+    </div>
+    <div>
+      <p #birthDate [matTooltip]="userProfileData()?.birthDate || ''" [matTooltipDisabled]="isOverflow(birthDate)">{{ userProfileData()?.birthDate }}</p>
+      <button mat-button (click)="onEdit('birthDate')">edytuj</button>
+    </div>
+    <div>
+      <p #phoneNumber [matTooltip]="userProfileData()?.phoneNumber || ''" [matTooltipDisabled]="isOverflow(phoneNumber)">{{ userProfileData()?.phoneNumber }}</p>
+      <button mat-button (click)="onEdit('phoneNumber')">edytuj</button>
+    </div>
+    <div *ngIf="userProfileData()?.role === 'USER'">
+      <p #height [matTooltip]="getHeight()" [matTooltipDisabled]="isOverflow(height)">{{ getHeight() }}</p>
+      <button mat-button (click)="onEdit('height')">edytuj</button>
+    </div>
+  </div>
+}

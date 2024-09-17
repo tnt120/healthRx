@@ -1,6 +1,6 @@
 <app-tabs [test]="parametersChange">
   <app-tab headerTitle="Profil" [padding]="tabPadding">
-    <p>Profil</p>
+    <app-settings-user-profile [userProfileData]="userData$ | async"></app-settings-user-profile>
   </app-tab>
   <app-tab headerTitle="Zmiana hasła" [padding]="tabPadding">
     <p>Zmiana hasła</p>

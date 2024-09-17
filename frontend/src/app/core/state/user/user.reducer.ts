@@ -3,6 +3,7 @@ import { UserResponse } from "../../models/user/user-response.model";
 import { configActions } from "../config/config.actions";
 import { Roles } from "../../enums/roles.enum";
 import { Sex } from "../../enums/sex.enum";
+import { userActions } from "./user.actions";
 
 export const userInitialState: UserResponse = {
   firstName: "",
@@ -19,5 +20,6 @@ export const userInitialState: UserResponse = {
 export const userReducer = createReducer(
   userInitialState,
   on(configActions.loadSuccess, (state, { config }) => config.user),
-  on(configActions.logout, () => userInitialState)
+  on(configActions.logout, () => userInitialState),
+  on(userActions.editSuccess, (state, { userData }) => userData),
 );

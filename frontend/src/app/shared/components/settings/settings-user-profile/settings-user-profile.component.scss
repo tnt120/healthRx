@@ -1,0 +1,27 @@
+:host {
+  display: flex;
+  gap: 10px;
+
+  .labels {
+    div {
+      display: flex;
+      height: 40px;
+      align-items: center;
+    }
+  }
+
+  .values {
+    div {
+      display: flex;
+      height: 40px;
+      align-items: center;
+
+      p {
+        width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+         white-space: nowrap;
+      }
+    }
+  }
+}
