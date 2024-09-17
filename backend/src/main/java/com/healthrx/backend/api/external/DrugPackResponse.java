@@ -14,6 +14,6 @@ public class DrugPackResponse {
     private String gtinCode;
     private String accessibilityCategory;
     private String packType;
-    private Integer packSize;
+    private Double packSize;
     private String packUnit;
 }

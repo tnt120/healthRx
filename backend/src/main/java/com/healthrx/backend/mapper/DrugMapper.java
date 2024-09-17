@@ -40,7 +40,7 @@ public class DrugMapper {
                 .build();
     }
 
-    public DrugPackResponse map(DrugPack drugPack, Integer packSize) {
+    public DrugPackResponse map(DrugPack drugPack, Double packSize) {
         return DrugPackResponse.builder()
                 .id(drugPack.getId())
                 .gtinCode(drugPack.getGtinCode())

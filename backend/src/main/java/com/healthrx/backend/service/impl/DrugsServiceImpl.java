@@ -94,9 +94,9 @@ public class DrugsServiceImpl implements DrugsService {
                         quantity = Integer.parseInt(pack.getPackagesQuantity());
                     }
 
-                    int packSize = pack.getPackSize() != null && !pack.getPackSize().isEmpty() ? Integer.parseInt(pack.getPackSize()) : 0;
+                    double packSize = pack.getPackSize() != null && !pack.getPackSize().isEmpty() ? Double.parseDouble(pack.getPackSize().replace(",", ".")) : 0;
 
-                    return drugMapper.map(pack,packSize);
+                    return drugMapper.map(pack, packSize);
                 })
                 .toList();
 
