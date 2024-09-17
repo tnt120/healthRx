@@ -1,14 +1,15 @@
-<h3 mat-dialog-title>Edytuj - {{ data.profilParameter }}</h3>
+<h3 mat-dialog-title>Edytuj {{ getLabel().toLowerCase() }}</h3>
 <mat-dialog-content class="mat-typography">
   <div class="content">
     @if (data.profilParameter === 'phoneNumber') {
       <mat-form-field appearance="outline">
-        <mat-label>{{ data.profilParameter }}</mat-label>
+        <mat-label>{{ getLabel() }}</mat-label>
         <input type="text" matInput [(ngModel)]="currValue" />
         <mat-hint>Format: (+00)123456789</mat-hint>
       </mat-form-field>
     } @else if (data.profilParameter === 'sex') {
       <mat-form-field appearance="outline">
+        <mat-label>{{ getLabel() }}</mat-label>
         <mat-select [(ngModel)]="currValue">
           <mat-option value="MAN">Mężczyzna</mat-option>
           <mat-option value="WOMAN">Kobieta</mat-option>
@@ -17,7 +18,7 @@
       </mat-form-field>
     } @else if (data.profilParameter === 'birthDate') {
       <mat-form-field appearance="outline">
-        <mat-label>{{ data.profilParameter }}</mat-label>
+        <mat-label>{{ getLabel() }}</mat-label>
         <input [matDatepicker]="picker" matInput [(ngModel)]="currValue" />
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
@@ -25,20 +26,18 @@
     }
     @else if (isString()) {
       <mat-form-field appearance="outline">
-        <mat-label>{{ data.profilParameter }}</mat-label>
+        <mat-label>{{ getLabel() }}</mat-label>
         <input type="text" matInput [(ngModel)]="currValue" />
       </mat-form-field>
     } @else {
       <mat-form-field appearance="outline">
-        <mat-label>{{ data.profilParameter }}</mat-label>
+        <mat-label>{{ getLabel() }}</mat-label>
         <input type="number" min="0" max="999" matInput [(ngModel)]="currValue" />
       </mat-form-field>
     }
   </div>
 </mat-dialog-content>
-<mat-dialog-actions>
+<mat-dialog-actions align="end">
   <button mat-stroked-button mat-dialog-close>Anuluj</button>
-  <div>
-    <button mat-flat-button [mat-dialog-close]="getValue()" [disabled]="!isValid()">Zapisz</button>
-  </div>
+  <button mat-flat-button [mat-dialog-close]="getValue()" [disabled]="!isValid()">Zapisz</button>
 </mat-dialog-actions>

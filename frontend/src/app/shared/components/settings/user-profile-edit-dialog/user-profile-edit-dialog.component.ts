@@ -63,11 +63,13 @@ export class UserProfileEditDialogComponent implements OnInit {
 
   getLabel(): string {
     switch (this.data.profilParameter) {
-      case 'phoneNumber': return 'Numer telefonu';
-      case 'birthDate': return 'Data urodzenia';
+      case 'firstName': return 'Imię';
+      case 'lastName': return 'Nazwisko';
       case 'email': return 'Email';
+      case 'sex': return 'Płeć';
+      case 'birthDate': return 'Data urodzenia';
+      case 'phoneNumber': return 'Numer telefonu';
       case 'height': return 'Wzrost';
-      case 'weight': return 'Waga';
       default: return '';
     }
   }
