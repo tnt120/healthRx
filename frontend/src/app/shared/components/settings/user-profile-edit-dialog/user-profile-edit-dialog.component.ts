@@ -40,8 +40,8 @@ export class UserProfileEditDialogComponent implements OnInit {
       return basicTest && /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$/.test(this.currValue as string);
     }
 
-    if (!this.isString()) {
-      return basicTest && this.currValue as number >= 1;
+    if (this.data.profilParameter === 'height' && typeof this.currValue === 'number') {
+      return this.data.value !== this.currValue && this.currValue >= 100 && this.currValue <= 300;
     }
 
     return basicTest;

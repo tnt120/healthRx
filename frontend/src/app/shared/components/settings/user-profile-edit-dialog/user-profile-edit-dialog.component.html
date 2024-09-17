@@ -32,7 +32,8 @@
     } @else {
       <mat-form-field appearance="outline">
         <mat-label>{{ getLabel() }}</mat-label>
-        <input type="number" min="0" max="999" matInput [(ngModel)]="currValue" />
+        <input type="number" min="100" max="300" matInput [(ngModel)]="currValue" />
+        <mat-hint>Wartość musi być w przedziale 100 - 300</mat-hint>
       </mat-form-field>
     }
   </div>

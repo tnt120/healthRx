@@ -59,7 +59,8 @@ export class SettingsUserProfileComponent implements OnDestroy {
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
           const request: PersonalDataChangeRequest = {
-            [field]: result
+            [field]: result,
+            isHeightChanged: field === 'height' ? true : undefined
           };
 
           this.subscriptions.push(
