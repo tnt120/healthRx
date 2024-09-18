@@ -5,6 +5,7 @@ import { PersonalDataChangeRequest } from '../../models/personal-data-change.mod
 import { PasswordChangeRequest } from '../../models/password-change-request.model';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { CustomSnackbarService } from '../custom-snackbar/custom-snackbar.service';
+import { NotificationsData } from '../../models/notifications-data.model';
 
 @Injectable({
   providedIn: 'root'
@@ -39,4 +40,17 @@ export class SettingsService {
       })
     );
   }
+
+  notificationsChange(request: NotificationsData): Observable<NotificationsData> {
+    return this.http.put<NotificationsData>(`${this.apiUrl}/notificationsChange`, request).pipe(
+      tap(() => {
+        this.customSnackbarService.openCustomSnackbar({ title: 'Sukces', message: 'Pomyślnie zaktualizowano ustawienia powiedomień', type: 'success', duration: 3000 });
+      }),
+      catchError((err) => {
+        this.customSnackbarService.openCustomSnackbar({ title: 'Błąd', message: 'Nie udało się ustawień powiadomień.', type: 'error', duration: 3000 });
+        return throwError(() => err)
+      })
+    );
+  }
+
 }

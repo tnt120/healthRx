@@ -1,1 +1,37 @@
-<p>notifications-manage-dialog works!</p>
+<h3 mat-dialog-title>Edytuj powiadomienia</h3>
+<mat-dialog-content class="mat-typography">
+  <div class="content">
+    <div class="heading">
+      <h4>Czy chcesz otrzymywać powiadomienia o uzupełnianiu parametrów?</h4>
+    </div>
+    <div class="space-between-div">
+      <mat-slide-toggle [(ngModel)]="currValues().parametersNotifications">{{ currValues().parametersNotifications ? 'Tak' : 'Nie' }}</mat-slide-toggle>
+      <div class="time-picker" *ngIf="currValues().parametersNotifications">
+        <mat-form-field appearance="outline">
+          <mat-label>Godzina</mat-label>
+          <mat-select [(ngModel)]="currValues().hours">
+            <mat-option *ngFor="let hour of hours" [value]="hour">{{ hour }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Minuta</mat-label>
+          <mat-select [(ngModel)]="currValues().minutes">
+            <mat-option *ngFor="let minute of minutes" [value]="minute">{{ minute }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="heading">
+      <h4>Czy chcesz otrzymywać powiadomienia w przypadku niepokojących wyników?</h4>
+    </div>
+    <mat-slide-toggle [(ngModel)]="currValues().isBadResultsNotificationsEnabled">{{ currValues().isBadResultsNotificationsEnabled ? 'Tak' : 'Nie' }}</mat-slide-toggle>
+    <div class="heading">
+      <h4>Czy chcesz otrzymywać powiadomienia o zażyciu leku z priorytetem wysokim?</h4>
+    </div>
+    <mat-slide-toggle [(ngModel)]="currValues().isDrugNotificationsEnabled">{{ currValues().isDrugNotificationsEnabled ? 'Tak' : 'Nie' }}</mat-slide-toggle>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-stroked-button mat-dialog-close>Anuluj</button>
+  <button mat-flat-button [mat-dialog-close]="getValue()" [disabled]="!isValid()">Zapisz</button>
+</mat-dialog-actions>

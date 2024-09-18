@@ -73,7 +73,5 @@ export class SettingsUserProfileComponent implements OnDestroy {
         }
       })
     )
-
-    console.log('Edit', field);
   }
 }

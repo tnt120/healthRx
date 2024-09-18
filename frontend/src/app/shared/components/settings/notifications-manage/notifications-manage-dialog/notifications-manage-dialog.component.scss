@@ -1,0 +1,43 @@
+:host {
+  .content {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    gap: 10px;
+
+    .space-between-div {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+
+      .time-picker {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+      }
+    }
+  }
+
+  h3 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  :host {
+    .content {
+      .space-between-div {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .time-picker {
+        flex-direction: column;
+        gap: 0.2rem;
+      }
+    }
+  }
+}
