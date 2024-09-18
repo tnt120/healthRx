@@ -16,5 +16,9 @@ export const userParametersActions = createActionGroup({
     'edit': props<{ request: UserParameterRequest }>(),
     'edit success': props<{ userParameter: UserParameterResponse }>(),
     'edit error': props<{ error: any }>(),
+
+    'update': emptyProps(),
+    'update success': props<{ userParameters: UserParameterResponse[] }>(),
+    'update error': props<{ error: any }>()
   }
 })

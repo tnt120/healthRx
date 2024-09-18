@@ -23,6 +23,8 @@ import { UserProfileEditDialogComponent } from './components/settings/user-profi
 import { PasswordChangeDialogComponent } from './components/settings/password-change-dialog/password-change-dialog.component';
 import { NotificationsManageComponent } from './components/settings/notifications-manage/notifications-manage.component';
 import { NotificationsManageDialogComponent } from './components/settings/notifications-manage/notifications-manage-dialog/notifications-manage-dialog.component';
+import { ParametersManageComponent } from './components/settings/parameters-manage/parameters-manage.component';
+import { ParametersManageDialogComponent } from './components/settings/parameters-manage/parameters-manage-dialog/parameters-manage-dialog.component';
 
 @NgModule({
   declarations: [
@@ -48,6 +50,8 @@ import { NotificationsManageDialogComponent } from './components/settings/notifi
     PasswordChangeDialogComponent,
     NotificationsManageComponent,
     NotificationsManageDialogComponent,
+    ParametersManageComponent,
+    ParametersManageDialogComponent,
   ],
   imports: [
     CommonModule,

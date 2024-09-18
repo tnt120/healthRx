@@ -1,4 +1,4 @@
-import { Component, input, Input, model, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
+import { Component, input, Input, model, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, inject, HostBinding } from '@angular/core';
 
 @Component({
   selector: 'app-tab',
@@ -13,16 +13,23 @@ export class TabComponent {
 
   private _active = false;
 
+  @HostBinding('class.active')
+  get isActive(): boolean {
+    return this._active;
+  }
+
   @Input()
   get active(): boolean {
     return this._active;
   }
 
   set active(val: boolean) {
-    if (val !== this._active) {
-      this._active = val;
-      this.cdRef.detectChanges();
-    }
+    setTimeout(() => {
+      if (val !== this._active) {
+        this._active = val;
+        this.cdRef.detectChanges();
+      }
+    });
   }
 
   padding = input.required<string>();

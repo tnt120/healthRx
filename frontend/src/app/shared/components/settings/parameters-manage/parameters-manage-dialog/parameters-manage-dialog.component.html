@@ -1,0 +1,14 @@
+<h3 mat-dialog-title>Edytuj powiadomienia</h3>
+<mat-dialog-content class="mat-typography">
+  <div class="content">
+    <form [formGroup]="currParametersForm" class="parameters-grid">
+      @for (parameter of data.parameters; track parameter.id) {
+        <app-parameter-tail [control]="currParametersForm.get(parameter.id)" [parameter]="parameter"></app-parameter-tail>
+      }
+    </form>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-stroked-button mat-dialog-close>Anuluj</button>
+  <button mat-flat-button [mat-dialog-close]="currentSelectedParameters" [disabled]="!isValid()">Zapisz</button>
+</mat-dialog-actions>

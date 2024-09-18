@@ -6,6 +6,8 @@ import { UserResponse } from '../../../core/models/user/user-response.model';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { ActivatedRoute } from '@angular/router';
 import { NotificationsData } from '../../../core/models/notifications-data.model';
+import { UserParameterResponse } from '../../../core/models/user-parameter-response.model';
+import { Parameter } from '../../../core/models/parameter.model';
 
 @Component({
   selector: 'app-settings',
@@ -32,6 +34,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
   userData$: Observable<UserResponse> = this.store.select('user');
 
   notificationsSettings$: Observable<NotificationsData> = this.store.select('notificationsSettings');
+
+  userParamters$: Observable<UserParameterResponse[]> = this.store.select('userParameters');
+
+  paramters$: Observable<Parameter[]> = this.store.select('parameters');
 
   ngOnInit(): void {
     this.parametersChange = this.route.snapshot?.queryParams['parametersChange'];

@@ -72,12 +72,15 @@ public class ParametersServiceImpl implements ParametersService {
             Parameter parameter = this.parameterRepository.findById(parameterDTO.getId())
                     .orElseThrow(PARAMETER_NOT_FOUND::getError);
 
+            String userParameterId;
+
             if (!existingUserParametersMap.containsKey(parameterDTO.getId())) {
-                this.userParameterRepository.save(UserParameter.builder()
+                userParameterId = this.userParameterRepository.save(UserParameter.builder()
                         .parameter(parameter)
                         .user(user)
-                        .build());
+                        .build()).getId();
             } else {
+                userParameterId = existingUserParametersMap.get(parameterDTO.getId()).getId();
                 existingUserParametersMap.remove(parameterDTO.getId());
             }
 
@@ -87,6 +90,7 @@ public class ParametersServiceImpl implements ParametersService {
             ).orElse(null);
 
             response.add(userParameterMapper.map(UserParameter.builder()
+                    .id(userParameterId)
                     .parameter(parameter)
                     .user(user)
                     .build(), parameterValue));

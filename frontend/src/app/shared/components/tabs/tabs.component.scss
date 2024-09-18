@@ -2,6 +2,7 @@
 @import '../../../../styles/variables';
 
 :host {
+  width: 100%;
     .tabs-container {
         display: flex;
         flex-direction: row;

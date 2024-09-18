@@ -36,7 +36,6 @@ export class NotificationsManageComponent implements OnDestroy {
           this.subscriptions.push(
             this.settingsService.notificationsChange(res).subscribe(() => {
               this.notificationsSettings.set(res);
-              console.log(res);
               this.store.dispatch(notificationsSettingsActions.editSuccess({ notificationsSettings: res }));
             })
           )

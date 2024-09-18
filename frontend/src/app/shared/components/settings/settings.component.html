@@ -9,7 +9,7 @@
     <app-notifications-manage [notificationsSettings]="notificationsSettings$ | async"></app-notifications-manage>
   </app-tab>
   <app-tab headerTitle="Zarządzanie parametrami" *ngIf="role === 'USER'" [padding]="tabPadding">
-    <p>Zarządzanie parametrami</p>
+    <app-parameters-manage [userParameters]="userParamters$ | async" [parameters]="paramters$ | async"></app-parameters-manage>
   </app-tab>
   <app-tab headerTitle="Zmiana zdjęcia profilowego" *ngIf="role === 'DOCTOR'" [padding]="tabPadding">
     <p>Zmiana zdjęcia profilowego</p>

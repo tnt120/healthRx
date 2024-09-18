@@ -31,8 +31,6 @@ export class NotificationsManageDialogComponent implements OnInit {
       minutes: this.data.parametersNotifications ? this.data.parametersNotifications.split(':')[1] : '00',
     });
 
-    console.log(this.data, this.currValues());
-
     this.generateHours();
   }
 

@@ -8,6 +8,10 @@
     gap: 10px;
 
     .labels {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
       div {
         display: flex;
         height: 40px;
@@ -16,6 +20,10 @@
     }
 
     .values {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
       div {
         display: flex;
         height: 40px;

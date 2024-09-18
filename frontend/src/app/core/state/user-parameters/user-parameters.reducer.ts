@@ -29,5 +29,6 @@ export const userParametersReducer = createReducer(
     console.error('Error editing user parameters', error);
 
     return state;
-  })
+  }),
+  on(userParametersActions.updateSuccess, (state, { userParameters }) => userParameters),
 );

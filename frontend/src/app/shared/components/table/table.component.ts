@@ -45,7 +45,6 @@ export class TableComponent {
   searchString = '';
 
   onSearch(): void {
-    console.log('search', this.searchString);
     this.onSearchEmit.emit(this.searchString);
   }
 
@@ -58,7 +57,6 @@ export class TableComponent {
   }
 
   onSelect(item: any): void {
-    console.log('table select', item);
     this.onSelectEmit.emit(item);
   }
 

@@ -1,0 +1,7 @@
+<h4>Wybrane parametry:</h4>
+<div class="parameters-grid">
+  @for (userParameter of userParameters(); track userParameter.id) {
+    <app-parameter-tail [control]="null" [parameter]="userParameter.parameter"></app-parameter-tail>
+  }
+</div>
+<button mat-flat-button (click)="onEdit()">Edytuj</button>

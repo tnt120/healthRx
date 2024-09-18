@@ -97,8 +97,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
         isDoctor: this.registerForm.get('isDoctor')?.value ?? false
       };
 
-      console.log(this.registerForm.get('isDoctor')?.value, credentials);
-
       this.subscription = this.authService.register(credentials).subscribe({
         next: () => {
           this.router.navigate(['/login']);
