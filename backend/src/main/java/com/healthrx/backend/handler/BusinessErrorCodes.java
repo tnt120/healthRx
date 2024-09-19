@@ -43,6 +43,7 @@ public enum BusinessErrorCodes {
     NO_DIFFERENT_NEW_PASSWORD(323, "New password is the same as the old one", HttpStatus.BAD_REQUEST),
     EMAIL_ALREADY_EXISTS(324, "Email already exists", HttpStatus.CONFLICT),
     NOTIFICATIONS_DATA_BAD_REQUEST(325, "Bad notifications change request data", HttpStatus.BAD_REQUEST),
+    DOCTOR_DETAILS_NOT_FOUND(326, "Doctor details not found", HttpStatus.NOT_FOUND),
     ;
 
     private final int code;

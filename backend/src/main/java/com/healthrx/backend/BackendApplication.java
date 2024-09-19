@@ -93,8 +93,10 @@ public class BackendApplication {
 //                    .setMinValue("1")
 //                    .setMaxValue("10")
 //                    .setHint("Poziom stresu w skali od 1 do 10"));
-
+//
 //            cityRepository.save(new City().setName("Kraków"));
+//            cityRepository.save(new City().setName("Warszawa"));
+//            cityRepository.save(new City().setName("Wrocław"));
         };
     }
 }
