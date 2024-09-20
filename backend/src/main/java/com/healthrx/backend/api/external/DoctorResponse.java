@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DoctorResponse {
+    private String id;
     private String firstName;
     private String lastName;
     private List<SpecializationDTO> specializations;

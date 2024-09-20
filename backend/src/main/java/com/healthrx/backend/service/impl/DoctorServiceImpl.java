@@ -34,12 +34,13 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public PageResponse<DoctorResponse> getDoctors(Integer page, Integer size, String sortBy, String order, String firstName, String lastName, String specializationId, String cityId) {
-        User user = principalSupplier.get(); // dodac potem sprawdzenie czy doktor nie jest już jego friendshipem
+        User user = principalSupplier.get();
 
         Sort sort = order.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
 
         Specification<User> specification = Specification.where(DoctorSpecification.isVerifiedDoctor());
+        specification = specification.and(DoctorSpecification.isNotInFriendsList(user.getId()));
         if (firstName != null) specification = specification.and(DoctorSpecification.firstNameContains(firstName));
         if (lastName != null) specification = specification.and(DoctorSpecification.lastNameContains(lastName));
         if (specializationId != null) specification = specification.and(DoctorSpecification.specificationEquals(specializationId));

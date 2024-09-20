@@ -17,6 +17,7 @@ public class DoctorMapper {
 
     public DoctorResponse map(User user, DoctorDetails doctorDetails, List<Specialization> specializations) {
         return DoctorResponse.builder()
+                .id(user.getId())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .specializations(specializations.stream().map(specializationMapper::map).toList())

@@ -1,6 +1,9 @@
 package com.healthrx.backend.specification;
 
 import com.healthrx.backend.api.internal.User;
+import com.healthrx.backend.api.internal.chat.Friendship;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import org.springframework.data.jpa.domain.Specification;
 
 public class DoctorSpecification {
@@ -30,5 +33,18 @@ public class DoctorSpecification {
 
     public static Specification<User> isVerifiedDoctor() {
         return (root, query, cb) -> cb.isTrue(root.get("isVerifiedDoctor"));
+    }
+
+    public static Specification<User> isNotInFriendsList(String userId) {
+        return ((root, query, cb) -> {
+            assert query != null;
+            Subquery<String> subquery = query.subquery(String.class);
+            Root<Friendship> friendshipRoot = subquery.from(Friendship.class);
+
+            subquery.select(friendshipRoot.get("doctor").get("id"))
+                    .where(cb.equal(friendshipRoot.get("user").get("id"), userId));
+
+            return cb.not(root.get("id").in(subquery));
+        });
     }
 }
