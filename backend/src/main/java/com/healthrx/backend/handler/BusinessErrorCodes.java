@@ -44,6 +44,11 @@ public enum BusinessErrorCodes {
     EMAIL_ALREADY_EXISTS(324, "Email already exists", HttpStatus.CONFLICT),
     NOTIFICATIONS_DATA_BAD_REQUEST(325, "Bad notifications change request data", HttpStatus.BAD_REQUEST),
     DOCTOR_DETAILS_NOT_FOUND(326, "Doctor details not found", HttpStatus.NOT_FOUND),
+    WRONG_INVITATION_TARGET(328, "Wrong invitation target, target must be doctor", HttpStatus.BAD_REQUEST),
+    INVITATION_NOT_FOUND(329, "Invitation not found", HttpStatus.NOT_FOUND),
+    INVITATION_ALREADY_ACCEPTED_REJECTED(330, "Invitation already accepted or rejected", HttpStatus.CONFLICT),
+    INVITATION_ALREADY_ACCEPTED(331, "Invitation already accepted", HttpStatus.CONFLICT),
+    INVITATION_ALREADY_EXISTS(331, "Invitation already exists", HttpStatus.CONFLICT),
     ;
 
     private final int code;
