@@ -6,6 +6,7 @@ import com.healthrx.backend.api.internal.chat.Friendship;
 import com.healthrx.backend.api.internal.enums.FriendshipStatus;
 import com.healthrx.backend.api.internal.enums.Role;
 import com.healthrx.backend.repository.FriendshipRepository;
+import com.healthrx.backend.repository.MessageRepository;
 import com.healthrx.backend.repository.UserRepository;
 import com.healthrx.backend.service.FriendshipService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import static com.healthrx.backend.handler.BusinessErrorCodes.*;
 @Slf4j
 public class FriendshipServiceImpl implements FriendshipService {
     private final FriendshipRepository friendshipRepository;
+    private final MessageRepository messageRepository;
     private final UserRepository userRepository;
     private final Supplier<User> principalSupplier;
 
@@ -108,6 +110,8 @@ public class FriendshipServiceImpl implements FriendshipService {
                 .orElseThrow(INVITATION_NOT_FOUND::getError);
 
         if (!friendship.getUser().getId().equals(user.getId()) && !friendship.getDoctor().getId().equals(user.getId())) throw USER_NOT_PERMITTED.getError();
+
+        messageRepository.deleteAllByFriendshipId(friendshipId);
 
         friendshipRepository.delete(friendship);
 
