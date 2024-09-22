@@ -1,5 +1,7 @@
 package com.healthrx.backend.service.impl;
 
+import com.healthrx.backend.api.external.UserResponse;
+import com.healthrx.backend.api.external.invitation.FriendshipResponse;
 import com.healthrx.backend.api.external.invitation.InvitationRequest;
 import com.healthrx.backend.api.external.invitation.InvitationResponse;
 import com.healthrx.backend.api.internal.User;
@@ -14,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 import static com.healthrx.backend.handler.BusinessErrorCodes.*;
@@ -26,6 +29,61 @@ public class FriendshipServiceImpl implements FriendshipService {
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
     private final Supplier<User> principalSupplier;
+
+    @Override
+    public List<FriendshipResponse> getFriendships(boolean getPendingAndRejected) {
+        User user = principalSupplier.get();
+
+        if (user.getRole() == Role.USER) {
+            return friendshipRepository.getFriendshipsByUserId(user.getId())
+                    .stream()
+                    .filter(friendship -> {
+                        if (getPendingAndRejected) {
+                            return friendship.getStatus() == FriendshipStatus.WAITING || friendship.getStatus() == FriendshipStatus.REJECTED;
+                        } else {
+                            return friendship.getStatus() == FriendshipStatus.ACCEPTED;
+                        }
+                    })
+                    .map(friendship -> FriendshipResponse.builder()
+                            .friendshipId(friendship.getId())
+                            .user(UserResponse.builder()
+                                    .firstName(friendship.getDoctor().getFirstName())
+                                    .lastName(friendship.getDoctor().getLastName())
+                                    .pictureUrl(friendship.getDoctor().getPictureUrl())
+                                    .build()
+                            )
+                            .status(friendship.getStatus())
+                            .updatedAt(friendship.getUpdatedAt())
+                            .build()
+                    )
+                    .toList();
+        } else if (user.getRole() == Role.DOCTOR) {
+            return friendshipRepository.getFriendshipsByDoctorId(user.getId())
+                    .stream()
+                    .filter(friendship -> {
+                        if (getPendingAndRejected) {
+                            return friendship.getStatus() == FriendshipStatus.WAITING || friendship.getStatus() == FriendshipStatus.REJECTED;
+                        } else {
+                            return friendship.getStatus() == FriendshipStatus.ACCEPTED;
+                        }
+                    })
+                    .map(friendship -> FriendshipResponse.builder()
+                            .friendshipId(friendship.getId())
+                            .user(UserResponse.builder()
+                                    .firstName(friendship.getUser().getFirstName())
+                                    .lastName(friendship.getUser().getLastName())
+                                    .pictureUrl(friendship.getUser().getPictureUrl())
+                                    .build()
+                            )
+                            .status(friendship.getStatus())
+                            .updatedAt(friendship.getUpdatedAt())
+                            .build()
+                    )
+                    .toList();
+        }
+
+        throw USER_NOT_PERMITTED.getError();
+    }
 
     @Override
     public InvitationResponse sendInvitation(InvitationRequest request) {
