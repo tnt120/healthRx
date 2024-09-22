@@ -1,5 +1,6 @@
 package com.healthrx.backend.api.external.invitation;
 
+import com.healthrx.backend.api.external.FriendshipPermissions;
 import com.healthrx.backend.api.external.UserResponse;
 import com.healthrx.backend.api.internal.enums.FriendshipStatus;
 import lombok.AllArgsConstructor;
@@ -18,4 +19,5 @@ public class FriendshipResponse {
     UserResponse user;
     FriendshipStatus status;
     LocalDateTime updatedAt;
+    FriendshipPermissions permissions;
 }

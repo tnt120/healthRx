@@ -1,6 +1,5 @@
 package com.healthrx.backend.service.impl;
 
-import com.healthrx.backend.api.external.UserResponse;
 import com.healthrx.backend.api.external.invitation.FriendshipResponse;
 import com.healthrx.backend.api.external.invitation.InvitationRequest;
 import com.healthrx.backend.api.external.invitation.InvitationResponse;
@@ -8,6 +7,7 @@ import com.healthrx.backend.api.internal.User;
 import com.healthrx.backend.api.internal.chat.Friendship;
 import com.healthrx.backend.api.internal.enums.FriendshipStatus;
 import com.healthrx.backend.api.internal.enums.Role;
+import com.healthrx.backend.mapper.FriendshipMapper;
 import com.healthrx.backend.repository.FriendshipRepository;
 import com.healthrx.backend.repository.MessageRepository;
 import com.healthrx.backend.repository.UserRepository;
@@ -29,6 +29,7 @@ public class FriendshipServiceImpl implements FriendshipService {
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
     private final Supplier<User> principalSupplier;
+    private final FriendshipMapper friendshipMapper;
 
     @Override
     public List<FriendshipResponse> getFriendships(boolean getPendingAndRejected) {
@@ -46,14 +47,10 @@ public class FriendshipServiceImpl implements FriendshipService {
                     })
                     .map(friendship -> FriendshipResponse.builder()
                             .friendshipId(friendship.getId())
-                            .user(UserResponse.builder()
-                                    .firstName(friendship.getDoctor().getFirstName())
-                                    .lastName(friendship.getDoctor().getLastName())
-                                    .pictureUrl(friendship.getDoctor().getPictureUrl())
-                                    .build()
-                            )
+                            .user(friendshipMapper.mapUser(friendship.getDoctor()))
                             .status(friendship.getStatus())
                             .updatedAt(friendship.getUpdatedAt())
+                            .permissions(friendshipMapper.mapPermissions(friendship))
                             .build()
                     )
                     .toList();
@@ -69,14 +66,10 @@ public class FriendshipServiceImpl implements FriendshipService {
                     })
                     .map(friendship -> FriendshipResponse.builder()
                             .friendshipId(friendship.getId())
-                            .user(UserResponse.builder()
-                                    .firstName(friendship.getUser().getFirstName())
-                                    .lastName(friendship.getUser().getLastName())
-                                    .pictureUrl(friendship.getUser().getPictureUrl())
-                                    .build()
-                            )
+                            .user(friendshipMapper.mapUser(friendship.getUser()))
                             .status(friendship.getStatus())
                             .updatedAt(friendship.getUpdatedAt())
+                            .permissions(friendshipMapper.mapPermissions(friendship))
                             .build()
                     )
                     .toList();
