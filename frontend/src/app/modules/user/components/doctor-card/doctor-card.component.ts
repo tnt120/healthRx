@@ -1,22 +1,30 @@
-import { Component, input, model, OnInit, output, signal } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { Component, inject, input, model, OnDestroy, OnInit, output, signal } from '@angular/core';
 import { DoctorResponse } from '../../../../core/models/doctor-response.model';
+import { FriendshipService } from '../../../../core/services/friendship/friendship.service';
 
 @Component({
   selector: 'app-doctor-card',
   templateUrl: './doctor-card.component.html',
   styleUrl: './doctor-card.component.scss'
 })
-export class DoctorCardComponent implements OnInit {
+export class DoctorCardComponent implements OnInit, OnDestroy {
+  private readonly friendshipService = inject(FriendshipService);
+
   doctor = model.required<DoctorResponse>();
 
   isInvitationSended = signal<boolean>(false);
 
-  invitationEmit = output<DoctorResponse>();
+  friendshipId = signal<string>('');
 
-  invitationDeleteEmit = output<DoctorResponse>();
+  subscriptions: Subscription[] = [];
 
   ngOnInit(): void {
     this.doctor.set({...this.doctor()});
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   getSpecializationsString(): string {
@@ -24,12 +32,27 @@ export class DoctorCardComponent implements OnInit {
   }
 
   onInvite(): void {
-    this.invitationEmit.emit(this.doctor()!);
-    this.isInvitationSended.set(true);
+    this.friendshipService.sendInvitation({ targetDoctorId: this.doctor().id }).subscribe({
+      next: res => {
+        this.isInvitationSended.set(true);
+        this.friendshipId.set(res.friendshipId);
+      },
+      error: err => {
+        console.error(err);
+      }
+    })
   }
 
   onInviteDelete(): void {
-    this.invitationDeleteEmit.emit(this.doctor()!);
+    this.friendshipService.cancelInvitation(this.friendshipId()).subscribe({
+      next: (res) => {
+        this.isInvitationSended.set(false);
+        this.friendshipId.set('');
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    })
     this.isInvitationSended.set(false);
   }
 

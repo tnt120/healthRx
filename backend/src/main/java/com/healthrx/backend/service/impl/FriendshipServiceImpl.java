@@ -1,6 +1,7 @@
 package com.healthrx.backend.service.impl;
 
 import com.healthrx.backend.api.external.invitation.InvitationRequest;
+import com.healthrx.backend.api.external.invitation.InvitationResponse;
 import com.healthrx.backend.api.internal.User;
 import com.healthrx.backend.api.internal.chat.Friendship;
 import com.healthrx.backend.api.internal.enums.FriendshipStatus;
@@ -27,7 +28,7 @@ public class FriendshipServiceImpl implements FriendshipService {
     private final Supplier<User> principalSupplier;
 
     @Override
-    public Void sendInvitation(InvitationRequest request) {
+    public InvitationResponse sendInvitation(InvitationRequest request) {
         User user = principalSupplier.get();
 
         if (user.isVerifiedDoctor() || user.getRole() != Role.USER) throw USER_NOT_PERMITTED.getError();
@@ -44,19 +45,21 @@ public class FriendshipServiceImpl implements FriendshipService {
 
         if (!doctor.isVerifiedDoctor()) throw WRONG_INVITATION_TARGET.getError();
 
-        this.friendshipRepository.save(
+        String invitationId = this.friendshipRepository.save(
                 Friendship.builder()
                         .user(user)
                         .doctor(doctor)
                         .status(FriendshipStatus.WAITING)
                         .build()
-        );
+        ).getId();
 
-        return null;
+        return InvitationResponse.builder()
+                .friendshipId(invitationId)
+                .build();
     }
 
     @Override
-    public Void acceptInvitation(InvitationRequest request) {
+    public InvitationResponse acceptInvitation(InvitationRequest request) {
         User user = principalSupplier.get();
 
         Friendship friendship = getDoctorFriendship(request, user.getId());
@@ -67,11 +70,13 @@ public class FriendshipServiceImpl implements FriendshipService {
 
         friendshipRepository.save(friendship);
 
-        return null;
+        return InvitationResponse.builder()
+                .friendshipId(friendship.getId())
+                .build();
     }
 
     @Override
-    public Void rejectInvitation(InvitationRequest request) {
+    public InvitationResponse rejectInvitation(InvitationRequest request) {
         User user = principalSupplier.get();
 
         Friendship friendship = getDoctorFriendship(request, user.getId());
@@ -82,11 +87,13 @@ public class FriendshipServiceImpl implements FriendshipService {
 
         friendshipRepository.save(friendship);
 
-        return null;
+        return InvitationResponse.builder()
+                .friendshipId(friendship.getId())
+                .build();
     }
 
     @Override
-    public Void resendInvitation(InvitationRequest request) {
+    public InvitationResponse resendInvitation(InvitationRequest request) {
         User user = principalSupplier.get();
 
         Friendship friendship = friendshipRepository.findById(request.getInvitationId()).orElseThrow(INVITATION_NOT_FOUND::getError);
@@ -99,11 +106,13 @@ public class FriendshipServiceImpl implements FriendshipService {
 
         friendshipRepository.save(friendship);
 
-        return null;
+        return InvitationResponse.builder()
+                .friendshipId(friendship.getId())
+                .build();
     }
 
     @Override
-    public Void removeInvitation(String friendshipId) {
+    public InvitationResponse removeInvitation(String friendshipId) {
         User user = principalSupplier.get();
 
         Friendship friendship = friendshipRepository.findById(friendshipId)
@@ -115,7 +124,9 @@ public class FriendshipServiceImpl implements FriendshipService {
 
         friendshipRepository.delete(friendship);
 
-        return null;
+        return InvitationResponse.builder()
+                .friendshipId(friendshipId)
+                .build();
     }
 
     private Friendship getDoctorFriendship(InvitationRequest request, String doctorId) {

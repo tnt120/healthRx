@@ -1,11 +1,12 @@
 package com.healthrx.backend.service;
 
 import com.healthrx.backend.api.external.invitation.InvitationRequest;
+import com.healthrx.backend.api.external.invitation.InvitationResponse;
 
 public interface FriendshipService {
-    Void sendInvitation(InvitationRequest request);
-    Void acceptInvitation(InvitationRequest request);
-    Void rejectInvitation(InvitationRequest request);
-    Void resendInvitation(InvitationRequest request);
-    Void removeInvitation(String id);
+    InvitationResponse sendInvitation(InvitationRequest request);
+    InvitationResponse acceptInvitation(InvitationRequest request);
+    InvitationResponse rejectInvitation(InvitationRequest request);
+    InvitationResponse resendInvitation(InvitationRequest request);
+    InvitationResponse removeInvitation(String id);
 }
