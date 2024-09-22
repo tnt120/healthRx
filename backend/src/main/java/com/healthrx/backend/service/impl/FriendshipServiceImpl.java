@@ -50,6 +50,9 @@ public class FriendshipServiceImpl implements FriendshipService {
                         .user(user)
                         .doctor(doctor)
                         .status(FriendshipStatus.WAITING)
+                        .parametersAccess(false)
+                        .activitiesAccess(false)
+                        .userMedicineAccess(false)
                         .build()
         ).getId();
 

@@ -35,6 +35,12 @@ public class Friendship {
 
     private LocalDateTime updatedAt;
 
+    private Boolean userMedicineAccess;
+
+    private Boolean activitiesAccess;
+
+    private Boolean parametersAccess;
+
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
