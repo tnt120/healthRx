@@ -4,8 +4,13 @@ import com.healthrx.backend.api.internal.User;
 import com.healthrx.backend.api.internal.chat.Friendship;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Subquery;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.Arrays;
+import java.util.List;
+
+@Slf4j
 public class DoctorSpecification {
     public static Specification<User> firstNameContains(String firstName) {
         return (root, query, cb) -> cb.like(cb.lower(root.get("firstName")), "%" + firstName.toLowerCase() + "%");
@@ -27,7 +32,10 @@ public class DoctorSpecification {
         return ((root, query, cb) -> {
             var doctorDetailsJoin = root.join("doctorDetails");
             var specializationJoin = doctorDetailsJoin.join("doctorSpecializations").join("specialization");
-            return cb.equal(specializationJoin.get("id"), specializationId);
+
+            List<String> specializationIds = Arrays.asList(specializationId.split(","));
+
+            return specializationJoin.get("id").in(specializationIds);
         });
     }
 

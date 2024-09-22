@@ -1,0 +1,25 @@
+<div class="doctor-info-container">
+  <div class="image">
+    <img src="../../../../../assets/images/doctor.webp" alt="doctor">
+  </div>
+  <h3 #name [matTooltip]="doctor().firstName + ' ' + doctor().lastName" [matTooltipDisabled]="isOverflow(name)">{{ doctor().firstName + ' ' + doctor().lastName }}</h3>
+  <div class="details-container">
+    <div class="labels">
+      <p class="subtitle-1">Specializacje:</p>
+      <p class="subtitle-1">Miasto:</p>
+      <p class="subtitle-1">Numer PWZ:</p>
+    </div>
+    <div class="values">
+      <p #specializations class="text-1 value" [matTooltip]="getSpecializationsString()" [matTooltipDisabled]="isOverflow(specializations)">{{ getSpecializationsString() }}</p>
+      <p #city class="text-1 value" [matTooltip]="doctor().city.name" [matTooltipDisabled]="isOverflow(city)">{{ doctor().city.name }}</p>
+      <p class="text-1 value">{{ doctor().numberPWZ }}</p>
+    </div>
+  </div>
+</div>
+<div>
+  @if (!isInvitationSended()) {
+    <button mat-button (click)="onInvite()"><p>Wyślij zaproszenie</p></button>
+  } @else {
+    <button mat-button (click)="onInviteDelete()"><p class="red">Anuluj zaproszenie</p></button>
+  }
+</div>

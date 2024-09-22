@@ -1,0 +1,48 @@
+@import "../../../../../styles/variables";
+
+:host {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 20px;
+
+  .filters, .search-sort {
+    width: 100%;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    justify-content: center;
+  }
+
+  .filters {
+    justify-content: flex-start;
+    
+    mat-form-field {
+      width: 20%;
+    }
+  }
+
+  .search-sort {
+    justify-content: flex-end;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  :host {
+    .filters, .search-sort {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .filters {
+      mat-form-field {
+        width: 100%;
+      }
+    }
+
+    button {
+      width: 100%;
+    }
+  }
+}

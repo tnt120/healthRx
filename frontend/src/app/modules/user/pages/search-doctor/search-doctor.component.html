@@ -1,1 +1,32 @@
-<p>search-doctor works!</p>
+<div class="filter-panel">
+  <app-search-doctors-filter-panel (filtersAndSortChange)="onSearch($event)"></app-search-doctors-filter-panel>
+</div>
+<div class="content">
+  @if (isLoading$ | async) {
+    <div class="basic-spinner-container">
+      <mat-spinner></mat-spinner>
+    </div>
+  } @else {
+    @if (doctors$ | async; as doctors) {
+      @if (doctors.length === 0) {
+        <div class="no-results">
+          <p class="text-1">Brak wyników. Zmień kryteria wyszukiwania.</p>
+        </div>
+      } @else {
+        <div class="doctors-cards-container">
+          @for (doctor of doctors; track doctor.id) {
+            <app-doctor-card [doctor]="doctor"></app-doctor-card>
+          }
+        </div>
+        <mat-paginator
+            (page)="handlePageEvent($event)"
+            [length]="pagination.totalElements"
+            [pageSize]="pagination.pageSize"
+            [pageSizeOptions]="pagination.pageSizeOptions"
+            [pageIndex]="pagination.pageIndex"
+            aria-label="Select page"
+        ></mat-paginator>
+      }
+    }
+  }
+</div>

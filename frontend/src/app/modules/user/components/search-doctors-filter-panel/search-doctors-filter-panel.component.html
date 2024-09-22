@@ -1,0 +1,42 @@
+<div class="filters">
+  <mat-form-field class="example-full-width" appearance="outline">
+    <mat-label>Imie</mat-label>
+    <input matInput type="text" [(ngModel)]="filters.firstName" placeholder="Imie">
+  </mat-form-field>
+  <mat-form-field class="example-full-width" appearance="outline">
+    <mat-label>Nazwisko</mat-label>
+    <input matInput type="text" [(ngModel)]="filters.lastName" placeholder="Nazwisko">
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Specializacja</mat-label>
+    <mat-select [(ngModel)]="filters.specialization" multiple>
+      @if (specializations$ | async; as specializations) {
+        @for (specialization of specializations; track specialization.id) {
+          <mat-option [value]="specialization.id">{{ specialization.name }}</mat-option>
+        }
+      }
+    </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Miasto</mat-label>
+      <mat-select [(ngModel)]="filters.city">
+        @if (cities$ | async; as cities) {
+          <mat-option>Brak</mat-option>
+          @for (city of cities; track city.id) {
+            <mat-option [value]="city.id">{{ city.name }}</mat-option>
+          }
+        }
+      </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Sortuj po</mat-label>
+    <mat-select [(ngModel)]="sort" (ngModelChange)="sortChange()">
+      @for (option of sortOptions; track getKey(option)) {
+        <mat-option [value]="option">{{ sortOptionMapper(option.sortBy) }} {{ option.order === 'asc' ? '(rosnąco)' : '(malecjąco)' }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
+<div class="search-sort">
+  <button mat-flat-button (click)="onSearch()"><p>Szukaj</p></button>
+</div>
