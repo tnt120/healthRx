@@ -1,1 +1,18 @@
-<p>approvals works!</p>
+@if (isLoading$ | async) {
+  <div class="basic-spinner-container">
+    <mat-spinner></mat-spinner>
+  </div>
+} @else {
+
+  @if (friendshipsPending.length === 0) {
+    <div class="no-results">
+      <h3>Aktualnie nie posiadasz żadnych zaproszeń.</h3>
+    </div>
+  } @else {
+    <div class="invitations-container">
+      @for (friendship of friendshipsPending; track friendship.friendshipId) {
+        <app-friendship-approval-card [friendship]="friendship" [isDoctor]="true" (emitAcceptedAndDeleted)="deleteFromPeding($event)"></app-friendship-approval-card>
+      }
+    </div>
+  }
+}

@@ -6,7 +6,16 @@ import { finalize } from 'rxjs';
 export const spinnerInterceptor: HttpInterceptorFn = (req, next) => {
   const spinnerService = inject(SpinnerService);
 
-  const excludeUrls = ['/api/parameters/users', 'api/drugs/user', 'api/drugs/monitor', 'api/drugs', '/api/doctor'];
+  const excludeUrls = [
+    '/api/parameters/users',
+    'api/drugs/user',
+    'api/drugs/monitor',
+    'api/drugs',
+    '/api/doctor',
+    'api/friendship/pending',
+    'api/friendship/rejected',
+    'api/friendship/accepted',
+  ];
 
   const shouldIngore = excludeUrls.some(url => req.url.includes(url));
 

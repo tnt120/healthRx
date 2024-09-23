@@ -28,7 +28,7 @@ public class FriendshipController {
         return ResponseEntity.ok(friendshipService.getFriendships(FriendshipStatus.REJECTED));
     }
 
-    @GetMapping()
+    @GetMapping("/accepted")
     public ResponseEntity<PageResponse<FriendshipResponse>> getFriendships(
             @RequestParam(name = "page", defaultValue = "0", required = false) Integer page,
             @RequestParam(name = "size", defaultValue = "10", required = false) Integer size,

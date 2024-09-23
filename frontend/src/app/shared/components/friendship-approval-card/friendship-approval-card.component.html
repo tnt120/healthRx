@@ -1,0 +1,17 @@
+<div class="image">
+  <img src="../../../../assets/images/user.png" alt="user">
+</div>
+<h3 #name [matTooltip]="friendship().user.firstName + ' ' + friendship().user.lastName" [matTooltipDisabled]="isOverflow(name)">
+  {{ friendship().user.firstName + ' ' + friendship().user.lastName }}
+</h3>
+@if (isDoctor()) {
+  <div class="buttons">
+    <button mat-button (click)="approve()"><p>Zaakceptuj</p></button>
+    <button mat-button (click)="reject()"><p class="red">Odrzuć</p></button>
+  </div>
+} @else {
+  <div class="buttons">
+    <button *ngIf="isRejected()" mat-button color="primary" (click)="approve()"><p>Wyślij ponownie</p></button>
+    <button mat-button color="warn" (click)="reject()"><p class="red">Usuń</p></button>
+  </div>
+}
