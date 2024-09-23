@@ -1,5 +1,6 @@
 package com.healthrx.backend.service.impl;
 
+import com.healthrx.backend.api.external.PageResponse;
 import com.healthrx.backend.api.external.invitation.FriendshipResponse;
 import com.healthrx.backend.api.external.invitation.InvitationRequest;
 import com.healthrx.backend.api.external.invitation.InvitationResponse;
@@ -12,8 +13,14 @@ import com.healthrx.backend.repository.FriendshipRepository;
 import com.healthrx.backend.repository.MessageRepository;
 import com.healthrx.backend.repository.UserRepository;
 import com.healthrx.backend.service.FriendshipService;
+import com.healthrx.backend.specification.FriendshipSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,18 +39,16 @@ public class FriendshipServiceImpl implements FriendshipService {
     private final FriendshipMapper friendshipMapper;
 
     @Override
-    public List<FriendshipResponse> getFriendships(boolean getPendingAndRejected) {
+    public List<FriendshipResponse> getFriendships(FriendshipStatus status) {
         User user = principalSupplier.get();
 
         if (user.getRole() == Role.USER) {
             return friendshipRepository.getFriendshipsByUserId(user.getId())
                     .stream()
-                    .filter(friendship -> {
-                        if (getPendingAndRejected) {
-                            return friendship.getStatus() == FriendshipStatus.WAITING || friendship.getStatus() == FriendshipStatus.REJECTED;
-                        } else {
-                            return friendship.getStatus() == FriendshipStatus.ACCEPTED;
-                        }
+                    .filter(friendship -> switch (status) {
+                        case WAITING -> friendship.getStatus() == FriendshipStatus.WAITING;
+                        case ACCEPTED -> friendship.getStatus() == FriendshipStatus.ACCEPTED;
+                        case REJECTED -> friendship.getStatus() == FriendshipStatus.REJECTED;
                     })
                     .map(friendship -> FriendshipResponse.builder()
                             .friendshipId(friendship.getId())
@@ -57,12 +62,10 @@ public class FriendshipServiceImpl implements FriendshipService {
         } else if (user.getRole() == Role.DOCTOR) {
             return friendshipRepository.getFriendshipsByDoctorId(user.getId())
                     .stream()
-                    .filter(friendship -> {
-                        if (getPendingAndRejected) {
-                            return friendship.getStatus() == FriendshipStatus.WAITING || friendship.getStatus() == FriendshipStatus.REJECTED;
-                        } else {
-                            return friendship.getStatus() == FriendshipStatus.ACCEPTED;
-                        }
+                    .filter(friendship -> switch (status) {
+                        case WAITING -> friendship.getStatus() == FriendshipStatus.WAITING;
+                        case ACCEPTED -> friendship.getStatus() == FriendshipStatus.ACCEPTED;
+                        case REJECTED -> friendship.getStatus() == FriendshipStatus.REJECTED;
                     })
                     .map(friendship -> FriendshipResponse.builder()
                             .friendshipId(friendship.getId())
@@ -76,6 +79,47 @@ public class FriendshipServiceImpl implements FriendshipService {
         }
 
         throw USER_NOT_PERMITTED.getError();
+    }
+
+    @Override
+    public PageResponse<FriendshipResponse> getFriendships(Integer page, Integer size, String sortBy, String order, String firstName, String lastName) {
+        User user = principalSupplier.get();
+
+        Sort sort = order.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Specification<Friendship> specification = Specification.where(FriendshipSpecification.isAccepted());
+
+        if (user.getRole() == Role.USER) {
+            if (firstName != null) specification = specification.and(FriendshipSpecification.doctorFirstNameContains(firstName));
+            if (lastName != null) specification = specification.and(FriendshipSpecification.doctorLastNameContains(lastName));
+        } else if (user.getRole() == Role.DOCTOR) {
+            if (firstName != null) specification = specification.and(FriendshipSpecification.userFirstNameContains(firstName));
+            if (lastName != null) specification = specification.and(FriendshipSpecification.userLastNameContains(lastName));
+        } else {
+            throw USER_NOT_PERMITTED.getError();
+        }
+
+        Page<Friendship> friendships = friendshipRepository.findAll(specification, pageable);
+
+        List<FriendshipResponse> friendshipsResponse = friendships.getContent()
+                .stream()
+                .map(friendship -> {
+                    if (user.getRole() == Role.USER) {
+                        return friendshipMapper.mapFriendship(friendship, friendship.getDoctor());
+                    } else {
+                        return friendshipMapper.mapFriendship(friendship, friendship.getUser());
+                    }
+                })
+                .toList();
+
+        return new PageResponse<FriendshipResponse>()
+                .setContent(friendshipsResponse)
+                .setCurrentPage(friendships.getNumber())
+                .setPageSize(friendships.getSize())
+                .setTotalElements(friendships.getTotalElements())
+                .setLast(friendships.isLast())
+                .setFirst(friendships.isFirst());
     }
 
     @Override

@@ -1,8 +1,10 @@
 package com.healthrx.backend.controller;
 
+import com.healthrx.backend.api.external.PageResponse;
 import com.healthrx.backend.api.external.invitation.FriendshipResponse;
 import com.healthrx.backend.api.external.invitation.InvitationRequest;
 import com.healthrx.backend.api.external.invitation.InvitationResponse;
+import com.healthrx.backend.api.internal.enums.FriendshipStatus;
 import com.healthrx.backend.service.FriendshipService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,14 +18,26 @@ import java.util.List;
 public class FriendshipController {
     private final FriendshipService friendshipService;
 
-    @GetMapping(("/pendingAndRejected"))
-    public ResponseEntity<List<FriendshipResponse>> getFriendshipsPendingAndRejected() {
-        return ResponseEntity.ok(friendshipService.getFriendships(true));
+    @GetMapping(("/pending"))
+    public ResponseEntity<List<FriendshipResponse>> getFriendshipsPending() {
+        return ResponseEntity.ok(friendshipService.getFriendships(FriendshipStatus.WAITING));
     }
 
-    @GetMapping("/accepted")
-    public ResponseEntity<List<FriendshipResponse>> getFriendshipsAccepted() {
-        return ResponseEntity.ok(friendshipService.getFriendships(false));
+    @GetMapping("/rejected")
+    public ResponseEntity<List<FriendshipResponse>> getFriendshipsRejected() {
+        return ResponseEntity.ok(friendshipService.getFriendships(FriendshipStatus.REJECTED));
+    }
+
+    @GetMapping()
+    public ResponseEntity<PageResponse<FriendshipResponse>> getFriendships(
+            @RequestParam(name = "page", defaultValue = "0", required = false) Integer page,
+            @RequestParam(name = "size", defaultValue = "10", required = false) Integer size,
+            @RequestParam(name = "sort", defaultValue = "id", required = false) String sortBy,
+            @RequestParam(name = "order", defaultValue = "asc", required = false) String order,
+            @RequestParam(name = "firstName", required = false) String firstName,
+            @RequestParam(name = "lastName", required = false) String lastName
+    ) {
+        return ResponseEntity.ok(friendshipService.getFriendships(page, size, sortBy, order, firstName, lastName));
     }
 
     @PostMapping("/invite")
