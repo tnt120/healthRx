@@ -15,7 +15,7 @@ export interface FriendshipPermissions {
 }
 
 export enum FriendshipStatus {
-  PENDING = 'PENDING',
+  WAITING = 'WAITING',
   ACCEPTED = 'ACCEPTED',
   REJECTED = 'REJECTED'
 }

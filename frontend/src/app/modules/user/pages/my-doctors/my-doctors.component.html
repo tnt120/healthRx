@@ -1,0 +1,43 @@
+<div class="main-container">
+  <app-collapsing-container-layout sectionTitle="Moi lekarze">
+    <div class="section-contaioner">
+      @if (friendships$ | async; as friendships) {
+
+      }
+    </div>
+  </app-collapsing-container-layout>
+
+  <app-collapsing-container-layout sectionTitle="Zaproszenia oczekujące" [isCollapsed]="true">
+    <div class="section-container">
+      @if (friendshipsPending.length === 0) {
+        <div class="no-results">
+          <p class="text-1">Aktualnie nie posiadasz żadnych zaproszeń.</p>
+        </div>
+      } @else {
+        <div class="grid-container">
+          @for (friendship of friendshipsPending; track friendship.friendshipId) {
+            <app-friendship-approval-card [friendship]="friendship" (emitAcceptedAndDeleted)="onDelete($event, true)"></app-friendship-approval-card>
+          }
+        </div>
+      }
+    </div>
+  </app-collapsing-container-layout>
+
+  <app-collapsing-container-layout sectionTitle="Zaproszenia odrzucone" [isCollapsed]="true">
+    <div class="section-container">
+      <div class="section-container">
+        @if (friendshipsRejected.length === 0) {
+          <div class="no-results">
+            <p class="text-1">Aktualnie nie ma żadnych odrzuconych zaproszeń.</p>
+          </div>
+        } @else {
+          <div class="grid-container">
+            @for (friendship of friendshipsRejected; track friendship.friendshipId) {
+              <app-friendship-approval-card [friendship]="friendship" [isRejected]="true" (emitResend)="onResend($event)" (emitAcceptedAndDeleted)="onDelete($event, false)"></app-friendship-approval-card>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </app-collapsing-container-layout>
+</div>

@@ -15,7 +15,7 @@ export class ApprovalsComponent implements OnInit, OnDestroy {
 
   friendshipsPending: FriendshipResponse[] = [];
 
-  isLoading$ = this.friendshipService.getLoadingFriendshipsState();
+  isLoading$ = this.friendshipService.loadingFriendshipsPending$;
 
   ngOnInit(): void {
     this.subscriptions.push(

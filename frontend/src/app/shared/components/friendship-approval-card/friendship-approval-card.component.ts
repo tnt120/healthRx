@@ -54,9 +54,9 @@ export class FriendshipApprovalCardComponent implements OnDestroy {
     )
   }
 
-  remove() {
+  cancel() {
     this.subscriptions.push(
-      this.friendshipService.cancelInvitation(this.friendship().friendshipId).subscribe((res) => {
+      this.friendshipService.cancelInvitation(this.friendship().friendshipId, false).subscribe((res) => {
         this.emitAcceptedAndDeleted.emit(res.friendshipId);
       })
     )

@@ -11,7 +11,7 @@
   </div>
 } @else {
   <div class="buttons">
-    <button *ngIf="isRejected()" mat-button color="primary" (click)="approve()"><p>Wyślij ponownie</p></button>
-    <button mat-button color="warn" (click)="reject()"><p class="red">Usuń</p></button>
+    <button *ngIf="isRejected()" mat-button color="primary" (click)="resend()"><p>Wyślij ponownie</p></button>
+    <button mat-button color="warn" (click)="cancel()"><p class="red">Usuń</p></button>
   </div>
 }

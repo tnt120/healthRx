@@ -44,6 +44,11 @@ export const userHeaders: NavItem[] = [
         route: '/user/doctors'
       },
       {
+        icon: 'people',
+        title: 'Moi lekarze',
+        route: '/user/doctors/my'
+      },
+      {
         icon: 'mail',
         title: 'Czat',
         route: '/user/doctors/messages'
@@ -65,7 +70,7 @@ export const doctorHeaders: NavItem[] = [
   },
   {
     icon: 'checklist',
-    title: 'Zatwierdzenia',
+    title: 'Zaproszenia',
     route: '/doctor/approvals'
   },
   {

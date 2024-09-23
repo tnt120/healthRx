@@ -10,6 +10,7 @@ import { MainLayoutComponent } from '../../core/components/main-layout/main-layo
 import { CabinetCalendarComponent } from './pages/cabinet-calendar/cabinet-calendar.component';
 import { UserStatisticsComponent } from './pages/user-statistics/user-statistics.component';
 import { SettingsComponent } from '../../shared/components/settings/settings.component';
+import { MyDoctorsComponent } from './pages/my-doctors/my-doctors.component';
 
 const routes: Routes = [
   {
@@ -39,6 +40,10 @@ const routes: Routes = [
       {
         path: 'doctors',
         component: SearchDoctorComponent
+      },
+      {
+        path: 'doctors/my',
+        component: MyDoctorsComponent
       },
       {
         path: 'doctors/messages',
