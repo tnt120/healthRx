@@ -72,6 +72,19 @@ export class FriendshipService {
     );
   }
 
+  updatePermissions(friendshipId: string, permissions: FriendshipPermissions): Observable<FriendshipPermissions> {
+    return this.http.post<FriendshipPermissions>(`${this.apiUrl}/permissions/${friendshipId}`, permissions).pipe(
+      tap(() => {
+        this.customSnackbarService.openCustomSnackbar({ title: 'Sukces', message: 'Pomyślnie edytowano upraweniania.', type: 'success', duration: 3000 });
+        this.updateFriendships(friendshipId, 'permissionUpdate', permissions);
+      }),
+      catchError((err) => {
+        this.customSnackbarService.openCustomSnackbar({ title: 'Błąd', message: 'Wystawił błąd podczas edytowania uprawnień.', type: 'error', duration: 3000 });
+        return throwError(() => err)
+      })
+    )
+  }
+
   updateFriendships(friendshipId: string, action: 'delete' | 'permissionUpdate', newPermissions: FriendshipPermissions | null = null) {
     const currentFrienships = this.friendshipsSubject.getValue();
 

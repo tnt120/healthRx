@@ -1,0 +1,19 @@
+:host {
+  .content {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+
+    .permissions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+  }
+
+  h3 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

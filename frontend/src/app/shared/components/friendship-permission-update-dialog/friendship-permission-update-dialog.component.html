@@ -1,0 +1,14 @@
+<h3 mat-dialog-title>Edytuj uprawnienia</h3>
+<mat-dialog-content class="mat-typography">
+  <div class="content">
+    <div class="permissions">
+      <mat-checkbox [(ngModel)]="currPermissions().parametersAccess">Dostęp do historii parametrów</mat-checkbox>
+      <mat-checkbox [(ngModel)]="currPermissions().userMedicineAccess">Dostęp do apteczki leków</mat-checkbox>
+      <mat-checkbox [(ngModel)]="currPermissions().activitiesAccess">Dostęp do aktywności</mat-checkbox>
+    </div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-stroked-button mat-dialog-close>Anuluj</button>
+  <button mat-flat-button [mat-dialog-close]="currPermissions()" [disabled]="!isValid()">Zapisz</button>
+</mat-dialog-actions>

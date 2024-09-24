@@ -26,6 +26,7 @@ import { NotificationsManageDialogComponent } from './components/settings/notifi
 import { ParametersManageComponent } from './components/settings/parameters-manage/parameters-manage.component';
 import { ParametersManageDialogComponent } from './components/settings/parameters-manage/parameters-manage-dialog/parameters-manage-dialog.component';
 import { FriendshipCardComponent } from './components/friendship-card/friendship-card.component';
+import { FriendshipPermissionUpdateDialogComponent } from './components/friendship-permission-update-dialog/friendship-permission-update-dialog.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { FriendshipCardComponent } from './components/friendship-card/friendship
     ParametersManageComponent,
     ParametersManageDialogComponent,
     FriendshipCardComponent,
+    FriendshipPermissionUpdateDialogComponent,
   ],
   imports: [
     CommonModule,

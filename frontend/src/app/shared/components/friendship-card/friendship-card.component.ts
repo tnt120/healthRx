@@ -2,6 +2,9 @@ import { Subscription } from 'rxjs';
 import { Component, HostBinding, inject, input, model, OnDestroy, output } from '@angular/core';
 import { FriendshipResponse } from '../../../core/models/friendship-response.model';
 import { FriendshipService } from '../../../core/services/friendship/friendship.service';
+import { MatDialog } from '@angular/material/dialog';
+import { FriendshipPermissionUpdateDialogComponent } from '../friendship-permission-update-dialog/friendship-permission-update-dialog.component';
+import { ConfirmationDialogComponent, ConfirmationDialogData } from '../confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-friendship-card',
@@ -10,6 +13,8 @@ import { FriendshipService } from '../../../core/services/friendship/friendship.
 })
 export class FriendshipCardComponent implements OnDestroy {
   private readonly friendshipService = inject(FriendshipService);
+
+  private readonly dialog = inject(MatDialog);
 
   @HostBinding('style.height.px') get height() {
     return this.friendship().status === 'ACCEPTED' ? 310 : 275;
@@ -58,15 +63,40 @@ export class FriendshipCardComponent implements OnDestroy {
   }
 
   cancel() {
-    const isAccepted = this.friendship().status === 'ACCEPTED';
+    const dialogData: ConfirmationDialogData = {
+      title: 'Usuń znajomego',
+      message: `Czy na pewno chcesz usunąć ${this.friendship().user.firstName} ${this.friendship().user.lastName} ze znajomych?`,
+      acceptButton: 'Usuń'
+    }
+
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: dialogData });
+
     this.subscriptions.push(
-      this.friendshipService.cancelInvitation(this.friendship().friendshipId, isAccepted).subscribe((res) => {
-        this.emitAcceptedAndDeleted.emit(res.friendshipId);
+      dialogRef.afterClosed().subscribe(res => {
+        if (res) {
+          const isAccepted = this.friendship().status === 'ACCEPTED';
+          this.subscriptions.push(
+            this.friendshipService.cancelInvitation(this.friendship().friendshipId, isAccepted).subscribe((res) => {
+              this.emitAcceptedAndDeleted.emit(res.friendshipId);
+            })
+          )
+        }
       })
     )
+
   }
 
   editPermissions() {
+    const dialogRef = this.dialog.open(FriendshipPermissionUpdateDialogComponent, { data: this.friendship().permissions });
 
+    this.subscriptions.push(
+      dialogRef.afterClosed().subscribe(res => {
+        if (res) {
+          this.subscriptions.push(
+            this.friendshipService.updatePermissions(this.friendship().friendshipId, res).subscribe()
+          )
+        }
+      })
+    );
   }
 }
