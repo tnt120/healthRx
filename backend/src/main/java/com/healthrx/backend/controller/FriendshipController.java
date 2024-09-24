@@ -1,5 +1,6 @@
 package com.healthrx.backend.controller;
 
+import com.healthrx.backend.api.external.FriendshipPermissions;
 import com.healthrx.backend.api.external.PageResponse;
 import com.healthrx.backend.api.external.invitation.FriendshipResponse;
 import com.healthrx.backend.api.external.invitation.InvitationRequest;
@@ -38,6 +39,11 @@ public class FriendshipController {
             @RequestParam(name = "lastName", required = false) String lastName
     ) {
         return ResponseEntity.ok(friendshipService.getFriendships(page, size, sortBy, order, firstName, lastName));
+    }
+
+    @PostMapping("/permissions/{id}")
+    public ResponseEntity<FriendshipPermissions> updatePermissions(@PathVariable String id, @RequestBody FriendshipPermissions request) {
+        return ResponseEntity.ok(friendshipService.updatePermissions(id, request));
     }
 
     @PostMapping("/invite")

@@ -1,5 +1,6 @@
 package com.healthrx.backend.service.impl;
 
+import com.healthrx.backend.api.external.FriendshipPermissions;
 import com.healthrx.backend.api.external.PageResponse;
 import com.healthrx.backend.api.external.invitation.FriendshipResponse;
 import com.healthrx.backend.api.external.invitation.InvitationRequest;
@@ -120,6 +121,30 @@ public class FriendshipServiceImpl implements FriendshipService {
                 .setTotalElements(friendships.getTotalElements())
                 .setLast(friendships.isLast())
                 .setFirst(friendships.isFirst());
+    }
+
+    @Override
+    public FriendshipPermissions updatePermissions(String friendshipId, FriendshipPermissions request) {
+        User user = principalSupplier.get();
+
+        Friendship friendship = friendshipRepository.findById(friendshipId)
+                .orElseThrow(INVITATION_NOT_FOUND::getError);
+
+        if (!friendship.getUser().getId().equals(user.getId())) {
+            throw USER_NOT_PERMITTED.getError();
+        }
+
+        if (friendship.getStatus() != FriendshipStatus.ACCEPTED) {
+            throw INVITATION_NOT_ACCEPTED.getError();
+        }
+
+        friendship.setParametersAccess(request.getParametersAccess());
+        friendship.setActivitiesAccess(request.getActivitiesAccess());
+        friendship.setUserMedicineAccess(request.getUserMedicineAccess());
+
+        friendshipRepository.save(friendship);
+
+        return friendshipMapper.mapPermissions(friendship);
     }
 
     @Override
