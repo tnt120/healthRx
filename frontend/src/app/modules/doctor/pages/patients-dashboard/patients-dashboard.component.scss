@@ -1,0 +1,25 @@
+:host {
+  .section-container {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(275px, 1fr));
+      gap: 20px;
+      justify-content: center;
+      width: 100%;
+      padding-bottom: 20px;
+    }
+
+    .no-results {
+      width: 100%;
+      padding-top: 36px;
+
+      p {
+        text-align: center;
+      }
+    }
+  }
+}

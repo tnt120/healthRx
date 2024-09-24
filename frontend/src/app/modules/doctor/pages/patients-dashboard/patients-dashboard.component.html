@@ -1,1 +1,32 @@
-<p>patients-dashboard works!</p>
+<div class="main-container">
+  <div class="section-container">
+    <app-friendship-filter-panel (filtersAndSortChange)="onSearch($event)"></app-friendship-filter-panel>
+      @if (isFriendshipsLoading$ | async ) {
+        <div class="basic-spinner-container">
+          <mat-spinner></mat-spinner>
+        </div>
+      } @else {
+        @if (friendships$ | async; as friendships) {
+          @if (friendships.length === 0) {
+            <div class="no-results">
+              <p class="text-1">Aktualnie nie posiadasz żadnych pacjentów.</p>
+            </div>
+          } @else {
+            <div class="grid-container">
+              @for (friendship of friendships; track friendship.friendshipId) {
+                <app-friendship-card [friendship]="friendship" [isDoctor]="true" (emitAcceptedAndDeleted)="onDelete($event)"></app-friendship-card>
+              }
+            </div>
+            <mat-paginator
+              (page)="handlePageEvent($event)"
+              [length]="pagination.totalElements"
+              [pageSize]="pagination.pageSize"
+              [pageSizeOptions]="pagination.pageSizeOptions"
+              [pageIndex]="pagination.pageIndex"
+              aria-label="Select page"
+            ></mat-paginator>
+          }
+        }
+      }
+  </div>
+</div>

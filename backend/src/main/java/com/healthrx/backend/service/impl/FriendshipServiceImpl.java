@@ -90,6 +90,7 @@ public class FriendshipServiceImpl implements FriendshipService {
         Pageable pageable = PageRequest.of(page, size, sort);
 
         Specification<Friendship> specification = Specification.where(FriendshipSpecification.isAccepted());
+        specification = Specification.where(FriendshipSpecification.isMyFriendship(user.getId(), user.getRole() == Role.DOCTOR)).and(specification);
 
         if (user.getRole() == Role.USER) {
             if (firstName != null) specification = specification.and(FriendshipSpecification.doctorFirstNameContains(firstName));

@@ -20,6 +20,16 @@ public class FriendshipSpecification {
         return (root, query, cb) -> cb.like(cb.lower(root.get("doctor").get("lastName")), "%" + lastName.toLowerCase() + "%");
     }
 
+    public static Specification<Friendship> isMyFriendship(String userId, Boolean isDoctor) {
+        return (root, query, cb) -> {
+            if (isDoctor) {
+                return cb.equal(root.get("doctor").get("id"), userId);
+            } else {
+                return cb.equal(root.get("user").get("id"), userId);
+            }
+        };
+    }
+
     public static Specification<Friendship> isAccepted() {
         return (root, query, cb) -> cb.equal(root.get("status"), "ACCEPTED");
     }
