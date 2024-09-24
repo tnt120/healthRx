@@ -11,7 +11,7 @@
   } @else {
     <div class="invitations-container">
       @for (friendship of friendshipsPending; track friendship.friendshipId) {
-        <app-friendship-approval-card [friendship]="friendship" [isDoctor]="true" (emitAcceptedAndDeleted)="deleteFromPeding($event)"></app-friendship-approval-card>
+        <app-friendship-card [friendship]="friendship" [isDoctor]="true" (emitAcceptedAndDeleted)="deleteFromPeding($event)"></app-friendship-card>
       }
     </div>
   }

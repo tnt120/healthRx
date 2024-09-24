@@ -1,16 +1,19 @@
 import { Subscription } from 'rxjs';
-import { Component, inject, input, model, OnDestroy, output } from '@angular/core';
+import { Component, HostBinding, inject, input, model, OnDestroy, output } from '@angular/core';
 import { FriendshipResponse } from '../../../core/models/friendship-response.model';
 import { FriendshipService } from '../../../core/services/friendship/friendship.service';
 
 @Component({
-  selector: 'app-friendship-approval-card',
-  templateUrl: './friendship-approval-card.component.html',
-  styleUrl: './friendship-approval-card.component.scss'
+  selector: 'app-friendship-card',
+  templateUrl: './friendship-card.component.html',
+  styleUrl: './friendship-card.component.scss'
 })
-export class FriendshipApprovalCardComponent implements OnDestroy {
+export class FriendshipCardComponent implements OnDestroy {
   private readonly friendshipService = inject(FriendshipService);
 
+  @HostBinding('style.height.px') get height() {
+    return this.friendship().status === 'ACCEPTED' ? 310 : 275;
+  }
 
   friendship = input.required<FriendshipResponse>();
   isDoctor = input<boolean>(false);
@@ -55,10 +58,15 @@ export class FriendshipApprovalCardComponent implements OnDestroy {
   }
 
   cancel() {
+    const isAccepted = this.friendship().status === 'ACCEPTED';
     this.subscriptions.push(
-      this.friendshipService.cancelInvitation(this.friendship().friendshipId, false).subscribe((res) => {
+      this.friendshipService.cancelInvitation(this.friendship().friendshipId, isAccepted).subscribe((res) => {
         this.emitAcceptedAndDeleted.emit(res.friendshipId);
       })
     )
+  }
+
+  editPermissions() {
+
   }
 }

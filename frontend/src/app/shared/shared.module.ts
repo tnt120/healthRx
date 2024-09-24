@@ -25,7 +25,7 @@ import { NotificationsManageComponent } from './components/settings/notification
 import { NotificationsManageDialogComponent } from './components/settings/notifications-manage/notifications-manage-dialog/notifications-manage-dialog.component';
 import { ParametersManageComponent } from './components/settings/parameters-manage/parameters-manage.component';
 import { ParametersManageDialogComponent } from './components/settings/parameters-manage/parameters-manage-dialog/parameters-manage-dialog.component';
-import { FriendshipApprovalCardComponent } from './components/friendship-approval-card/friendship-approval-card.component';
+import { FriendshipCardComponent } from './components/friendship-card/friendship-card.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +53,7 @@ import { FriendshipApprovalCardComponent } from './components/friendship-approva
     NotificationsManageDialogComponent,
     ParametersManageComponent,
     ParametersManageDialogComponent,
-    FriendshipApprovalCardComponent,
+    FriendshipCardComponent,
   ],
   imports: [
     CommonModule,
@@ -72,7 +72,7 @@ import { FriendshipApprovalCardComponent } from './components/friendship-approva
     TableComponent,
     DayTailComponent,
     OnlyNumbersDirective,
-    FriendshipApprovalCardComponent
+    FriendshipCardComponent
   ]
 })
 export class SharedModule { }

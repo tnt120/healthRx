@@ -71,11 +71,13 @@ export class MyDoctorsComponent implements OnInit, OnDestroy {
     this.friendshipService.emitFilterChange();
   }
 
-  onDelete(friendshipId: string, isPending: boolean) {
-    if (isPending) {
+  onDelete(friendshipId: string, status: 'WAITING' | 'REJECTED' | 'ACCEPTED') {
+    if (status === FriendshipStatus.WAITING) {
       this.friendshipsPending = this.friendshipsPending.filter((f) => f.friendshipId !== friendshipId);
-    } else {
+    } else if (status === FriendshipStatus.REJECTED) {
         this.friendshipsRejected = this.friendshipsRejected.filter((f) => f.friendshipId !== friendshipId);
+    } else {
+      this.friendshipService.updateFriendships(friendshipId, 'delete');
     }
   }
 

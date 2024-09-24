@@ -5,7 +5,7 @@ import { BehaviorSubject, catchError, finalize, Observable, tap, throwError } fr
 import { InvitationRequest } from '../../models/invitation-request.model';
 import { CustomSnackbarService } from '../custom-snackbar/custom-snackbar.service';
 import { InvitationResponse } from '../../models/invitation-response.model';
-import { FriendshipResponse } from '../../models/friendship-response.model';
+import { FriendshipPermissions, FriendshipResponse } from '../../models/friendship-response.model';
 import { PageResponse } from '../../models/page-response.model';
 import { FriendshipSearch } from '../../models/friendship-search.model';
 
@@ -70,6 +70,31 @@ export class FriendshipService {
       }),
       finalize(() => this.setLoadingFriendshipsState(false))
     );
+  }
+
+  updateFriendships(friendshipId: string, action: 'delete' | 'permissionUpdate', newPermissions: FriendshipPermissions | null = null) {
+    const currentFrienships = this.friendshipsSubject.getValue();
+
+    switch (action) {
+      case 'delete': {
+        const updatedFriendships = currentFrienships.filter(f => f.friendshipId !== friendshipId);
+        this.friendshipsSubject.next(updatedFriendships);
+        break;
+      }
+      case 'permissionUpdate': {
+        if (newPermissions) {
+          const updatedFriendships = currentFrienships.map(f => {
+            if (f.friendshipId === friendshipId) {
+              return { ...f, permissions: newPermissions };
+            }
+
+            return f;
+          })
+
+          this.friendshipsSubject.next(updatedFriendships);
+        }
+      }
+    }
   }
 
   getFriendshipsPending(): Observable<FriendshipResponse[]> {

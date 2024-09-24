@@ -1,4 +1,5 @@
 @use '@angular/material' as mat;
+@import "../../../../styles/variables";
 
 :host {
   display: flex;
@@ -6,12 +7,33 @@
   justify-content: center;
   align-items: center;
   width: 275px;
-  height: 300px;
   border-radius: 5px;
   @include mat.elevation(2);
   padding: 10px;
   place-self: center;
   gap: 10px;
+  position: relative;
+
+  .actions-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    p {
+      text-align: center
+    };
+
+    &:hover {
+      background-color: rgb(20, 105, 192, 0.2);
+    }
+  }
 
   .image {
     width: 150px;
@@ -31,6 +53,19 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  .permissions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+
+    p {
+      span {
+        width: 225px;
+      }
+    }
   }
 
   .buttons {
