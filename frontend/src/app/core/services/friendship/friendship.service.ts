@@ -8,6 +8,7 @@ import { InvitationResponse } from '../../models/invitation-response.model';
 import { FriendshipPermissions, FriendshipResponse } from '../../models/friendship-response.model';
 import { PageResponse } from '../../models/page-response.model';
 import { FriendshipSearch } from '../../models/friendship-search.model';
+import { SortOption } from '../../models/sort-option.model';
 
 @Injectable({
   providedIn: 'root'
@@ -53,12 +54,12 @@ export class FriendshipService {
     this.loadingFriendshipsRejectedSubject.next(loading);
   }
 
-  getFriendships(page: number, size: number, friendshipSearch: FriendshipSearch): Observable<PageResponse<FriendshipResponse>> {
+  getFriendships(page: number, sort: SortOption, size: number, friendshipSearch: FriendshipSearch): Observable<PageResponse<FriendshipResponse>> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString())
-      .set('sortBy', 'id')
-      .set('order', 'asc');
+      .set('sortBy', sort.sortBy)
+      .set('order', sort.order);
 
     if (friendshipSearch.firstName) params = params.set('firstName', friendshipSearch.firstName);
     if (friendshipSearch.lastName) params = params.set('lastName', friendshipSearch.lastName);

@@ -1,0 +1,50 @@
+:host {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 20px;
+
+  .filters, .search-sort {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  .filters {
+    width: 60%;
+
+    mat-form-field {
+      width: 50%;
+    }
+  }
+
+  .search-sort {
+    width: 35%;
+    justify-content: flex-end;
+
+    mat-form-field {
+      width: 250px;
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  :host {
+    flex-direction: column;
+
+    .filters {
+      width: 100%;
+    }
+
+    .search-sort {
+      width: 100%;
+      flex-direction: column;
+      gap: 0;
+
+      mat-form-field, button {
+        width: 100%;
+      }
+    }
+  }
+}

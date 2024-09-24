@@ -6,6 +6,9 @@ import { Pagination } from '../../../../core/models/pagination.model';
 import { PageEvent } from '@angular/material/paginator';
 import { FriendshipSearch } from '../../../../core/models/friendship-search.model';
 import { FriendshipResponse, FriendshipStatus } from '../../../../core/models/friendship-response.model';
+import { FiltersAndSortFriendshipSearch } from '../../../../shared/components/friendship-filter-panel/friendship-filter-panel.component';
+import { SortOption } from '../../../../core/models/sort-option.model';
+import { friendshipSortOptions } from '../../../../core/constants/sort-options';
 
 @Component({
   selector: 'app-my-doctors',
@@ -19,11 +22,21 @@ export class MyDoctorsComponent implements OnInit, OnDestroy {
 
   friendships$ = this.friendshipService.friendships$;
 
+  isFriendshipsLoading$ = this.friendshipService.loadingFriendships$;
+
+  isFriendshipsPendingLoading$ = this.friendshipService.loadingFriendshipsPending$;
+
+  isFriendshipsRejectedLoading$ = this.friendshipService.loadingFriendshipsRejected$;
+
   friendshipsPending: FriendshipResponse[] = [];
 
   friendshipsRejected: FriendshipResponse[] = [];
 
   pagination: Pagination = {...basePagination};
+
+  sortOptions: SortOption[] = [...friendshipSortOptions];
+
+  sort: SortOption = this.sortOptions[0];
 
   friendshipSerach: FriendshipSearch = {
     firstName: null,
@@ -42,9 +55,15 @@ export class MyDoctorsComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
+  onSearch(e: FiltersAndSortFriendshipSearch): void {
+    this.friendshipSerach = { ...e.filters };
+    this.sort = { ...e.sort };
+    this.friendshipService.emitFilterChange();
+  }
+
   getFriendships() {
     this.subscriptions.push(
-      this.friendshipService.getFriendships(this.pagination.pageIndex, this.pagination.pageSize, this.friendshipSerach).subscribe(res => {
+      this.friendshipService.getFriendships(this.pagination.pageIndex, this.sort, this.pagination.pageSize, this.friendshipSerach).subscribe(res => {
         this.pagination.totalElements = res.totalElements;
       })
     )

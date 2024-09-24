@@ -1,0 +1,21 @@
+<div class="filters">
+  <mat-form-field appearance="outline">
+    <mat-label>Imie</mat-label>
+    <input matInput type="text" [(ngModel)]="filters().firstName" placeholder="Imie" />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Nazwisko</mat-label>
+    <input matInput type="text" [(ngModel)]="filters().lastName" placeholder="Nazwisko" />
+  </mat-form-field>
+</div>
+<div class="search-sort">
+  <mat-form-field appearance="outline">
+    <mat-label>Sortuj po</mat-label>
+    <mat-select [(ngModel)]="sort" (ngModelChange)="sortChange()">
+      @for (option of sortOptions; track getKey(option)) {
+        <mat-option [value]="option">{{ sortOptionMapper(option.sortBy) }} {{ option.order === 'asc' ? '(rosnąco)' : '(malecjąco)' }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <button mat-flat-button (click)="onSearch()"><p>Szukaj</p></button>
+</div>

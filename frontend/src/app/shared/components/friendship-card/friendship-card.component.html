@@ -11,7 +11,7 @@
   <img src="../../../../assets/images/user.png" alt="user">
 </div>
 <h3 #name [matTooltip]="friendship().user.firstName + ' ' + friendship().user.lastName" [matTooltipDisabled]="isOverflow(name)">
-  {{ friendship().user.firstName + ' ' + friendship().user.lastName }}
+  <span *ngIf="!isDoctor()">lek. </span> {{ friendship().user.firstName + ' ' + friendship().user.lastName }}
 </h3>
 @if (friendship().status !== 'ACCEPTED') {
   @if (isDoctor()) {

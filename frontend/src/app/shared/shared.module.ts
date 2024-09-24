@@ -27,6 +27,7 @@ import { ParametersManageComponent } from './components/settings/parameters-mana
 import { ParametersManageDialogComponent } from './components/settings/parameters-manage/parameters-manage-dialog/parameters-manage-dialog.component';
 import { FriendshipCardComponent } from './components/friendship-card/friendship-card.component';
 import { FriendshipPermissionUpdateDialogComponent } from './components/friendship-permission-update-dialog/friendship-permission-update-dialog.component';
+import { FriendshipFilterPanelComponent } from './components/friendship-filter-panel/friendship-filter-panel.component';
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import { FriendshipPermissionUpdateDialogComponent } from './components/friendsh
     ParametersManageDialogComponent,
     FriendshipCardComponent,
     FriendshipPermissionUpdateDialogComponent,
+    FriendshipFilterPanelComponent,
   ],
   imports: [
     CommonModule,
@@ -74,7 +76,8 @@ import { FriendshipPermissionUpdateDialogComponent } from './components/friendsh
     TableComponent,
     DayTailComponent,
     OnlyNumbersDirective,
-    FriendshipCardComponent
+    FriendshipCardComponent,
+    FriendshipFilterPanelComponent,
   ]
 })
 export class SharedModule { }

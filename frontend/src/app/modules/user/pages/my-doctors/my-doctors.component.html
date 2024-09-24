@@ -1,17 +1,32 @@
 <div class="main-container">
   <app-collapsing-container-layout sectionTitle="Moi lekarze">
     <div class="section-container">
-      @if (friendships$ | async; as friendships) {
-        @if (friendships.length === 0) {
-          <div class="no-results">
-            <p class="text-1">Aktualnie nie posiadasz żadnych lekarzy.</p>
-          </div>
-        } @else {
-          <div class="grid-container">
-            @for (friendship of friendships; track friendship.friendshipId) {
-              <app-friendship-card [friendship]="friendship" (emitAcceptedAndDeleted)="onDelete($event, 'ACCEPTED')"></app-friendship-card>
-            }
-          </div>
+      <app-friendship-filter-panel (filtersAndSortChange)="onSearch($event)"></app-friendship-filter-panel>
+      @if (isFriendshipsLoading$ | async ) {
+        <div class="basic-spinner-container">
+          <mat-spinner></mat-spinner>
+        </div>
+      } @else {
+        @if (friendships$ | async; as friendships) {
+          @if (friendships.length === 0) {
+            <div class="no-results">
+              <p class="text-1">Aktualnie nie posiadasz żadnych lekarzy.</p>
+            </div>
+          } @else {
+            <div class="grid-container">
+              @for (friendship of friendships; track friendship.friendshipId) {
+                <app-friendship-card [friendship]="friendship" (emitAcceptedAndDeleted)="onDelete($event, 'ACCEPTED')"></app-friendship-card>
+              }
+            </div>
+            <mat-paginator
+              (page)="handlePageEvent($event)"
+              [length]="pagination.totalElements"
+              [pageSize]="pagination.pageSize"
+              [pageSizeOptions]="pagination.pageSizeOptions"
+              [pageIndex]="pagination.pageIndex"
+              aria-label="Select page"
+            ></mat-paginator>
+          }
         }
       }
     </div>
@@ -19,32 +34,44 @@
 
   <app-collapsing-container-layout sectionTitle="Zaproszenia oczekujące" [isCollapsed]="true">
     <div class="section-container">
-      @if (friendshipsPending.length === 0) {
-        <div class="no-results">
-          <p class="text-1">Aktualnie nie posiadasz żadnych zaproszeń.</p>
+      @if (isFriendshipsPendingLoading$ | async) {
+        <div class="basic-spinner-container">
+          <mat-spinner></mat-spinner>
         </div>
       } @else {
-        <div class="grid-container">
-          @for (friendship of friendshipsPending; track friendship.friendshipId) {
-            <app-friendship-card [friendship]="friendship" (emitAcceptedAndDeleted)="onDelete($event, 'WAITING')"></app-friendship-card>
-          }
-        </div>
+        @if (friendshipsPending.length === 0) {
+          <div class="no-results">
+            <p class="text-1">Aktualnie nie posiadasz żadnych zaproszeń.</p>
+          </div>
+        } @else {
+          <div class="grid-container">
+            @for (friendship of friendshipsPending; track friendship.friendshipId) {
+              <app-friendship-card [friendship]="friendship" (emitAcceptedAndDeleted)="onDelete($event, 'WAITING')"></app-friendship-card>
+            }
+          </div>
+        }
       }
     </div>
   </app-collapsing-container-layout>
 
   <app-collapsing-container-layout sectionTitle="Zaproszenia odrzucone" [isCollapsed]="true">
     <div class="section-container">
-      @if (friendshipsRejected.length === 0) {
-        <div class="no-results">
-          <p class="text-1">Aktualnie nie ma żadnych odrzuconych zaproszeń.</p>
+      @if (isFriendshipsRejectedLoading$ | async) {
+        <div class="basic-spinner-container">
+          <mat-spinner></mat-spinner>
         </div>
       } @else {
-        <div class="grid-container">
-          @for (friendship of friendshipsRejected; track friendship.friendshipId) {
-            <app-friendship-card [friendship]="friendship" [isRejected]="true" (emitResend)="onResend($event)" (emitAcceptedAndDeleted)="onDelete($event, 'REJECTED')"></app-friendship-card>
-          }
-        </div>
+        @if (friendshipsRejected.length === 0) {
+          <div class="no-results">
+            <p class="text-1">Aktualnie nie ma żadnych odrzuconych zaproszeń.</p>
+          </div>
+        } @else {
+          <div class="grid-container">
+            @for (friendship of friendshipsRejected; track friendship.friendshipId) {
+              <app-friendship-card [friendship]="friendship" [isRejected]="true" (emitResend)="onResend($event)" (emitAcceptedAndDeleted)="onDelete($event, 'REJECTED')"></app-friendship-card>
+            }
+          </div>
+        }
       }
     </div>
   </app-collapsing-container-layout>

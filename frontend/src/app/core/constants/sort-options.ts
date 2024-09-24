@@ -45,3 +45,14 @@ export const doctorSortOptions: SortOption[] = [
     order: 'desc'
   }
 ];
+
+export const friendshipSortOptions: SortOption[] = [
+  {
+    sortBy: 'createdAt',
+    order: 'asc'
+  },
+  {
+    sortBy: 'createdAt',
+    order: 'desc'
+  }
+];
