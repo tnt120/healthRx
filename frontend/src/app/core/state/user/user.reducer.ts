@@ -6,6 +6,7 @@ import { Sex } from "../../enums/sex.enum";
 import { userActions } from "./user.actions";
 
 export const userInitialState: UserResponse = {
+  id: "",
   firstName: "",
   lastName: "",
   email: "",

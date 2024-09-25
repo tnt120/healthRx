@@ -18,6 +18,7 @@ public class UserMapper {
 
     public UserResponse extendedMap(User user) {
         UserResponse userResponse = map(user);
+        userResponse.setId(user.getId());
         userResponse.setLastName(user.getLastName());
         userResponse.setPhoneNumber(user.getPhoneNumber());
         userResponse.setSex(user.getSex());
