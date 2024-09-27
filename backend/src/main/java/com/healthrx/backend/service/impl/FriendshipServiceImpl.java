@@ -15,6 +15,7 @@ import com.healthrx.backend.repository.MessageRepository;
 import com.healthrx.backend.repository.UserRepository;
 import com.healthrx.backend.service.FriendshipService;
 import com.healthrx.backend.specification.FriendshipSpecification;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -236,6 +237,7 @@ public class FriendshipServiceImpl implements FriendshipService {
     }
 
     @Override
+    @Transactional
     public InvitationResponse removeInvitation(String friendshipId) {
         User user = principalSupplier.get();
 

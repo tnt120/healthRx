@@ -12,12 +12,20 @@ public class FriendshipSpecification {
         return (root, query, cb) -> cb.like(cb.lower(root.get("user").get("lastName")), "%" + lastName.toLowerCase() + "%");
     }
 
+    public static Specification<Friendship> userIdEquals(String userId) {
+        return (root, query, cb) -> cb.equal(root.get("user").get("id"), userId);
+    }
+
     public static Specification<Friendship> doctorFirstNameContains(String firstName) {
         return (root, query, cb) -> cb.like(cb.lower(root.get("doctor").get("firstName")), "%" + firstName.toLowerCase() + "%");
     }
 
     public static Specification<Friendship> doctorLastNameContains(String lastName) {
         return (root, query, cb) -> cb.like(cb.lower(root.get("doctor").get("lastName")), "%" + lastName.toLowerCase() + "%");
+    }
+
+    public static Specification<Friendship> doctorIdEquals(String doctorId) {
+        return (root, query, cb) -> cb.equal(root.get("doctor").get("id"), doctorId);
     }
 
     public static Specification<Friendship> isMyFriendship(String userId, Boolean isDoctor) {

@@ -14,6 +14,9 @@ spring:
     properties:
       hibernate:
         dialect: 'org.hibernate.dialect.PostgreSQLDialect'
+        order_by:
+          default_null_ordering: last
+
   kafka:
     bootstrap-servers: localhost:9092
   mail:
@@ -39,7 +42,7 @@ spring:
   quartz:
     job-store-type: jdbc
     jdbc:
-      initialize-schema: always  # lub 'never' jeśli nie chcesz, aby Spring zarządzał schematem
+      initialize-schema: never  # lub 'never' jeśli nie chcesz, aby Spring zarządzał schematem
     properties:
       org.quartz.scheduler.instanceName: MyScheduler
       org.quartz.scheduler.instanceId: AUTO
