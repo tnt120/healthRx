@@ -41,6 +41,10 @@ public class Friendship {
 
     private Boolean parametersAccess;
 
+    @ManyToOne
+    @JoinColumn(name = "last_message_id")
+    private Message lastMessage;
+
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();

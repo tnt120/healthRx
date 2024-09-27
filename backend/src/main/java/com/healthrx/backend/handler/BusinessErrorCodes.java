@@ -50,6 +50,7 @@ public enum BusinessErrorCodes {
     INVITATION_ALREADY_ACCEPTED(331, "Invitation already accepted", HttpStatus.CONFLICT),
     INVITATION_ALREADY_EXISTS(331, "Invitation already exists", HttpStatus.CONFLICT),
     INVITATION_NOT_ACCEPTED(332, "Invitation not accepted", HttpStatus.CONFLICT),
+    FRIENDSHIP_NOT_FOUND(333, "Friendship not found", HttpStatus.NOT_FOUND),
     ;
 
     private final int code;

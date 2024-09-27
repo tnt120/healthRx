@@ -1,6 +1,7 @@
 package com.healthrx.backend.service.impl;
 
 import com.healthrx.backend.api.external.chat.ChatMessageDTO;
+import com.healthrx.backend.api.internal.chat.Friendship;
 import com.healthrx.backend.api.internal.chat.Message;
 import com.healthrx.backend.mapper.MessageMapper;
 import com.healthrx.backend.repository.FriendshipRepository;
@@ -27,6 +28,9 @@ public class ChatServiceImpl implements ChatService {
     private final MessageMapper messageMapper;
 
     public void sendChatMessage(ChatMessageDTO chatMessageDTO) {
+        Friendship friendship = friendshipRepository.findById(chatMessageDTO.getFriendshipId())
+                .orElseThrow(FRIENDSHIP_NOT_FOUND::getError);
+
         Message message = messageRepository.save(
                 Message.builder()
                         .content(chatMessageDTO.getContent())
@@ -34,12 +38,15 @@ public class ChatServiceImpl implements ChatService {
                                 .orElseThrow(USER_NOT_FOUND::getError))
                         .sender(userRepository.findById(chatMessageDTO.getSenderId())
                                 .orElseThrow(USER_NOT_FOUND::getError))
-                        .friendship(friendshipRepository.findById(chatMessageDTO.getFriendshipId())
-                                .orElseThrow(FRIENDSHIP_NOT_FOUND::getError))
+                        .friendship(friendship)
                         .isDelivered(false)
                         .isRead(false)
                         .build()
         );
+
+        friendship.setLastMessage(message);
+
+        friendshipRepository.save(friendship);
 
         messagingTemplate.convertAndSendToUser(
                 chatMessageDTO.getReceiverId(),
