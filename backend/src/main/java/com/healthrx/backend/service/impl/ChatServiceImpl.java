@@ -13,6 +13,7 @@ import com.healthrx.backend.repository.MessageRepository;
 import com.healthrx.backend.repository.UserRepository;
 import com.healthrx.backend.service.ChatService;
 import com.healthrx.backend.specification.FriendshipSpecification;
+import com.healthrx.backend.specification.MessageSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -23,14 +24,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.healthrx.backend.handler.BusinessErrorCodes.FRIENDSHIP_NOT_FOUND;
-import static com.healthrx.backend.handler.BusinessErrorCodes.USER_NOT_FOUND;
+import static com.healthrx.backend.handler.BusinessErrorCodes.*;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class ChatServiceImpl implements ChatService {
-
     private final SimpMessagingTemplate messagingTemplate;
     private final UserRepository userRepository;
     private final FriendshipRepository friendshipRepository;
@@ -93,5 +92,25 @@ public class ChatServiceImpl implements ChatService {
         }
 
         return conversations;
+    }
+
+    @Override
+    public List<ChatMessageDTO> getMessages(String friendshipId) {
+        User user = principalSupplier.get();
+
+        Friendship friendship = friendshipRepository.findById(friendshipId)
+                .orElseThrow(FRIENDSHIP_NOT_FOUND::getError);
+
+        if (!friendship.getUser().getId().equals(user.getId()) && !friendship.getDoctor().getId().equals(user.getId())) {
+            throw USER_NOT_PERMITTED.getError();
+        }
+
+        Sort sort = Sort.by(Sort.Order.desc("createdAt").nullsLast());
+
+        Specification<Message> spec = Specification.where(MessageSpecification.getMessagesByFriendshipId(friendshipId));
+
+        return messageRepository.findAll(spec, sort).stream()
+                .map(messageMapper::map)
+                .toList();
     }
 }

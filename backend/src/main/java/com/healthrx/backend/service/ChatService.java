@@ -8,4 +8,5 @@ import java.util.List;
 public interface ChatService {
     void sendChatMessage(ChatMessageDTO chatMessageDTO);
     List<ConversationDTO> getConversations();
+    List<ChatMessageDTO> getMessages(String friendshipId);
 }
