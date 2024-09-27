@@ -1,0 +1,14 @@
+<div class="container" (click)="onSelect()">
+  <div class="user-message-container">
+    <div class="image">
+      <img src="../../../../../../assets/images/user.png" alt="avatar" />
+    </div>
+    <div class="info">
+      <p class="fullname subtitle-2">{{ conversation().user.firstName }} {{ conversation().user.lastName }}</p>
+      <p class="lastmessage small-text"><i>{{ conversation().lastMessage.content ? conversation().lastMessage.content : '' }}</i></p>
+    </div>
+  </div>
+  <div class="last-message-time">
+    <p class="small-text gray-dark">{{ conversation().lastMessage.createdAt | date: 'HH:mm' }}</p>
+  </div>
+</div>

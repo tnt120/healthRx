@@ -28,6 +28,10 @@ import { ParametersManageDialogComponent } from './components/settings/parameter
 import { FriendshipCardComponent } from './components/friendship-card/friendship-card.component';
 import { FriendshipPermissionUpdateDialogComponent } from './components/friendship-permission-update-dialog/friendship-permission-update-dialog.component';
 import { FriendshipFilterPanelComponent } from './components/friendship-filter-panel/friendship-filter-panel.component';
+import { ChatComponent } from './components/chat/chat.component';
+import { ChatConversationsTabComponent } from './components/chat/chat-conversations-tab/chat-conversations-tab.component';
+import { ConversationItemComponent } from './components/chat/chat-conversations-tab/conversation-item/conversation-item.component';
+import { MessagesContainerComponent } from './components/chat/messages-container/messages-container.component';
 
 @NgModule({
   declarations: [
@@ -58,6 +62,10 @@ import { FriendshipFilterPanelComponent } from './components/friendship-filter-p
     FriendshipCardComponent,
     FriendshipPermissionUpdateDialogComponent,
     FriendshipFilterPanelComponent,
+    ChatComponent,
+    ChatConversationsTabComponent,
+    ConversationItemComponent,
+    MessagesContainerComponent,
   ],
   imports: [
     CommonModule,
@@ -78,6 +86,7 @@ import { FriendshipFilterPanelComponent } from './components/friendship-filter-p
     OnlyNumbersDirective,
     FriendshipCardComponent,
     FriendshipFilterPanelComponent,
+    ChatComponent,
   ]
 })
 export class SharedModule { }
