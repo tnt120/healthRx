@@ -2,6 +2,9 @@ import { Component, inject, input } from '@angular/core';
 import { WebsocketService } from '../../../core/services/websocket/websocket.service';
 import { ChatService } from '../../../core/services/chat/chat.service';
 import { Conversation } from '../../../core/models/conversation.model';
+import { UserResponse } from '../../../core/models/user/user-response.model';
+import { Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-chat',
@@ -13,9 +16,13 @@ export class ChatComponent {
 
   private readonly chatService = inject(ChatService);
 
+  private readonly store = inject(Store);
+
   conversations: Conversation[] = [];
 
   selectedConversation: Conversation | null = null;
+
+  chatUser$: Observable<UserResponse> = this.store.select('user');
 
   ngOnInit(): void {
     this.websocketService.connectToChat();

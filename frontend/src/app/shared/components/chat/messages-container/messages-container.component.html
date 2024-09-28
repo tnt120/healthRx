@@ -1,3 +1,30 @@
 <div class="container">
-
+  @if (conversation()) {
+    <div class="top-bar">
+      <div class="image">
+        <img src="../../../../../assets/images/user.png" alt="profile-picture">
+      </div>
+      <h3>{{ conversation()?.user?.firstName }} {{ conversation()?.user?.lastName }}</h3>
+    </div>
+    @if (conversation()?.messages?.length === 0) {
+      <div class="empty-container">
+        <p class="subtitle-3">Brak wiadomości</p>
+      </div>
+    } @else {
+      <div class="messages-container" #messagesContainer>
+        <div *ngFor="let message of conversation()?.messages">
+          <div class="message" [ngClass]="{ 'my-message': message?.senderId === chatUser().id}">
+            <p>{{ message?.content }}</p>
+          </div>
+        </div>
+      </div>
+    }
+    <div class="send-message-container">
+      
+    </div>
+  } @else {
+    <div class="select-conversation-container">
+      <p class="subtitle-3">Cześć {{ chatUser().firstName }}, <br/>wybierz konwersację aby zacząć rozmowę</p>
+    </div>
+  }
 </div>

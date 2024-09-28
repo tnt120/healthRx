@@ -1,4 +1,6 @@
-<div class="main-container">
-  <app-chat-conversations-tab [conversations]="conversations" (selectEmit)="onConversationSelect($event)"></app-chat-conversations-tab>
-  <app-messages-container></app-messages-container>
-</div>
+@if (chatUser$ | async; as chatUser) {
+  <div class="main-container">
+    <app-chat-conversations-tab [conversations]="conversations" (selectEmit)="onConversationSelect($event)"></app-chat-conversations-tab>
+    <app-messages-container [conversation]="selectedConversation" [chatUser]="chatUser"></app-messages-container>
+  </div>
+}
