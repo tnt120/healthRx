@@ -16,14 +16,14 @@
           <div class="message-container" [ngClass]="{ 'my-message': message?.senderId === chatUser().id}">
             @if (message?.senderId !== chatUser().id) {
               <div class="image">
-                <img 
-                  src="../../../../../assets/images/user.png" 
-                  alt="profile-picture" 
+                <img
+                  src="../../../../../assets/images/user.png"
+                  alt="profile-picture"
                   *ngIf="conversation()?.messages?.[i-1]?.senderId !== message?.senderId"
                 >
               </div>
             }
-            <div class="message">
+            <div class="message" [matTooltip]="(message?.createdAt! | date: 'dd MMMM yyyy HH:mm')!" matTooltipPosition="above">
               <p>{{ message?.content }}</p>
             </div>
           </div>
@@ -31,8 +31,8 @@
       </div>
     }
     <div class="send-message-container">
-      <input type="text" [(ngModel)]="message" placeholder="Aa" />
-      <button mat-icon-button>
+      <input type="text" [(ngModel)]="message" placeholder="Aa" (keydown.enter)="sendMessage()" />
+      <button mat-icon-button (click)="sendMessage()">
         <mat-icon aria-hidden="false" matListItemIcon fontSet="material-symbols-outlined">send</mat-icon>
       </button>
     </div>

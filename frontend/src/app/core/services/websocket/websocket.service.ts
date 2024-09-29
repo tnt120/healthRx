@@ -1,5 +1,5 @@
 import { ChatMessageDto } from './../../models/chat-message-dto.model';
-import { map, Observable, tap } from 'rxjs';
+import { BehaviorSubject, map, Observable, Subject, tap } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import SockJS from 'sockjs-client';
@@ -16,6 +16,10 @@ export class WebsocketService {
   private chatSubscription: Stomp.Subscription | null = null;
 
   private userId = "";
+
+  private messageReceivedBehaviorSubject = new Subject<ChatMessageDto>();
+
+  messageReceived$ = this.messageReceivedBehaviorSubject.asObservable();
 
   constructor() {
     this.store.select('user').pipe(tap(user => this.userId = user.id)).subscribe();
@@ -62,7 +66,8 @@ export class WebsocketService {
       this.chatSubscription.unsubscribe();
     }
     this.chatSubscription = this.stompClient.subscribe(`/user/${this.userId}/queue/messages`, (message) => {
-      const body = JSON.parse(message.body);
+      const body: ChatMessageDto = JSON.parse(message.body);
+      this.messageReceivedBehaviorSubject.next(body);
       console.log('WS message get', body);
     })
   }

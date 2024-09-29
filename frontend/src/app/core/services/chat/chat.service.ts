@@ -29,9 +29,9 @@ export class ChatService {
 
   getMessages(friendshipId: string): Observable<ChatMessageDto[]> {
     return this.http.get<ChatMessageDto[]>(`${this.apiUrl}/messages/${friendshipId}`).pipe(
-      tap(res => {
-        this.updateConversationMessages(friendshipId, res, 'addMulipleMessages');
-      })
+      // tap(res => {
+      //   this.updateConversationMessages(friendshipId, res, 'addMulipleMessages');
+      // })
     );
   }
 
