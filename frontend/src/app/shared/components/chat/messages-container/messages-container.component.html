@@ -12,15 +12,29 @@
       </div>
     } @else {
       <div class="messages-container" #messagesContainer>
-        <div *ngFor="let message of conversation()?.messages">
-          <div class="message" [ngClass]="{ 'my-message': message?.senderId === chatUser().id}">
-            <p>{{ message?.content }}</p>
+        <div *ngFor="let message of conversation()?.messages; let i = index">
+          <div class="message-container" [ngClass]="{ 'my-message': message?.senderId === chatUser().id}">
+            @if (message?.senderId !== chatUser().id) {
+              <div class="image">
+                <img 
+                  src="../../../../../assets/images/user.png" 
+                  alt="profile-picture" 
+                  *ngIf="conversation()?.messages?.[i-1]?.senderId !== message?.senderId"
+                >
+              </div>
+            }
+            <div class="message">
+              <p>{{ message?.content }}</p>
+            </div>
           </div>
         </div>
       </div>
     }
     <div class="send-message-container">
-      
+      <input type="text" [(ngModel)]="message" placeholder="Aa" />
+      <button mat-icon-button>
+        <mat-icon aria-hidden="false" matListItemIcon fontSet="material-symbols-outlined">send</mat-icon>
+      </button>
     </div>
   } @else {
     <div class="select-conversation-container">

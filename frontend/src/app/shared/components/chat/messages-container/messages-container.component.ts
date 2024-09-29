@@ -1,4 +1,4 @@
-import { Component, input  } from '@angular/core';
+import { Component, input, signal  } from '@angular/core';
 import { Conversation } from '../../../../core/models/conversation.model';
 import { UserResponse } from '../../../../core/models/user/user-response.model';
 
@@ -11,4 +11,6 @@ export class MessagesContainerComponent {
   conversation = input.required<Conversation | null>();
 
   chatUser = input.required<UserResponse>();
+
+  message = signal<string>('');
 }

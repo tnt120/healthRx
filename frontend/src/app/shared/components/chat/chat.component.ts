@@ -45,7 +45,7 @@ export class ChatComponent {
     this.chatService.getMessages(conversation.friendshipId).subscribe(res => {
       this.conversations = this.conversations.map(c => {
         if (c.friendshipId === conversation.friendshipId) {
-          c.messages = res;
+          c.messages = [...res];
           this.selectedConversation = c;
         }
         return c;
