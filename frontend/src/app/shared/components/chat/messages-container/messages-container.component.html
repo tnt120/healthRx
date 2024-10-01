@@ -13,6 +13,10 @@
     } @else {
       <div class="messages-container" #messagesContainer>
         <div *ngFor="let message of conversation()?.messages; let i = index">
+          <div *ngIf="i === conversation()?.messages!.length - 1 || compareDates(message, conversation()?.messages?.[i + 1])" class="date-divider">
+            <span>{{ message?.createdAt | date: 'dd MMMM yyyy HH:mm' }}</span>
+          </div>
+
           <div class="message-container" [ngClass]="{ 'my-message': message?.senderId === chatUser().id}">
             @if (message?.senderId !== chatUser().id) {
               <div class="image">

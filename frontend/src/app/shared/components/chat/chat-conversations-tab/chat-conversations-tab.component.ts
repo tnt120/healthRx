@@ -1,5 +1,6 @@
 import { Component, input, output } from '@angular/core';
 import { Conversation } from '../../../../core/models/conversation.model';
+import { UserResponse } from '../../../../core/models/user/user-response.model';
 
 @Component({
   selector: 'app-chat-conversations-tab',
@@ -8,6 +9,8 @@ import { Conversation } from '../../../../core/models/conversation.model';
 })
 export class ChatConversationsTabComponent {
   conversations = input.required<Conversation[]>();
+
+  chatUser = input.required<UserResponse>();
 
   selectEmit = output<Conversation>();
 

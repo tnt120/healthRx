@@ -7,7 +7,7 @@
     <h3>Wszystkie rozmowy</h3>
     <div class="conversations-container">
       @for (conversation of conversations(); track conversation.friendshipId) {
-        <app-conversation-item [conversation]="conversation" (selectEmit)="onConversationSelect($event)" [isActive]="selectedConversation?.friendshipId === conversation.friendshipId"></app-conversation-item>
+        <app-conversation-item [chatUser]="chatUser()" [conversation]="conversation" (selectEmit)="onConversationSelect($event)" [isActive]="selectedConversation?.friendshipId === conversation.friendshipId"></app-conversation-item>
       }
     </div>
   }

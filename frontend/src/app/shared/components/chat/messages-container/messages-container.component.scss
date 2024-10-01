@@ -58,6 +58,35 @@
       overflow-y: scroll;
       max-height: calc(100vh - 50px - 64px - 32px - 80px - 50px);
 
+      .date-divider {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        margin: 10px 0;
+        position: relative;
+
+        &::before {
+          content: '';
+          position: absolute;
+          top: 50%;
+          width: 100%;
+          height: 1px;
+          background-color: $gray-light;
+        }
+
+        span {
+          padding: 4px 8px;
+          border-radius: 12px;
+          font-size: 0.85rem;
+          color: black;
+          z-index: 1;
+          background-color: #F1F3FC;
+          padding: 0 24px;
+          font-style: italic;
+        }
+      }
+
       .image, img {
         width: 32px;
         height: 32px;
