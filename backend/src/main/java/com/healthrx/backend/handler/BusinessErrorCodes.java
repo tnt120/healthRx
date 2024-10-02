@@ -51,6 +51,7 @@ public enum BusinessErrorCodes {
     INVITATION_ALREADY_EXISTS(331, "Invitation already exists", HttpStatus.CONFLICT),
     INVITATION_NOT_ACCEPTED(332, "Invitation not accepted", HttpStatus.CONFLICT),
     FRIENDSHIP_NOT_FOUND(333, "Friendship not found", HttpStatus.NOT_FOUND),
+    MESSAGE_NOT_FOUND(334, "Message not found", HttpStatus.NOT_FOUND),
     ;
 
     private final int code;

@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface ChatService {
     void sendChatMessage(ChatMessageDTO chatMessageDTO);
+    void markMessageAsRead(String messageId, String receiverId);
     List<ConversationDTO> getConversations();
     List<ChatMessageDTO> getMessages(String friendshipId);
 }

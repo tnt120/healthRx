@@ -27,6 +27,11 @@ public class ChatController {
         chatService.sendChatMessage(chatMessageDTO);
     }
 
+    @MessageMapping("/chat/read")
+    public void processReadMessage(@Payload ChatMessageDTO chatMessageDTO) {
+        chatService.markMessageAsRead(chatMessageDTO.getId(), chatMessageDTO.getReceiverId());
+    }
+
     @GetMapping("/conversations")
     public ResponseEntity<List<ConversationDTO>> getConversations() {
         return ResponseEntity.ok(chatService.getConversations());

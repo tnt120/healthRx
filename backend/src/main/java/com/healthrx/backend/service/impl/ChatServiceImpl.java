@@ -60,8 +60,33 @@ public class ChatServiceImpl implements ChatService {
         friendshipRepository.save(friendship);
 
         messagingTemplate.convertAndSendToUser(
+                chatMessageDTO.getSenderId(),
+                "/queue/messages",
+                messageMapper.map(message)
+        );
+
+        messagingTemplate.convertAndSendToUser(
                 chatMessageDTO.getReceiverId(),
                 "/queue/messages",
+                messageMapper.map(message)
+        );
+    }
+
+    @Override
+    public void markMessageAsRead(String messageId, String receiverId) {
+        Message message = messageRepository.findById(messageId)
+                .orElseThrow(MESSAGE_NOT_FOUND::getError);
+
+        if (!message.getReceiver().getId().equals(receiverId)) {
+            throw USER_NOT_PERMITTED.getError();
+        }
+
+        message.setIsRead(true);
+        messageRepository.save(message);
+
+        messagingTemplate.convertAndSendToUser(
+                message.getSender().getId(),
+                "/queue/messages/read",
                 messageMapper.map(message)
         );
     }
