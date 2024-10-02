@@ -15,11 +15,17 @@ export class WebsocketService {
 
   private chatSubscription: Stomp.Subscription | null = null;
 
+  private readMessageSubscription: Stomp.Subscription | null = null;
+
   private userId = "";
 
-  private messageReceivedBehaviorSubject = new Subject<ChatMessageDto>();
+  private messageReceivedSubject = new Subject<ChatMessageDto>();
 
-  messageReceived$ = this.messageReceivedBehaviorSubject.asObservable();
+  private messageReadSubject = new Subject<ChatMessageDto>();
+
+  messageReceived$ = this.messageReceivedSubject.asObservable();
+
+  messageRead$ = this.messageReadSubject.asObservable();
 
   constructor() {
     this.store.select('user').pipe(tap(user => this.userId = user.id)).subscribe();
@@ -44,6 +50,11 @@ export class WebsocketService {
       this.chatSubscription.unsubscribe();
       this.chatSubscription = null;
     }
+
+    if (this.readMessageSubscription) {
+      this.readMessageSubscription.unsubscribe();
+      this.readMessageSubscription = null;
+    }
   }
 
   sendChatMessage(content: string, friendshipId: string, receiverId: string) {
@@ -61,14 +72,33 @@ export class WebsocketService {
     }
   }
 
+  sendReadReceipt(message: ChatMessageDto) {
+    if (this.stompClient && this.stompClient.connected) {
+      this.stompClient.send('/app/chat/read', {}, JSON.stringify(message));
+    } else {
+      console.error('Websocket is not connected. Cannot send read receipt');
+    }
+  }
+
   subscribeToChat() {
     if (this.chatSubscription) {
       this.chatSubscription.unsubscribe();
+      this.chatSubscription = null;
     }
+
+    if (this.readMessageSubscription) {
+      this.readMessageSubscription.unsubscribe();
+      this.readMessageSubscription = null;
+    }
+
     this.chatSubscription = this.stompClient.subscribe(`/user/${this.userId}/queue/messages`, (message) => {
       const body: ChatMessageDto = JSON.parse(message.body);
-      this.messageReceivedBehaviorSubject.next(body);
-      console.log('WS message get', body);
-    })
+      this.messageReceivedSubject.next(body);
+    });
+
+    this.readMessageSubscription = this.stompClient.subscribe(`/user/${this.userId}/queue/messages/read`, (message) => {
+      const body: ChatMessageDto = JSON.parse(message.body);
+      this.messageReadSubject.next(body);
+    });
   }
 }

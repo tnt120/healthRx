@@ -1,6 +1,7 @@
 <div class="container" (click)="onSelect()">
   <div class="user-message-container">
     <div class="image">
+      <div *ngIf="conversation()?.lastMessage && conversation().lastMessage.receiverId === chatUser().id && !conversation().lastMessage.isRead" class="unread"></div>
       <img src="../../../../../../assets/images/user.png" alt="avatar" />
     </div>
     <div class="info">

@@ -21,15 +21,23 @@
             @if (message?.senderId !== chatUser().id) {
               <div class="image">
                 <img
-                  src="../../../../../assets/images/user.png"
-                  alt="profile-picture"
-                  *ngIf="conversation()?.messages?.[i-1]?.senderId !== message?.senderId"
+                src="../../../../../assets/images/user.png"
+                alt="profile-picture"
+                *ngIf="conversation()?.messages?.[i-1]?.senderId !== message?.senderId"
                 >
               </div>
             }
             <div class="message" [matTooltip]="(message?.createdAt! | date: 'dd MMMM yyyy HH:mm')!" matTooltipPosition="above">
               <p>{{ message?.content }}</p>
             </div>
+          </div>
+
+          <div class="send-info" *ngIf="i === 0 && conversation()?.messages![0].senderId === chatUser().id">
+            @if (conversation()?.messages![0].isRead === false) {
+              <span>Wysłano</span>
+            } @else {
+              <span>Przeczytano</span>
+            }
           </div>
         </div>
       </div>

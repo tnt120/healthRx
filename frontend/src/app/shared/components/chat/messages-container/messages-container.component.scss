@@ -87,6 +87,21 @@
         }
       }
 
+      .send-info {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        width: 100%;
+        position: relative;
+
+        span {
+          font-size: 0.75rem;
+          color: $gray-dark;
+          margin-right: 10px;
+          font-style: italic;
+        }
+      }
+
       .image, img {
         width: 32px;
         height: 32px;
