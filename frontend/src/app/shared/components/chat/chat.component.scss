@@ -1,5 +1,9 @@
 :host {
+  height: 100%;
+
   .main-container {
+    height: 100%;
     flex-direction: row;
+    gap: 0;
   }
 }

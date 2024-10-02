@@ -20,3 +20,30 @@
     }
   }
 }
+
+@media screen and (max-width: 1280px) {
+  :host {
+    height: calc(125vh - 50px - 64px - 32px);
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  :host {
+    width: 300px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  :host {
+    width: 82px;
+    height: calc(125vh - 50px - 64px - 32px - 70px);
+
+    .container {
+      padding: 0;
+    }
+
+    h3 {
+      display: none;
+    }
+  }
+}

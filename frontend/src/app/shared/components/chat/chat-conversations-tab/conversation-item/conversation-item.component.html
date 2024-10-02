@@ -6,7 +6,7 @@
     </div>
     <div class="info">
       <p class="fullname subtitle-2">{{ conversation().user.firstName }} {{ conversation().user.lastName }}</p>
-      <p class="lastmessage small-text" *ngIf="conversation()?.lastMessage">
+      <p class="last-message small-text" *ngIf="conversation()?.lastMessage">
         <i>
           {{ conversation().lastMessage.senderId === chatUser().id ? 'Ty: ' : '' }} {{ conversation().lastMessage.content ? conversation().lastMessage.content : '' }}
         </i>

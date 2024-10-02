@@ -47,6 +47,14 @@
         justify-content: space-between;
         height: 100%;
         padding: 10px;
+
+        .last-message, .fullname {
+          display: block;
+          max-width: 225px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
       }
     }
 
@@ -63,5 +71,42 @@
       cursor: pointer;
     }
   }
+}
 
+@media screen and (max-width: 1024px) {
+  :host {
+    .container {
+      .user-message-container {
+        .info {
+          .last-message, .fullname {
+            max-width: 125px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  :host {
+    height: auto;
+    width: 68px;
+
+    .container {
+      .user-message-container {
+        .image, img {
+          width: 48px;
+          height: 48px;
+        }
+
+        .info {
+          display: none;
+        }
+      }
+
+      .last-message-time {
+        display: none;
+      }
+    }
+  }
 }

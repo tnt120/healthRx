@@ -155,3 +155,23 @@
     }
   }
 }
+
+@media screen and (max-width: 1280px) {
+  :host {
+    .container {
+      .messages-container {
+        max-height: calc(125vh - 50px - 64px - 32px - 80px - 50px);
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  :host {
+    .container {
+      .messages-container {
+        max-height: calc(125vh - 50px - 64px - 32px - 80px - 50px - 70px);
+      }
+    }
+  }
+}
