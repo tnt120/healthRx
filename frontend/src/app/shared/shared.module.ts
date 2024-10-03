@@ -32,6 +32,7 @@ import { ChatComponent } from './components/chat/chat.component';
 import { ChatConversationsTabComponent } from './components/chat/chat-conversations-tab/chat-conversations-tab.component';
 import { ConversationItemComponent } from './components/chat/chat-conversations-tab/conversation-item/conversation-item.component';
 import { MessagesContainerComponent } from './components/chat/messages-container/messages-container.component';
+import { LineChartComponent } from './components/line-chart/line-chart.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +67,7 @@ import { MessagesContainerComponent } from './components/chat/messages-container
     ChatConversationsTabComponent,
     ConversationItemComponent,
     MessagesContainerComponent,
+    LineChartComponent,
   ],
   imports: [
     CommonModule,
@@ -87,6 +89,7 @@ import { MessagesContainerComponent } from './components/chat/messages-container
     FriendshipCardComponent,
     FriendshipFilterPanelComponent,
     ChatComponent,
+    LineChartComponent
   ]
 })
 export class SharedModule { }

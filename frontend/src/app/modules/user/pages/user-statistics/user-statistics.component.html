@@ -1,1 +1,43 @@
-<p>user-statistics works!</p>
+<div class="main-container">
+  <app-collapsing-container-layout sectionTitle="Parametry">
+    <div class="section-container">
+      @if (parameters$ | async; as parameters) {
+        <div class="parameters-chart-filter-container">
+          <mat-form-field appearance="outline">
+            <mat-label>Parametr</mat-label>
+            <mat-select [(ngModel)]="selectedParameter" placeholder="Parametr" (ngModelChange)="getParameterChartData()">
+              @for (parameter of parameters; track parameter.id) {
+                <mat-option [value]="parameter">{{ parameter.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Zakres</mat-label>
+            <mat-select [(ngModel)]="date().label" placeholder="Parametr" (ngModelChange)="getDateFromLabel()">
+              @for (dateRange of dateRangeOptions; track dateRange.label) {
+                <mat-option [value]="dateRange.value">{{ dateRange.label }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+      }
+
+      <div class="chart-container">
+        @if (chartData()) {
+          @if (chartData()!.data.length === 0) {
+            <div class="no-data">
+              <p class="subtitle-2">Brak danych do wyświetlenia.</p>
+              <p>Zmień kryteria wyszukiwania</p>
+            </div>
+          } @else {
+            <app-line-chart [chartData]="chartData()!"></app-line-chart>
+          }
+        } @else {
+          <div class="subtitle-2 no-parameter-selected">Wybierz parametr do wykresu</div>
+        }
+      </div>
+    </div>
+
+  </app-collapsing-container-layout>
+</div>
