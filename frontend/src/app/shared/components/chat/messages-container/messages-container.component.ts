@@ -6,7 +6,7 @@ import { ChatMessageDto } from '../../../../core/models/chat-message-dto.model';
 @Component({
   selector: 'app-messages-container',
   templateUrl: './messages-container.component.html',
-  styleUrl: './messages-container.component.scss'
+  styleUrl: './messages-container.component.scss',
 })
 export class MessagesContainerComponent {
   conversation = input.required<Conversation | null>();

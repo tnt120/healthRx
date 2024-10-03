@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, ContentChildren, Input, QueryList } from '@angular/core';
+import { AfterContentInit, ChangeDetectorRef, Component, ContentChildren, inject, Input, QueryList } from '@angular/core';
 import { TabComponent } from './tab/tab.component';
 
 @Component({
@@ -7,6 +7,7 @@ import { TabComponent } from './tab/tab.component';
   styleUrl: './tabs.component.scss'
 })
 export class TabsComponent implements AfterContentInit {
+  private readonly cdRef = inject(ChangeDetectorRef);
 
   @ContentChildren(TabComponent) tabs!: QueryList<TabComponent>;
 

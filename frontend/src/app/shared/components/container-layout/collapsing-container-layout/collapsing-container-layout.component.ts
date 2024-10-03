@@ -1,5 +1,5 @@
 import { animate, style, transition, trigger } from '@angular/animations';
-import { AfterViewInit, Component, input, model, signal } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, input, model, signal } from '@angular/core';
 
 @Component({
   selector: 'app-collapsing-container-layout',
@@ -15,7 +15,8 @@ import { AfterViewInit, Component, input, model, signal } from '@angular/core';
         animate('.3s ease', style({ opacity: 0, height: '0px', 'padding-top': '0px' }))
       ])
     ])
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CollapsingContainerLayoutComponent implements AfterViewInit {
   sectionTitle = input.required<string>();

@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Parameter } from '../../../../core/models/parameter.model';
 import { Observable, of, take, Subscription } from 'rxjs';
 import { UserParameterResponse } from '../../../../core/models/user-parameter-response.model';
@@ -29,6 +29,8 @@ export class ParametersDashboardComponent implements OnInit, OnDestroy {
   private readonly parameterService = inject(ParametersService);
 
   private readonly router = inject(Router);
+
+  private readonly cdRef = inject(ChangeDetectorRef);
 
   parameters$: Observable<Parameter[]>;
 
@@ -94,6 +96,7 @@ export class ParametersDashboardComponent implements OnInit, OnDestroy {
       this.parametersToSet = this.parametersToSet.filter(v => !res.userParameters.some(v1 => v1.id === v.id));
       this.settedParameters = [...this.settedParameters, ...res.userParameters];
       this.customSnackbarService.openCustomSnackbar({ title: 'Sukces', message: 'Wybrane parametry zostały zapisane', type: 'success', duration: 5000 });
+      this.cdRef.detectChanges();
     }));
   }
 
@@ -141,6 +144,7 @@ export class ParametersDashboardComponent implements OnInit, OnDestroy {
             ).subscribe((res) => {
               this.settedParameters = this.settedParameters.map(param => param.id === res.userParameter.id ? res.userParameter : param);
               this.customSnackbarService.openCustomSnackbar({ title: 'Sukces', message: 'Parametr został zaktualizowany', type: 'success', duration: 5000 });
+              this.cdRef.detectChanges();
             })
           );
         }

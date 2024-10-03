@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { WebsocketService } from '../../../core/services/websocket/websocket.service';
 import { ChatService } from '../../../core/services/chat/chat.service';
 import { Conversation } from '../../../core/models/conversation.model';
@@ -18,9 +18,11 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   private readonly store = inject(Store);
 
-  conversations: Conversation[] = [];
+  private readonly cdRef = inject(ChangeDetectorRef);
 
-  selectedConversation: Conversation | null = null;
+  conversations = signal<Conversation[]>([]);
+
+  selectedConversation = signal<Conversation | null>(null);
 
   chatUser$: Observable<UserResponse> = this.store.select('user').pipe(tap(user => this.chatUser = user));
 
@@ -33,25 +35,24 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(
       this.chatService.getConversations().subscribe(res => {
-        this.conversations = [...res];
+        this.conversations.set([...res]);
       })
     );
 
     this.subscriptions.push(
       this.websocketService.messageReceived$.subscribe(message => {
-        if (this.selectedConversation?.friendshipId === message.friendshipId && !message.isRead && this.chatUser && message.receiverId === this.chatUser.id) {
+        if (this.selectedConversation()?.friendshipId === message.friendshipId && !message.isRead && this.chatUser && message.receiverId === this.chatUser.id) {
           this.websocketService.sendReadReceipt(message);
           message.isRead = true;
         }
 
-        this.conversations = this.conversations.map(c => {
+        this.conversations.set(this.conversations().map(c => {
           if (c.friendshipId === message.friendshipId) {
             c.messages = [message, ...c.messages || []];
             c.lastMessage = message;
           }
           return c;
-        });
-
+        }));
 
         this.sortFriendships();
       })
@@ -59,13 +60,14 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(
       this.websocketService.messageRead$.subscribe(message => {
-        const findedConversation = this.conversations.find(c => c.friendshipId === message.friendshipId);
+        const findedConversation = this.conversations().find(c => c.friendshipId === message.friendshipId);
 
         if (findedConversation) {
           const findedMessage = findedConversation.messages?.find(m => m.id === message.id);
 
           if (findedMessage) {
             findedMessage.isRead = true;
+            this.cdRef.detectChanges();
           }
         }
       })
@@ -83,9 +85,9 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   onConversationSelect(conversation: Conversation) {
-    this.selectedConversation = conversation;
+    this.selectedConversation.set(conversation);
     this.chatService.getMessages(conversation.friendshipId).subscribe(res => {
-      this.conversations = this.conversations.map(c => {
+      this.conversations.set(this.conversations().map(c => {
         if (c.friendshipId === conversation.friendshipId) {
           res = res.map(message => {
             if (!message.isRead && this.chatUser && message.receiverId === this.chatUser.id) {
@@ -100,18 +102,18 @@ export class ChatComponent implements OnInit, OnDestroy {
 
           if (c.lastMessage) c.lastMessage.isRead = true;
 
-          this.selectedConversation = c;
+          this.selectedConversation.set(c);
         }
         return c;
-      })
+      }));
     });
   }
 
   sortFriendships(): void {
-    this.conversations = [...this.conversations.sort((a, b) => {
+    this.conversations.set([...this.conversations().sort((a, b) => {
       const dateA = a?.lastMessage?.createdAt ? new Date(a.lastMessage.createdAt).getTime() : 0;
       const dateB = b?.lastMessage?.createdAt ? new Date(b.lastMessage.createdAt).getTime() : 0;
       return dateB - dateA;
-    })];
+    })]);
   }
 }

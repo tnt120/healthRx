@@ -1,18 +1,18 @@
 import { map, Observable, Subscription, tap } from 'rxjs';
 import { AuthService } from './../../services/auth/auth.service';
-import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { NavItem, adminHeaders, doctorHeaders, userHeaders } from '../../constants/headers';
 import { Store } from '@ngrx/store';
 import { Roles } from '../../enums/roles.enum';
-import { UserResponse } from '../../models/user/user-response.model';
 import { ROUTE_TITLES } from '../../constants/route-titles';
 
 @Component({
   selector: 'app-side-nav',
   templateUrl: './side-nav.component.html',
-  styleUrl: './side-nav.component.scss'
+  styleUrl: './side-nav.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SideNavComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);
@@ -22,6 +22,8 @@ export class SideNavComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
 
   private readonly observer = inject(BreakpointObserver);
+
+  private readonly cdRef = inject(ChangeDetectorRef);
 
   navItems$!: Observable<NavItem[]>;
 
@@ -77,6 +79,9 @@ export class SideNavComponent implements OnInit, OnDestroy {
 
   toggleMenu() {
     this.isCollapsed.set(!this.isCollapsed());
+    setTimeout(() => {
+      this.cdRef.detectChanges();
+    }, 100);
   }
 
   itemClicked() {

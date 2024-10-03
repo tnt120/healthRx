@@ -1,4 +1,4 @@
-import { Component, input, Input, model, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, inject, HostBinding } from '@angular/core';
+import { Component, input, Input, model, ChangeDetectionStrategy, ChangeDetectorRef, inject, HostBinding, signal } from '@angular/core';
 
 @Component({
   selector: 'app-tab',
@@ -11,22 +11,22 @@ export class TabComponent {
 
   headerTitle = model.required<string>();
 
-  private _active = false;
+  private _active = signal<boolean>(false);
 
   @HostBinding('class.active')
   get isActive(): boolean {
-    return this._active;
+    return this._active();
   }
 
   @Input()
   get active(): boolean {
-    return this._active;
+    return this._active();
   }
 
   set active(val: boolean) {
     setTimeout(() => {
-      if (val !== this._active) {
-        this._active = val;
+      if (val !== this._active()) {
+        this._active.set(val);
         this.cdRef.detectChanges();
       }
     });
