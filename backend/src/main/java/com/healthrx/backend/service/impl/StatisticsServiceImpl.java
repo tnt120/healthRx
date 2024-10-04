@@ -66,6 +66,22 @@ public class StatisticsServiceImpl implements StatisticsService {
                     req.getEndDate()
             );
 
+            if (logs.isEmpty()) {
+                response.add(ParameterStatisticsResponse.builder()
+                                .parameter(parameterMapper.map(parameter))
+                                .firstLogDate(null)
+                                .lastLogDate(null)
+                                .avgValue(0.0)
+                                .minValue(0.0)
+                                .maxValue(0.0)
+                                .missedDays(0)
+                                .longestBreak(0)
+                                .trend(null)
+                                .build());
+
+                return;
+            }
+
             SimpleRegression regression = new SimpleRegression();
 
             ParameterStatisticsResponse parametersRes = new ParameterStatisticsResponse();
@@ -73,20 +89,24 @@ public class StatisticsServiceImpl implements StatisticsService {
             double sum = 0.0;
             double min = Double.MAX_VALUE;
             double max = Double.MIN_VALUE;
+            long longestBreak = 0;
 
-            LocalDate startDate = null;
-
-            if (!logs.isEmpty()) {
-                startDate = logs.getFirst().getCreatedAt().toLocalDate();
-            }
+            LocalDate startDate = logs.getFirst().getCreatedAt().toLocalDate();
+            LocalDate prevDate = startDate;
 
             for (ParameterLog log : logs) {
-                long dayIndex = ChronoUnit.DAYS.between(startDate, log.getCreatedAt().toLocalDate());
+                LocalDate currLogDate = log.getCreatedAt().toLocalDate();
+
+                long dayIndex = ChronoUnit.DAYS.between(startDate, currLogDate);
                 regression.addData(dayIndex, log.getValue());
 
                 sum += log.getValue();
                 min = Math.min(min, log.getValue());
                 max = Math.max(max, log.getValue());
+
+                longestBreak = Math.max(longestBreak, ChronoUnit.DAYS.between(prevDate, currLogDate) - 1);
+
+                prevDate = currLogDate;
             }
 
             parametersRes.setParameter(parameterMapper.map(parameter));
@@ -99,27 +119,23 @@ public class StatisticsServiceImpl implements StatisticsService {
 
             parametersRes.setTrend(TrendType.fromSlope(regression.getSlope(), threshold, stabilityThreshold));
 
-            if (!logs.isEmpty()) {
-                parametersRes.setFirstLogDate(logs.getFirst().getCreatedAt());
-                parametersRes.setLastLogDate(logs.getLast().getCreatedAt());
-                parametersRes.setAvgValue(sum / logs.size());
-                parametersRes.setMinValue(min);
-                parametersRes.setMaxValue(max);
 
-                LocalDate firstLogDate = logs.getFirst().getCreatedAt().toLocalDate();
-                LocalDate endDate = req.getEndDate().toLocalDate();
+            parametersRes.setFirstLogDate(logs.getFirst().getCreatedAt());
+            parametersRes.setLastLogDate(logs.getLast().getCreatedAt());
+            parametersRes.setAvgValue(sum / logs.size());
+            parametersRes.setMinValue(min);
+            parametersRes.setMaxValue(max);
 
-                long totalDays = ChronoUnit.DAYS.between(firstLogDate, endDate) + 1;
-                int missedDays = Math.abs((int) (totalDays - logs.size()));
-                parametersRes.setMissedDays(missedDays);
-            } else {
-                parametersRes.setFirstLogDate(null);
-                parametersRes.setLastLogDate(null);
-                parametersRes.setAvgValue(0.0);
-                parametersRes.setMinValue(0.0);
-                parametersRes.setMaxValue(0.0);
-                parametersRes.setMissedDays(0);
-            }
+            LocalDate firstLogDate = logs.getFirst().getCreatedAt().toLocalDate();
+            LocalDate endDate = req.getEndDate().toLocalDate();
+
+            long totalDays = ChronoUnit.DAYS.between(firstLogDate, endDate) + 1;
+            int missedDays = Math.abs((int) (totalDays - logs.size()));
+            parametersRes.setMissedDays(missedDays);
+
+            longestBreak = Math.max(longestBreak, ChronoUnit.DAYS.between(prevDate, endDate));
+
+            parametersRes.setLongestBreak((int) longestBreak);
 
             response.add(parametersRes);
         });
