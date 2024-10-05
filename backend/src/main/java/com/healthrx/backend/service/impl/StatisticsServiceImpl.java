@@ -74,6 +74,9 @@ public class StatisticsServiceImpl implements StatisticsService {
                                 .avgValue(0.0)
                                 .minValue(0.0)
                                 .maxValue(0.0)
+                                .daysBelowMinValue(0)
+                                .daysAboveMaxValue(0)
+                                .logsCount(0)
                                 .missedDays(0)
                                 .longestBreak(0)
                                 .trend(null)
@@ -87,6 +90,10 @@ public class StatisticsServiceImpl implements StatisticsService {
             ParameterStatisticsResponse parametersRes = new ParameterStatisticsResponse();
 
             double sum = 0.0;
+            double paramMinValue = Double.parseDouble(parameter.getMinValue());
+            double paramMaxValue = Double.parseDouble(parameter.getMaxValue());
+            int daysBelowMinValue = 0;
+            int daysAboveMaxValue = 0;
             double min = Double.MAX_VALUE;
             double max = Double.MIN_VALUE;
             long longestBreak = 0;
@@ -104,6 +111,12 @@ public class StatisticsServiceImpl implements StatisticsService {
                 min = Math.min(min, log.getValue());
                 max = Math.max(max, log.getValue());
 
+                if (log.getValue() < paramMinValue) {
+                    daysBelowMinValue++;
+                } else if (log.getValue() > paramMaxValue) {
+                    daysAboveMaxValue++;
+                }
+
                 longestBreak = Math.max(longestBreak, ChronoUnit.DAYS.between(prevDate, currLogDate) - 1);
 
                 prevDate = currLogDate;
@@ -111,7 +124,7 @@ public class StatisticsServiceImpl implements StatisticsService {
 
             parametersRes.setParameter(parameterMapper.map(parameter));
 
-            double range = Double.parseDouble(parameter.getMaxValue()) - Double.parseDouble(parameter.getMinValue());
+            double range = paramMaxValue - paramMinValue;
             double threshold = range * 0.05;
             double stabilityThreshold = range * 0.01;
 
@@ -125,6 +138,9 @@ public class StatisticsServiceImpl implements StatisticsService {
             parametersRes.setAvgValue(sum / logs.size());
             parametersRes.setMinValue(min);
             parametersRes.setMaxValue(max);
+            parametersRes.setDaysBelowMinValue(daysBelowMinValue);
+            parametersRes.setDaysAboveMaxValue(daysAboveMaxValue);
+            parametersRes.setLogsCount(logs.size());
 
             LocalDate firstLogDate = logs.getFirst().getCreatedAt().toLocalDate();
             LocalDate endDate = req.getEndDate().toLocalDate();

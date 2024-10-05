@@ -21,6 +21,9 @@ public class ParameterStatisticsResponse {
     private Double maxValue;
     private Integer missedDays;
     private Integer longestBreak;
+    private Integer logsCount;
+    private Integer daysAboveMaxValue;
+    private Integer daysBelowMinValue;
     @JsonInclude
     private LocalDateTime firstLogDate;
     @JsonInclude
