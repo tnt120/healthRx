@@ -1,0 +1,35 @@
+:host {
+  .chart-container {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+
+    .container-body {
+      height: 500px;
+    }
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .chart-container {
+    .container-body {
+      height: 350px;
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .chart-container {
+    .container-body {
+      height: 250px;
+    }
+  }
+}
+
+@media screen and (max-width: 430px) {
+  .chart-container {
+    .container-body {
+      height: 150px;
+    }
+  }
+}

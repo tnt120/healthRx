@@ -19,3 +19,16 @@
     </mat-form-field>
   </div>
 }
+
+<div class="chart-container">
+  @if (chartData()) {
+    @if (chartData()!.data.length === 0) {
+      <div class="no-data">
+        <p class="subtitle-2">Brak danych do wyświetlenia.</p>
+        <p>Zmień kryteria wyszukiwania</p>
+      </div>
+    } @else {
+      <app-bar-chart [chartData]="chartData()!" [labels]="['Procent zażycia leku', 'Procent zażycia bez opóźnień ']"></app-bar-chart>
+    }
+  }
+</div>

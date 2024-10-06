@@ -11,7 +11,8 @@ import { ChartRequest } from '../../../../core/models/chart-request.model';
 @Component({
   selector: 'app-drug-statistics',
   templateUrl: './drug-statistics.component.html',
-  styleUrl: './drug-statistics.component.scss'
+  styleUrl: './drug-statistics.component.scss',
+  providers: [DatePipe]
 })
 export class DrugStatisticsComponent implements OnInit, OnDestroy {
   private readonly statisticsService = inject(StatisticsServiceService);
