@@ -4,25 +4,5 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
-
-    .no-parameter-selected, .no-data {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      flex-direction: column;
-    }
-
-    .parameters-chart-filter-container {
-      display: flex;
-      gap: 16px;
-      align-items: baseline;
-      justify-content: flex-start;
-
-      mat-form-field {
-        width: 300px;
-      }
-    }
-
   }
 }

@@ -32,7 +32,6 @@ export class LineChartComponent implements OnInit {
       if (smallScreen.matches || mediumScreen.matches || phoneScreen.matches) {
         this.chart.resize();
         this.setChartWidth();
-        console.log('resize');
       }
     });
   }

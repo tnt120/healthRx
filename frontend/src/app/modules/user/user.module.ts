@@ -22,6 +22,7 @@ import { EditDrugStockDialogComponent } from './components/edit-drug-stock-dialo
 import { DoctorCardComponent } from './components/doctor-card/doctor-card.component';
 import { SearchDoctorsFilterPanelComponent } from './components/search-doctors-filter-panel/search-doctors-filter-panel.component';
 import { MyDoctorsComponent } from './pages/my-doctors/my-doctors.component';
+import { ParameterStatisticsComponent } from './components/parameter-statistics/parameter-statistics.component';
 
 
 @NgModule({
@@ -43,6 +44,7 @@ import { MyDoctorsComponent } from './pages/my-doctors/my-doctors.component';
     DoctorCardComponent,
     SearchDoctorsFilterPanelComponent,
     MyDoctorsComponent,
+    ParameterStatisticsComponent,
   ],
   imports: [
     CommonModule,
