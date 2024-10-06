@@ -199,6 +199,15 @@ public class StatisticsServiceImpl implements StatisticsService {
                 request.getEndDate()
         );
 
+        if (logs.isEmpty()) {
+            return ChartResponse.builder()
+                    .name("Drug Compliance and Punctuality by Day of the Week")
+                    .startDate(request.getStartDate())
+                    .endDate(request.getEndDate())
+                    .data(new ArrayList<>())
+                    .build();
+        }
+
         Map<DayOfWeek, ComplianceStats> complianceStatsMap = initComplianceStats();
         Set<DayOfWeek> plannedDaysOfWeek = getPlannedDaysOfWeek(userDrug);
         int totalPlannedDoses = 0;
