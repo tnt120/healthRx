@@ -8,4 +8,5 @@ export interface ChartResponse {
 export interface ChartData {
   label: string;
   value: number;
+  additionalValue?: number;
 }

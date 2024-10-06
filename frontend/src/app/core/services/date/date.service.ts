@@ -118,7 +118,6 @@ export class DateService {
   }
 
   getDateRange(type: DateRangeType): { from: Date, to: Date } {
-    console.log(type);
     return this.dateRangeCalculators.get(type)!();
   }
 }

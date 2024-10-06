@@ -23,6 +23,7 @@ import { DoctorCardComponent } from './components/doctor-card/doctor-card.compon
 import { SearchDoctorsFilterPanelComponent } from './components/search-doctors-filter-panel/search-doctors-filter-panel.component';
 import { MyDoctorsComponent } from './pages/my-doctors/my-doctors.component';
 import { ParameterStatisticsComponent } from './components/parameter-statistics/parameter-statistics.component';
+import { DrugStatisticsComponent } from './components/drug-statistics/drug-statistics.component';
 
 
 @NgModule({
@@ -45,6 +46,7 @@ import { ParameterStatisticsComponent } from './components/parameter-statistics/
     SearchDoctorsFilterPanelComponent,
     MyDoctorsComponent,
     ParameterStatisticsComponent,
+    DrugStatisticsComponent,
   ],
   imports: [
     CommonModule,

@@ -66,6 +66,10 @@ export class DrugsService {
     );
   }
 
+  getDrugsUser(): Observable<DrugResponse[]> {
+    return this.http.get<DrugResponse[]>(`${this.apiUrl}/drugsUser`);
+  }
+
   getDrugPacks(drugId: number): Observable<DrugPacksResponse> {
     return this.http.get<DrugPacksResponse>(`${this.apiUrl}/packs/${drugId}`);
   }

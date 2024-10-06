@@ -1,8 +1,13 @@
 <div class="main-container">
-  <app-collapsing-container-layout sectionTitle="Parametry">
+  <app-collapsing-container-layout sectionTitle="Parametry" [isCollapsed]="true">
     <div class="section-container">
       <app-parameter-statistics></app-parameter-statistics>
     </div>
+  </app-collapsing-container-layout>
 
+  <app-collapsing-container-layout sectionTitle="Leki" [isCollapsed]="false">
+    <div class="section-container">
+      <app-drug-statistics></app-drug-statistics>
+    </div>
   </app-collapsing-container-layout>
 </div>
