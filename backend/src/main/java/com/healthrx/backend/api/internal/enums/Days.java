@@ -11,6 +11,18 @@ public enum Days {
     FRIDAY,
     SATURDAY;
 
+    public DayOfWeek toDayOfWeek() {
+        return switch (this) {
+            case MONDAY -> DayOfWeek.MONDAY;
+            case TUESDAY -> DayOfWeek.TUESDAY;
+            case WEDNESDAY -> DayOfWeek.WEDNESDAY;
+            case THURSDAY -> DayOfWeek.THURSDAY;
+            case FRIDAY -> DayOfWeek.FRIDAY;
+            case SATURDAY -> DayOfWeek.SATURDAY;
+            case SUNDAY -> DayOfWeek.SUNDAY;
+        };
+    }
+
     public static Days from(DayOfWeek dayOfWeek) {
         return switch (dayOfWeek) {
             case MONDAY -> MONDAY;

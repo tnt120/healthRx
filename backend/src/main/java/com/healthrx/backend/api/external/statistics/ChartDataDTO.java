@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class ChartDataDTO {
     private String label;
     private Double value;
+    private Double additionalValue;
 }

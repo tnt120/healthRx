@@ -29,6 +29,14 @@ public class DrugMapper {
                 .build();
     }
 
+    public DrugResponse simpleMap(Drug drug) {
+        return DrugResponse.builder()
+                .id(drug.getId())
+                .name(drug.getName())
+                .power(Objects.equals(drug.getPower(), "-") ? "" : drug.getPower())
+                .build();
+    }
+
     public UserDrugMonitorResponse map(UserDrug userDrug, String unit, LocalTime time, LocalTime takenTime) {
         return UserDrugMonitorResponse.builder()
                 .id(userDrug.getId())

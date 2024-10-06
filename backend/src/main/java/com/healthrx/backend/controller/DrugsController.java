@@ -25,6 +25,11 @@ public class DrugsController {
         return ResponseEntity.ok(drugsService.getAllDrugs(page, size, sortBy, order, name));
     }
 
+    @GetMapping("/drugsUser")
+    public ResponseEntity<List<DrugResponse>> getDrugsFromUser() {
+        return ResponseEntity.ok(drugsService.getDrugsFromUser());
+    }
+
     @GetMapping("/packs/{id}")
     public ResponseEntity<DrugPacksResponse> getDrugPacks(@PathVariable Integer id) {
         return ResponseEntity.ok(drugsService.getDrugPacks(id));

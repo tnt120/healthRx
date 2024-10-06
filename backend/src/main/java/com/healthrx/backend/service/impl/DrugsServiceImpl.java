@@ -78,6 +78,17 @@ public class DrugsServiceImpl implements DrugsService {
     }
 
     @Override
+    public List<DrugResponse> getDrugsFromUser() {
+        User user = principalSupplier.get();
+
+        List<UserDrug> userDrugs = userDrugRepository.findAllByUserId(user.getId());
+
+        return userDrugs.stream()
+                .map(userDrug -> drugMapper.simpleMap(userDrug.getDrug()))
+                .toList();
+    }
+
+    @Override
     public DrugPacksResponse getDrugPacks(Integer id) {
 
         Drug drug = drugRepository.findById(id)

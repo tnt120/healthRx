@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface DrugsService {
     PageResponse<DrugResponse> getAllDrugs(Integer page, Integer size, String sortBy, String order, String name);
+    List<DrugResponse> getDrugsFromUser();
     DrugPacksResponse getDrugPacks(Integer id);
     PageResponse<UserDrugsResponse> getUserDrugs(Integer page, Integer size, String sortBy, String order);
     List<UserDrugMonitorResponse> getUserDrugMonitor();
