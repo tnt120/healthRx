@@ -154,6 +154,7 @@ public class DrugsServiceImpl implements DrugsService {
 
         return userDrugRepository.findAllByUserId(user.getId()).stream()
                 .filter(userDrug -> userDrug.getDrugDoseDays().stream().map(DrugDoseDay::getDay).toList().contains(today))
+                .filter(userDrug -> userDrug.getStartDate().isBefore(LocalDate.now()) && (userDrug.getEndDate() == null || userDrug.getEndDate().isAfter(LocalDate.now())))
                 .flatMap(userDrug -> userDrug.getDrugDoseTimes().stream()
                         .map(time -> {
                             LocalTime takenTime = drugLogRepository.findDrugLogByDrugIdAndUserIdAndTimeToday(
