@@ -30,5 +30,7 @@
     } @else {
       <app-bar-chart [chartData]="chartData()!" [labels]="['Procent zażycia leku', 'Procent zażycia bez opóźnień ']"></app-bar-chart>
     }
+  } @else {
+    <div class="subtitle-2 no-drug-selected">Wybierz lek do wykresu</div>
   }
 </div>
