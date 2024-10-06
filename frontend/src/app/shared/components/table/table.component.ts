@@ -16,8 +16,9 @@ export interface TableColumn {
 export class TableComponent {
   data = input.required<any[]>();
   columns = input.required<TableColumn[]>();
-  type = input.required<'editable' | 'selectable'>();
+  type = input<'editable' | 'selectable' | 'none'>('none');
   emptyInfo = input.required<string>();
+  emptyAdditionalInfo = input<string | null>(null);
   pagination = input<Pagination | null>(null);
   isSearching = input.required<boolean | null>();
   searchable = input.required<boolean>();

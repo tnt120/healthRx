@@ -10,7 +10,8 @@
       <mat-spinner [diameter]="60"></mat-spinner>
     </div>
   } @else if (data().length === 0) {
-    <p class="text-2" style="text-align: center;">{{ emptyInfo() }}</p>
+    <p class="subtitle-2" style="text-align: center;">{{ emptyInfo() }}</p>
+    <p *ngIf="emptyAdditionalInfo()" style="text-align: center;">{{ emptyAdditionalInfo() }}</p>
   } @else {
     <table mat-table [dataSource]="data()">
       <ng-container *ngIf="type() === 'editable'" matColumnDef="actionButtons">
@@ -36,7 +37,13 @@
       @for (tableColumn of columns(); track tableColumn.title) {
         <ng-container [matColumnDef]="tableColumn.displayedColumn">
           <th mat-header-cell *matHeaderCellDef>{{ tableColumn.title }}</th>
-          <td mat-cell *matCellDef="let element">{{ element[tableColumn.displayedColumn] }}</td>
+          <td mat-cell *matCellDef="let element">
+            @if (tableColumn.displayedColumn.includes('icon')) {
+              <mat-icon [class]="element[tableColumn.displayedColumn].color" fontSet="material-symbols-outlined" [matTooltip]="element[tableColumn.displayedColumn].tooltip">{{ element[tableColumn.displayedColumn].icon }}</mat-icon>
+            } @else {
+              {{ element[tableColumn.displayedColumn] }}
+            }
+          </td>
         </ng-container>
       }
 

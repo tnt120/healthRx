@@ -24,6 +24,7 @@ import { SearchDoctorsFilterPanelComponent } from './components/search-doctors-f
 import { MyDoctorsComponent } from './pages/my-doctors/my-doctors.component';
 import { ParameterStatisticsComponent } from './components/parameter-statistics/parameter-statistics.component';
 import { DrugStatisticsComponent } from './components/drug-statistics/drug-statistics.component';
+import { ParameterChartComponent } from './components/parameter-statistics/parameter-chart/parameter-chart.component';
 
 
 @NgModule({
@@ -47,6 +48,7 @@ import { DrugStatisticsComponent } from './components/drug-statistics/drug-stati
     MyDoctorsComponent,
     ParameterStatisticsComponent,
     DrugStatisticsComponent,
+    ParameterChartComponent,
   ],
   imports: [
     CommonModule,

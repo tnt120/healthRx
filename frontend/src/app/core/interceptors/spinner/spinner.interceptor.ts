@@ -15,6 +15,8 @@ export const spinnerInterceptor: HttpInterceptorFn = (req, next) => {
     'api/friendship/pending',
     'api/friendship/rejected',
     'api/friendship/accepted',
+    'api/statistics/parameters',
+    'api/statistics/chart'
   ];
 
   const shouldIngore = excludeUrls.some(url => req.url.includes(url));

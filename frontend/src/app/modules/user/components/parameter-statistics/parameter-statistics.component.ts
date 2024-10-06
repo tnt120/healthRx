@@ -1,13 +1,12 @@
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { StatisticsServiceService } from '../../../../core/services/statistics/statistics-service.service';
 import { DateRangeOptions, DateRangeType, DateService } from '../../../../core/services/date/date.service';
-import { Store } from '@ngrx/store';
 import { DatePipe } from '@angular/common';
-import { ChartResponse } from '../../../../core/models/chart-response.model';
-import { Parameter } from '../../../../core/models/parameter.model';
-import { map, Observable, Subscription } from 'rxjs';
-import { UserParameterResponse } from '../../../../core/models/user-parameter-response.model';
-import { ChartRequest } from '../../../../core/models/chart-request.model';
+import { Subscription } from 'rxjs';
+import { StatisticsRequest } from '../../../../core/models/statistics-request.model';
+import { ParameterStatisticsResponse } from '../../../../core/models/parameter-statistics-model';
+import { TableColumn } from '../../../../shared/components/table/table.component';
+import { TrendType } from '../../../../core/enums/trend-type.enum';
 
 @Component({
   selector: 'app-parameter-statistics',
@@ -20,11 +19,7 @@ export class ParameterStatisticsComponent implements OnInit, OnDestroy {
 
   private readonly dateService = inject(DateService);
 
-  private readonly store = inject(Store);
-
   private readonly datePipe = inject(DatePipe);
-
-  chartData = signal<ChartResponse & { selectedParameter: Parameter } | null>(null);
 
   dateRangeOptions = [...DateRangeOptions];
 
@@ -36,60 +31,120 @@ export class ParameterStatisticsComponent implements OnInit, OnDestroy {
 
   subscriptions: Subscription[] = [];
 
-  parameters$: Observable<Parameter[]> = this.store.select('userParameters').pipe(
-    map(userParam => userParam.map((param: UserParameterResponse) => param.parameter))
-  );
+  chartState = signal<boolean>(false);
 
-  selectedParameter = signal<Parameter | null>(null);
+  stats = signal<ParameterStatisticsResponse[] | null>(null);
+
+  tableData: any[] = [];
+
+  columns: TableColumn[] = [];
+
+  isStatsLoading$ = this.statisticsService.getLoadingStatsState();
 
   ngOnInit(): void {
     this.date.set({
       label: this.dateRangeOptions[0].value,
       from: this.dateService.getDateRange(this.dateRangeOptions[0].value).from,
       to: this.dateService.getDateRange(this.dateRangeOptions[0].value).to
-    })
+    });
+
+    this.fillColums();
+    this.getParamtersStats();
   }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
-  getParameterChartData() {
-    const req: ChartRequest = {
-      dataId: this.selectedParameter()?.id || '',
-      type: 'PARAMETER',
+  getParamtersStats(): void {
+    const req: StatisticsRequest = {
       startDate: this.datePipe.transform(this.date().from, 'yyyy-MM-dd')! + 'T00:00:00',
       endDate: this.datePipe.transform(this.date().to, 'yyyy-MM-dd')! + 'T23:59:59'
     };
 
-    this.chartData.set(null);
-
     this.subscriptions.push(
-      this.statisticsService.getChartData(req).subscribe((res) => {
-        this.chartData.set({
-          name: res.name,
-          startDate: res.startDate,
-          endDate: res.endDate,
-          data: res.data,
-          selectedParameter: this.selectedParameter()!
-        });
+      this.statisticsService.getParameterStatistics(req).subscribe((res) => {
+        this.stats.set(res);
+
+        this.tableData = res
+          .filter(stat => stat.trend)
+          .map(stat => ({
+            name: `${stat.parameter.name} [${stat.parameter.unit}]`,
+            standards: `${stat.parameter.minValue} - ${stat.parameter.maxValue}`,
+            avg: Math.round(stat.avgValue * 100) / 100,
+            min: stat.minValue,
+            max: stat.maxValue,
+            outsideTheNormDays: `${stat.daysBelowMinValue + stat.daysAboveMaxValue} (${stat.daysBelowMinValue}/${stat.daysAboveMaxValue})`,
+            firstLogDate: stat?.firstLogDate?.substring(0, 10),
+            lastLogDate: stat?.lastLogDate?.substring(0, 10),
+            daysWithoutLogs: `${stat.missedDays} (${stat.longestBreak})`,
+            logsCount: stat.logsCount,
+            iconTrend: {
+              icon: this.getTrendIcon(TrendType[stat.trend as unknown as keyof typeof TrendType]),
+              tooltip: TrendType[stat.trend as unknown as keyof typeof TrendType],
+              color: this.getTrendColor(TrendType[stat.trend as unknown as keyof typeof TrendType])
+            }
+          }));
+
+        console.log(this.tableData);
       })
     );
   }
 
-  applyParameter() {
-    if (this.selectedParameter() !== null) {
-      this.getParameterChartData();
+  getTrendIcon(trend: TrendType): string {
+    switch (trend) {
+      case TrendType.VERY_INCREASING:
+        return 'arrow_upward';
+      case TrendType.SLIGHTLY_INCREASING:
+        return 'trending_up';
+      case TrendType.STABLE:
+        return 'trending_flat';
+      case TrendType.SLIGHTLY_DECREASING:
+        return 'trending_down';
+      case TrendType.VERY_DECREASING:
+        return 'arrow_downward';
     }
+  }
+
+  getTrendColor(trend: TrendType): string {
+    switch (trend) {
+      case TrendType.VERY_INCREASING:
+        return 'red';
+      case TrendType.SLIGHTLY_INCREASING:
+        return 'yellow';
+      case TrendType.STABLE:
+        return 'green';
+      case TrendType.SLIGHTLY_DECREASING:
+        return 'yellow';
+      case TrendType.VERY_DECREASING:
+        return 'red';
+    }
+  }
+
+  fillColums(): void {
+    this.columns = [
+      { title: 'Parametr [jednostka]', displayedColumn: 'name' },
+      { title: 'Norma (od - do)', displayedColumn: 'standards' },
+      { title: `Średnia`, displayedColumn: 'avg' },
+      { title: `Wartość minialna`, displayedColumn: 'min' },
+      { title: `Wartość maksymalna`, displayedColumn: 'max' },
+      { title: 'Dni poza normą (poniżej/powyzej)', displayedColumn: 'outsideTheNormDays' },
+      { title: 'Pierwszy pomiar', displayedColumn: 'firstLogDate' },
+      { title: 'Ostatni pomiar', displayedColumn: 'lastLogDate' },
+      { title: 'Dni bez pomiarów (najdłuższa przerwa)', displayedColumn: 'daysWithoutLogs' },
+      { title: 'Liczba pomiarów', displayedColumn: 'logsCount' },
+      { title: 'Trend', displayedColumn: 'iconTrend' }
+    ]
   }
 
   getDateFromLabel() {
     const {from, to} = this.dateService.getDateRange(this.date().label);
-
     this.date.set({ label: this.date().label, from, to });
 
-    if (this.selectedParameter() !== null) {
-      this.getParameterChartData();
-    }
+    this.getParamtersStats();
+  }
+
+  toggleChart(): void {
+    this.chartState.set(!this.chartState());
   }
 }

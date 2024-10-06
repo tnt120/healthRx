@@ -1,3 +1,5 @@
+@use '@angular/material' as mat;
+
 :host {
   display: flex;
   flex-direction: column;
@@ -17,6 +19,16 @@
       width: 120px;
     }
   }
+
+  mat-icon {
+    cursor: pointer;
+  }
+
+  .mat-mdc-row:hover {
+    background-color: rgba(219, 237, 255, 0.1);
+    @include mat.elevation(4);
+  }
+
 }
 
 @media screen and (max-width: 768px) {
