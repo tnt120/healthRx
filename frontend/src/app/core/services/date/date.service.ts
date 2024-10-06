@@ -33,6 +33,12 @@ export const DateRangeOptions: { label: string, value: DateRangeType }[] = [
   // { label: 'Niestandardowy', value: 'custom' },
 ]
 
+moment.updateLocale('pl', {
+  week: {
+    dow: 1,
+  },
+})
+
 @Injectable({
   providedIn: 'root'
 })
