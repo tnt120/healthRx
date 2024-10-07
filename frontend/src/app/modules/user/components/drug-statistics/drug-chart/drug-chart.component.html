@@ -1,0 +1,42 @@
+@if (userDrugs$ | async; as drugs) {
+  <div class="drugs-chart-filter-container">
+    <mat-form-field appearance="outline">
+      <mat-label>Lek</mat-label>
+      <mat-select [(ngModel)]="selectedDrug" placeholder="Lek" (ngModelChange)="getDrugChartData()">
+        @for (drug of drugs; track drug.id) {
+          <mat-option [value]="drug">{{ drug.name }} {{ drug?.power ? '(' + drug.power + ')' : '' }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Zakres</mat-label>
+      <mat-select [(ngModel)]="date().label" placeholder="Zakres" (ngModelChange)="getDateFromLabel()">
+        @for (dateRange of dateRangeOptions; track dateRange.label) {
+          <mat-option [value]="dateRange.value">{{ dateRange.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+}
+
+<div class="chart-container">
+  @if (isChartLoading$ | async) {
+    <div class="basic-spinner-container">
+      <mat-spinner></mat-spinner>
+    </div>
+  } @else {
+    @if (chartData()) {
+      @if (chartData()!.data.length === 0) {
+        <div class="no-data">
+          <p class="subtitle-2">Brak danych do wyświetlenia.</p>
+          <p>Zmień kryteria wyszukiwania</p>
+        </div>
+      } @else {
+        <app-bar-chart [chartData]="chartData()!" [labels]="['Procent zażycia leku', 'Procent zażycia bez opóźnień ']"></app-bar-chart>
+      }
+    } @else {
+      <div class="subtitle-2 no-drug-selected">Wybierz lek do wykresu</div>
+    }
+  }
+</div>

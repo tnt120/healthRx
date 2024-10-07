@@ -1,20 +1,20 @@
 :host {
-  .no-drug-selected, .no-data {
+  .container {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
     flex-direction: column;
-  }
+    gap: 36px;
 
-  .drugs-chart-filter-container {
-    display: flex;
-    gap: 16px;
-    align-items: baseline;
-    justify-content: flex-start;
+    .chart {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
 
-    mat-form-field {
-      width: 300px;
+      .buttons {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 12px;
+      }
     }
   }
 }

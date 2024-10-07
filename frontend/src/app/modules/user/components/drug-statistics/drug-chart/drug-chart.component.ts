@@ -1,33 +1,34 @@
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { StatisticsServiceService } from '../../../../../core/services/statistics/statistics-service.service';
+import { DrugsService } from '../../../../../core/services/drugs/drugs.service';
 import { DateRangeOptions, DateRangeType, DateService } from '../../../../../core/services/date/date.service';
-import { Store } from '@ngrx/store';
 import { DatePipe } from '@angular/common';
+import { Observable, Subscription } from 'rxjs';
 import { ChartResponse } from '../../../../../core/models/chart-response.model';
-import { Parameter } from '../../../../../core/models/parameter.model';
-import { map, Observable, Subscription } from 'rxjs';
-import { UserParameterResponse } from '../../../../../core/models/user-parameter-response.model';
+import { DrugResponse } from '../../../../../core/models/drug-response.model';
 import { ChartRequest } from '../../../../../core/models/chart-request.model';
 import { StatisticsType } from '../../../../../core/enums/statistics-type.enum';
 
 @Component({
-  selector: 'app-parameter-chart',
-  templateUrl: './parameter-chart.component.html',
-  styleUrl: './parameter-chart.component.scss',
+  selector: 'app-drug-chart',
+  templateUrl: './drug-chart.component.html',
+  styleUrl: './drug-chart.component.scss',
   providers: [DatePipe]
 })
-export class ParameterChartComponent implements OnInit, OnDestroy {
+export class DrugChartComponent {
   private readonly statisticsService = inject(StatisticsServiceService);
+
+  private readonly drugService = inject(DrugsService);
 
   private readonly dateService = inject(DateService);
 
-  private readonly store = inject(Store);
-
   private readonly datePipe = inject(DatePipe);
 
-  isChartLoading$ = this.statisticsService.getLoadingChartState(StatisticsType.PARAMETER);
+  isChartLoading$ = this.statisticsService.getLoadingChartState(StatisticsType.DRUG);
 
-  chartData = signal<ChartResponse & { selectedParameter: Parameter } | null>(null);
+  subscriptions: Subscription[] = [];
+
+  chartData = signal<ChartResponse | null>(null);
 
   dateRangeOptions = [...DateRangeOptions];
 
@@ -37,15 +38,13 @@ export class ParameterChartComponent implements OnInit, OnDestroy {
     to: null
   });
 
-  subscriptions: Subscription[] = [];
+  userDrugs$!: Observable<DrugResponse[]>;
 
-  parameters$: Observable<Parameter[]> = this.store.select('userParameters').pipe(
-    map(userParam => userParam.map((param: UserParameterResponse) => param.parameter))
-  );
-
-  selectedParameter = signal<Parameter | null>(null);
+  selectedDrug = signal<DrugResponse | null>(null);
 
   ngOnInit(): void {
+    this.getDrugs();
+
     this.date.set({
       label: this.dateRangeOptions[0].value,
       from: this.dateService.getDateRange(this.dateRangeOptions[0].value).from,
@@ -57,10 +56,14 @@ export class ParameterChartComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
-  getParameterChartData() {
+  getDrugs(): void {
+    this.userDrugs$ = this.drugService.getDrugsUser();
+  }
+
+  getDrugChartData(): void {
     const req: ChartRequest = {
-      dataId: this.selectedParameter()?.id || '',
-      type: 'PARAMETER',
+      dataId: this.selectedDrug()?.id || '',
+      type: 'DRUG',
       startDate: this.datePipe.transform(this.date().from, 'yyyy-MM-dd')! + 'T00:00:00',
       endDate: this.datePipe.transform(this.date().to, 'yyyy-MM-dd')! + 'T23:59:59'
     };
@@ -74,16 +77,9 @@ export class ParameterChartComponent implements OnInit, OnDestroy {
           startDate: res.startDate,
           endDate: res.endDate,
           data: res.data,
-          selectedParameter: this.selectedParameter()!
         });
       })
     );
-  }
-
-  applyParameter() {
-    if (this.selectedParameter() !== null) {
-      this.getParameterChartData();
-    }
   }
 
   getDateFromLabel() {
@@ -91,8 +87,8 @@ export class ParameterChartComponent implements OnInit, OnDestroy {
 
     this.date.set({ label: this.date().label, from, to });
 
-    if (this.selectedParameter() !== null) {
-      this.getParameterChartData();
+    if (this.selectedDrug() !== null) {
+      this.getDrugChartData();
     }
   }
 }

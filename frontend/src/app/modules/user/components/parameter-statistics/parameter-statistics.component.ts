@@ -7,6 +7,7 @@ import { StatisticsRequest } from '../../../../core/models/statistics-request.mo
 import { ParameterStatisticsResponse } from '../../../../core/models/parameter-statistics-model';
 import { TableColumn } from '../../../../shared/components/table/table.component';
 import { TrendType } from '../../../../core/enums/trend-type.enum';
+import { StatisticsType } from '../../../../core/enums/statistics-type.enum';
 
 @Component({
   selector: 'app-parameter-statistics',
@@ -39,7 +40,7 @@ export class ParameterStatisticsComponent implements OnInit, OnDestroy {
 
   columns: TableColumn[] = [];
 
-  isStatsLoading$ = this.statisticsService.getLoadingStatsState();
+  isStatsLoading$ = this.statisticsService.getLoadingStatsState(StatisticsType.PARAMETER);
 
   ngOnInit(): void {
     this.date.set({
@@ -85,8 +86,6 @@ export class ParameterStatisticsComponent implements OnInit, OnDestroy {
               color: this.getTrendColor(TrendType[stat.trend as unknown as keyof typeof TrendType])
             }
           }));
-
-        console.log(this.tableData);
       })
     );
   }

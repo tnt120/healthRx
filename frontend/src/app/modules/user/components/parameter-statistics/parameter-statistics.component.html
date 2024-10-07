@@ -9,18 +9,14 @@
       </mat-select>
     </mat-form-field>
 
-    @if (stats()) {
-        <app-table
-          [data]="tableData"
-          [columns]="columns"
-          [isSearching]="isStatsLoading$ | async"
-          emptyInfo="Brak danych do wyświetlenia"
-          emptyAdditionalInfo="Zmień kryteria wyszukiwania"
-          [searchable]="false"
-        />
-    } @else {
-      <div class="subtitle-2">Brak danych</div>
-    }
+    <app-table
+      [data]="tableData"
+      [columns]="columns"
+      [isSearching]="isStatsLoading$ |async"
+      emptyInfo="Brak danych do wyświetlenia"
+      emptyAdditionalInfo="Zmień kryteria wyszukiwania"
+      [searchable]="false"
+    />
   </div>
 
   <div class="chart">

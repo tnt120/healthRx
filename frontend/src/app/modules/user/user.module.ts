@@ -25,6 +25,7 @@ import { MyDoctorsComponent } from './pages/my-doctors/my-doctors.component';
 import { ParameterStatisticsComponent } from './components/parameter-statistics/parameter-statistics.component';
 import { DrugStatisticsComponent } from './components/drug-statistics/drug-statistics.component';
 import { ParameterChartComponent } from './components/parameter-statistics/parameter-chart/parameter-chart.component';
+import { DrugChartComponent } from './components/drug-statistics/drug-chart/drug-chart.component';
 
 
 @NgModule({
@@ -49,6 +50,7 @@ import { ParameterChartComponent } from './components/parameter-statistics/param
     ParameterStatisticsComponent,
     DrugStatisticsComponent,
     ParameterChartComponent,
+    DrugChartComponent,
   ],
   imports: [
     CommonModule,

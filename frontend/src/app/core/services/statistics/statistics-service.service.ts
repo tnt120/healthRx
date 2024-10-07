@@ -2,10 +2,13 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environments';
 import { HttpClient } from '@angular/common/http';
 import { ChartRequest } from '../../models/chart-request.model';
-import { BehaviorSubject, finalize, Observable } from 'rxjs';
+import { BehaviorSubject, finalize, Observable, map } from 'rxjs';
 import { ChartResponse } from '../../models/chart-response.model';
 import { StatisticsRequest } from '../../models/statistics-request.model';
 import { ParameterStatisticsResponse } from '../../models/parameter-statistics-model';
+import { DrugStatisticsResponse } from '../../models/drug-statistics-model';
+import { StatisticsType } from '../../enums/statistics-type.enum';
+import { Statistics_Type_Init } from '../../constants/statistics-type-init';
 
 @Injectable({
   providedIn: 'root'
@@ -15,37 +18,58 @@ export class StatisticsServiceService {
 
   private readonly http = inject(HttpClient);
 
-  private loadingStatsSubject = new BehaviorSubject<boolean>(false);
+  private loadingStatsSubject = new BehaviorSubject<Map<StatisticsType, boolean>>(Statistics_Type_Init);
 
-  private loadingChartSubject = new BehaviorSubject<boolean>(false);
+  private loadingChartSubject = new BehaviorSubject<Map<StatisticsType, boolean>>(Statistics_Type_Init);
 
-  getLoadingStatsState() {
-    return this.loadingStatsSubject.asObservable();
+  getLoadingStatsState(type: StatisticsType): Observable<boolean> {
+    return this.loadingStatsSubject.asObservable().pipe(
+      map(stateMap => stateMap.get(type) || false)
+    );
   }
 
-  setLoadingStatsState(loading: boolean) {
-    this.loadingStatsSubject.next(loading);
+  setLoadingStatsState(type: StatisticsType, loading: boolean) {
+    const currState = this.loadingStatsSubject.getValue();
+    const updatedState = new Map(currState).set(type, loading);
+
+    this.loadingStatsSubject.next(updatedState);
   }
 
-  getLoadingChartState() {
-    return this.loadingChartSubject.asObservable();
+  getLoadingChartState(type: StatisticsType): Observable<boolean> {
+    return this.loadingChartSubject.asObservable().pipe(
+      map(stateMap => stateMap.get(type) || false)
+    );
   }
 
-  setLoadingChartState(loading: boolean) {
-    this.loadingChartSubject.next(loading);
+  setLoadingChartState(type: StatisticsType, loading: boolean) {
+    const currState = this.loadingChartSubject.getValue();
+    const updatedState = new Map(currState).set(type, loading);
+
+    this.loadingChartSubject.next(updatedState);
   }
 
   getChartData(req: ChartRequest): Observable<ChartResponse> {
-    this.setLoadingChartState(true);
+    const type: StatisticsType = StatisticsType[req.type as keyof typeof StatisticsType];
+    console.log(type, req.type);
+
+    this.setLoadingChartState(type, true);
+
     return this.http.post<ChartResponse>(`${this.apiUrl}/chart`, req).pipe(
-      finalize(() => this.setLoadingChartState(false))
+      finalize(() => this.setLoadingChartState(type, false))
     );
   }
 
   getParameterStatistics(req: StatisticsRequest): Observable<ParameterStatisticsResponse[]> {
-    this.setLoadingStatsState(true);
+    this.setLoadingStatsState(StatisticsType.PARAMETER, true);
     return this.http.post<ParameterStatisticsResponse[]>(`${this.apiUrl}/parameters`, req).pipe(
-      finalize(() => this.setLoadingStatsState(false))
+      finalize(() => this.setLoadingStatsState(StatisticsType.PARAMETER, false))
+    );
+  }
+
+  getDrugsStatistics(req: StatisticsRequest): Observable<DrugStatisticsResponse[]> {
+    this.setLoadingStatsState(StatisticsType.DRUG, true);
+    return this.http.post<DrugStatisticsResponse[]>(`${this.apiUrl}/drugs`, req).pipe(
+      finalize(() => this.setLoadingStatsState(StatisticsType.DRUG, false))
     );
   }
 }
