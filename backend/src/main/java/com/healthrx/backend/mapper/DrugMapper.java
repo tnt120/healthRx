@@ -34,6 +34,7 @@ public class DrugMapper {
                 .id(drug.getId())
                 .name(drug.getName())
                 .power(Objects.equals(drug.getPower(), "-") ? "" : drug.getPower())
+                .pharmaceuticalFormName(drug.getPharmaceuticalFormName())
                 .build();
     }
 

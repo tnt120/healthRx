@@ -1,9 +1,6 @@
 package com.healthrx.backend.controller;
 
-import com.healthrx.backend.api.external.statistics.ChartRequest;
-import com.healthrx.backend.api.external.statistics.ChartResponse;
-import com.healthrx.backend.api.external.statistics.ParameterStatisticsResponse;
-import com.healthrx.backend.api.external.statistics.StatisticsRequest;
+import com.healthrx.backend.api.external.statistics.*;
 import com.healthrx.backend.service.StatisticsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +20,12 @@ public class StatisticsController {
     }
 
     @PostMapping("/parameters")
-    public ResponseEntity<List<ParameterStatisticsResponse>> getParametersStatistics (@RequestBody StatisticsRequest req) {
-        return ResponseEntity.ok(statisticsService.getParametersStatistics(req));
+    public ResponseEntity<List<ParameterStatisticsResponse>> getParametersStatistics (@RequestBody StatisticsRequest request) {
+        return ResponseEntity.ok(statisticsService.getParametersStatistics(request));
+    }
+
+    @PostMapping("/drugs")
+    public ResponseEntity<List<DrugStatisticsResponse>> getDrugsStatistics (@RequestBody StatisticsRequest request) {
+        return ResponseEntity.ok(statisticsService.getDrugsStatistics(request));
     }
 }
