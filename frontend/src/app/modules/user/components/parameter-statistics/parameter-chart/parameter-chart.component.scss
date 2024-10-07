@@ -18,3 +18,15 @@
     }
   }
 }
+
+@media screen and (max-width: 768px) {
+  :host {
+    .parameters-chart-filter-container {
+      flex-direction: column;
+
+      mat-form-field {
+        width: 100%;
+      }
+    }
+  }
+}

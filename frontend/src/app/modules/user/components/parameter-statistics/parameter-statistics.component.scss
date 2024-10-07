@@ -4,6 +4,12 @@
     flex-direction: column;
     gap: 36px;
 
+    .overall-statistics {
+      mat-form-field {
+        width: 300px;
+      }
+    }
+
     .chart {
       display: flex;
       flex-direction: column;
@@ -14,6 +20,18 @@
         align-items: center;
         justify-content: flex-start;
         gap: 12px;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  :host {
+    .container {
+      .overall-statistics {
+        mat-form-field {
+          width: 100%;
+        }
       }
     }
   }
