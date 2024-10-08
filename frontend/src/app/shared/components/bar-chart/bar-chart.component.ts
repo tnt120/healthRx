@@ -30,7 +30,7 @@ export class BarChartComponent implements OnInit {
     const mainDataSet = this.chartData()?.data.map((d) => d.value > 0 ? d.value : 0);
     const additionalDataSet = this.chartData()?.data?.map((d) => d?.additionalValue ? d.additionalValue : 0);
 
-    this.chart = new Chart('myChart', {
+    this.chart = new Chart('barChart', {
       type: 'bar',
       data: {
         labels: this.chartData()?.data.map((d) => getDayName(d.label as Days) ? getDayName(d.label as Days) : 'Całość'),

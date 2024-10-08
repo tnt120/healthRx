@@ -50,7 +50,6 @@ export class StatisticsServiceService {
 
   getChartData(req: ChartRequest): Observable<ChartResponse> {
     const type: StatisticsType = StatisticsType[req.type as keyof typeof StatisticsType];
-    console.log(type, req.type);
 
     this.setLoadingChartState(type, true);
 

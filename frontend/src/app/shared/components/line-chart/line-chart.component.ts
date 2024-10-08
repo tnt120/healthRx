@@ -41,7 +41,7 @@ export class LineChartComponent implements OnInit {
     const minY = Math.min(...dataPoints, this.chartData().selectedParameter.minValue) - (this.chartData().selectedParameter.minValue > 1000 ? 100 : 10);
     const maxY = Math.max(...dataPoints, this.chartData().selectedParameter.maxValue) + (this.chartData().selectedParameter.maxValue > 1000 ? 100 : 10);
 
-    this.chart = new Chart('myChart', {
+    this.chart = new Chart('lineChart', {
       type: 'line',
       data: {
         labels: this.chartData()?.data.map((d) => d.label.substring(0, 10)),
