@@ -1,4 +1,4 @@
-import { Activity } from "../activity.model";
+import { ActivityResponse } from "../activity-response.model";
 import { City } from "../city.model";
 import { NotificationsData } from "../notifications-data.model";
 import { Parameter } from "../parameter.model";
@@ -10,7 +10,7 @@ export interface Config {
   user: UserResponse;
   parameters?: Parameter[];
   specializations?: Specialization[];
-  activities?: Activity[];
+  activities?: ActivityResponse;
   cities?: City[];
   userParameters?: UserParameterResponse[];
   notificationsSettings?: NotificationsData;

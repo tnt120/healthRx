@@ -1,4 +1,4 @@
-import { Activity } from "../models/activity.model";
+import { ActivityResponse } from "../models/activity-response.model";
 import { City } from "../models/city.model";
 import { NotificationsData } from "../models/notifications-data.model";
 import { Parameter } from "../models/parameter.model";
@@ -8,7 +8,7 @@ import { UserResponse } from "../models/user/user-response.model";
 
 export interface AppState {
   user: UserResponse;
-  activities: Activity[];
+  activities: ActivityResponse;
   cities: City[];
   parameters: Parameter[];
   specializations: Specialization[];
