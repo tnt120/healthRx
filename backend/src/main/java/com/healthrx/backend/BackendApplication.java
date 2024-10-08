@@ -1,13 +1,7 @@
 package com.healthrx.backend;
 
-import com.healthrx.backend.api.internal.City;
-import com.healthrx.backend.api.internal.Parameter;
-import com.healthrx.backend.api.internal.Specialization;
-import com.healthrx.backend.api.internal.Unit;
-import com.healthrx.backend.repository.CityRepository;
-import com.healthrx.backend.repository.ParameterRepository;
-import com.healthrx.backend.repository.SpecializationRepository;
-import com.healthrx.backend.repository.UnitRepository;
+import com.healthrx.backend.api.internal.*;
+import com.healthrx.backend.repository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -27,7 +21,8 @@ public class BackendApplication {
             final SpecializationRepository specializationRepository,
             final UnitRepository unitRepository,
             final ParameterRepository parameterRepository,
-            final CityRepository cityRepository
+            final CityRepository cityRepository,
+            final ActivityRepository activityRepository
             ) {
         return args -> {
 //            specializationRepository.save(new Specialization().setName("Kardiolog"));
@@ -97,6 +92,19 @@ public class BackendApplication {
 //            cityRepository.save(new City().setName("Kraków"));
 //            cityRepository.save(new City().setName("Warszawa"));
 //            cityRepository.save(new City().setName("Wrocław"));
+
+//            activityRepository.save(Activity.builder().name("Piłka nożna").isPopular(true).metFactor(9.0).build());
+//            activityRepository.save(Activity.builder().name("Koszykówka").isPopular(true).metFactor(8.0).build());
+//            activityRepository.save(Activity.builder().name("Siatkówka").isPopular(true).metFactor(8.0).build());
+//            activityRepository.save(Activity.builder().name("Bieganie (8 km/h)").isPopular(true).metFactor(8.0).build());
+//            activityRepository.save(Activity.builder().name("Bieganie (12 km/h)").isPopular(true).metFactor(12.0).build());
+//            activityRepository.save(Activity.builder().name("Skakanka wolno").isPopular(false).metFactor(8.0).build());
+//            activityRepository.save(Activity.builder().name("Skakanka szybko").isPopular(false).metFactor(12.0).build());
+//            activityRepository.save(Activity.builder().name("Tenis").isPopular(true).metFactor(7.0).build());
+//            activityRepository.save(Activity.builder().name("Tenis stołowy").isPopular(true).metFactor(4.0).build());
+//            activityRepository.save(Activity.builder().name("Golf").isPopular(false).metFactor(4.4).build());
+//            activityRepository.save(Activity.builder().name("Pływanie rekreacyjne").isPopular(true).metFactor(4.5).build());
+//            activityRepository.save(Activity.builder().name("Pływanie szybkie").isPopular(false).metFactor(10.0).build());
         };
     }
 }

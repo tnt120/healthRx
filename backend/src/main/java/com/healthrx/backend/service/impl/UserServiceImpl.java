@@ -13,6 +13,7 @@ import com.healthrx.backend.quartz.NotificationSchedulerService;
 import com.healthrx.backend.quartz.QuartzNotificationParametersModel;
 import com.healthrx.backend.repository.*;
 import com.healthrx.backend.security.service.JwtService;
+import com.healthrx.backend.service.ActivityService;
 import com.healthrx.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +41,6 @@ public class UserServiceImpl implements UserService {
     private final UserParameterRepository userParameterRepository;
     private final DoctorSpecializationRepository doctorSpecializationRepository;
     private final CityRepository cityRepository;
-    private final ActivityRepository activityRepository;
     private final ParameterLogRepository parameterLogRepository;
     private final AccountSettingsRepository accountSettingsRepository;
     private final ParameterMapper parameterMapper;
@@ -48,10 +48,10 @@ public class UserServiceImpl implements UserService {
     private final UserParameterMapper userParameterMapper;
     private final CityMapper cityMapper;
     private final UserMapper userMapper;
-    private final ActivityMapper activityMapper;
     private final NotificationsMapper notificationsMapper;
     private final KafkaTemplate<String, KafkaReceiveModel> kafkaTemplate;
     private final Supplier<User> principalSupplier;
+    private final ActivityService activityService;
     private final NotificationSchedulerService notificationSchedulerService;
 
     @Override
@@ -151,12 +151,7 @@ public class UserServiceImpl implements UserService {
          response.setUser(userMapper.extendedMap(user));
 
          if (user.getRole() == Role.USER) {
-             response.setActivities(
-                     activityRepository.findAll()
-                             .stream()
-                             .map(activityMapper::map)
-                             .toList()
-             );
+             response.setActivities(activityService.getAllActivities());
 
              response.setParameters(
                      parameterRepository.findAll()

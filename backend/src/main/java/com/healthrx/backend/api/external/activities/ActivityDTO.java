@@ -1,4 +1,4 @@
-package com.healthrx.backend.api.external;
+package com.healthrx.backend.api.external.activities;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,8 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ActivityDTO {
-
     private String id;
     private String name;
-    private Double caloriesPerHour;
+    private Double metFactor;
 }

@@ -1,6 +1,6 @@
 package com.healthrx.backend.mapper;
 
-import com.healthrx.backend.api.external.ActivityDTO;
+import com.healthrx.backend.api.external.activities.ActivityDTO;
 import com.healthrx.backend.api.internal.Activity;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +11,7 @@ public class ActivityMapper {
         return ActivityDTO.builder()
                 .id(activity.getId())
                 .name(activity.getName())
-                .caloriesPerHour(activity.getCaloriesPerHour())
+                .metFactor(activity.getMetFactor())
                 .build();
     }
 }

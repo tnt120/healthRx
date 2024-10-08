@@ -23,5 +23,7 @@ public class Activity {
     @Column(unique = true)
     private String name;
 
-    private Double caloriesPerHour;
+    private Double metFactor;
+
+    private Boolean isPopular;
 }
