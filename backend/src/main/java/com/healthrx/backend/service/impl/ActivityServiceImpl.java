@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import static com.healthrx.backend.handler.BusinessErrorCodes.ACTIVITY_NOT_FOUND;
+import static com.healthrx.backend.handler.BusinessErrorCodes.*;
 
 @Service
 @RequiredArgsConstructor
@@ -113,6 +113,25 @@ public class ActivityServiceImpl implements ActivityService {
                         .build());
 
         return activityMapper.map(activityLog);
+    }
+
+    @Override
+    public UserActivityResponse editUserActivity(UserActivityRequest request, String id) {
+        User user = principalSupplier.get();
+
+        ActivityLog activityLog = activityLogRepository.findById(id)
+                .orElseThrow(ACTIVITY_LOG_NOT_FOUND::getError);
+
+        if (!activityLog.getUser().getId().equals(user.getId())) {
+            throw USER_NOT_PERMITTED.getError();
+        }
+
+        activityLog.setActivityTime(request.getActivityTime());
+        activityLog.setDuration(request.getDuration());
+        activityLog.setAverageHeartRate(request.getAverageHeartRate());
+        activityLog.setCaloriesBurned(request.getCaloriesBurned());
+
+        return activityMapper.map(activityLogRepository.save(activityLog));
     }
 
     private List<Activity> getActivities() {

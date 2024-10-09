@@ -33,4 +33,9 @@ public class ActivitiesController {
     public ResponseEntity<UserActivityResponse> addUserActivity(@RequestBody UserActivityRequest request) {
         return ResponseEntity.ok(activityService.addUserActivity(request));
     }
+
+    @PutMapping("/user/{id}")
+    public ResponseEntity<UserActivityResponse> editUserActivity(@RequestBody UserActivityRequest request, @PathVariable String id) {
+        return ResponseEntity.ok(activityService.editUserActivity(request, id));
+    }
 }
