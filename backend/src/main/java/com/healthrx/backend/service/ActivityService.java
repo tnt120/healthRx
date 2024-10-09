@@ -12,4 +12,5 @@ public interface ActivityService {
     PageResponse<UserActivityResponse> getUserActivities(Integer page, Integer size, String sortBy, String order, String activityId, LocalDateTime startDate, LocalDateTime endDate);
     UserActivityResponse addUserActivity(UserActivityRequest request);
     UserActivityResponse editUserActivity(UserActivityRequest request, String id);
+    Void deleteUserActivity(String id);
 }

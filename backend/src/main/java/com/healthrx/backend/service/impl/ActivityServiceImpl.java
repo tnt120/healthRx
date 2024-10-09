@@ -134,6 +134,21 @@ public class ActivityServiceImpl implements ActivityService {
         return activityMapper.map(activityLogRepository.save(activityLog));
     }
 
+    @Override
+    public Void deleteUserActivity(String id) {
+        User user = principalSupplier.get();
+
+        ActivityLog activityLog = activityLogRepository.findById(id)
+                .orElseThrow(ACTIVITY_LOG_NOT_FOUND::getError);
+
+        if (!activityLog.getUser().getId().equals(user.getId())) {
+            throw USER_NOT_PERMITTED.getError();
+        }
+
+        activityLogRepository.delete(activityLog);
+        return null;
+    }
+
     private List<Activity> getActivities() {
         return activityRepository.findAll();
     }

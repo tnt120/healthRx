@@ -38,4 +38,9 @@ public class ActivitiesController {
     public ResponseEntity<UserActivityResponse> editUserActivity(@RequestBody UserActivityRequest request, @PathVariable String id) {
         return ResponseEntity.ok(activityService.editUserActivity(request, id));
     }
+
+    @DeleteMapping("/user/{id}")
+    public ResponseEntity<Void> deleteUserActivity(@PathVariable String id) {
+        return ResponseEntity.ok(activityService.deleteUserActivity(id));
+    }
 }
