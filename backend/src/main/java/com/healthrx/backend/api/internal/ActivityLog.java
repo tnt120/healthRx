@@ -37,6 +37,10 @@ public class ActivityLog {
     @Column(nullable = false)
     private Integer duration;
 
+    private Integer averageHeartRate;
+
+    private Integer caloriesBurned;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
