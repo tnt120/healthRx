@@ -52,6 +52,7 @@ public enum BusinessErrorCodes {
     INVITATION_NOT_ACCEPTED(332, "Invitation not accepted", HttpStatus.CONFLICT),
     FRIENDSHIP_NOT_FOUND(333, "Friendship not found", HttpStatus.NOT_FOUND),
     MESSAGE_NOT_FOUND(334, "Message not found", HttpStatus.NOT_FOUND),
+    ACTIVITY_NOT_FOUND(335, "Activity not found", HttpStatus.NOT_FOUND),
     ;
 
     private final int code;

@@ -2,6 +2,7 @@ package com.healthrx.backend.service.impl;
 
 import com.healthrx.backend.api.external.PageResponse;
 import com.healthrx.backend.api.external.activities.ActivitiesResponse;
+import com.healthrx.backend.api.external.activities.UserActivityRequest;
 import com.healthrx.backend.api.external.activities.UserActivityResponse;
 import com.healthrx.backend.api.internal.Activity;
 import com.healthrx.backend.api.internal.ActivityLog;
@@ -26,6 +27,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
+
+import static com.healthrx.backend.handler.BusinessErrorCodes.ACTIVITY_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -91,6 +94,25 @@ public class ActivityServiceImpl implements ActivityService {
                 .setLast(userActivitiesLogs.isLast())
                 .setFirst(userActivitiesLogs.isFirst())
                 .setTotalPages(userActivitiesLogs.getTotalPages());
+    }
+
+    @Override
+    public UserActivityResponse addUserActivity(UserActivityRequest request) {
+        User user = principalSupplier.get();
+
+        Activity activity = activityRepository.findById(request.getActivityId())
+                .orElseThrow(ACTIVITY_NOT_FOUND::getError);
+
+        ActivityLog activityLog = activityLogRepository.save(ActivityLog.builder()
+                        .activity(activity)
+                        .user(user)
+                        .activityTime(request.getActivityTime())
+                        .duration(request.getDuration())
+                        .averageHeartRate(request.getAverageHeartRate())
+                        .caloriesBurned(request.getCaloriesBurned())
+                        .build());
+
+        return activityMapper.map(activityLog);
     }
 
     private List<Activity> getActivities() {
