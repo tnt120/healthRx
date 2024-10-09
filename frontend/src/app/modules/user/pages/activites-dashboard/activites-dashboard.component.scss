@@ -1,0 +1,13 @@
+:host {
+  .top-button-container {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .section-container {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+}

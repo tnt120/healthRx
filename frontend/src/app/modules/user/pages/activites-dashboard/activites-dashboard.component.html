@@ -1,1 +1,23 @@
-<p>activites-dashboard works!</p>
+<div class="main-container">
+  <div class="top-button-container">
+    <button mat-button (click)="addUserActivity()"><p class="text-2">Dodaj aktywność</p></button>
+  </div>
+
+  <app-collapsing-container-layout sectionTitle="Popularne aktywności" description="Kliknij w dowolny kafelek, aby szybko dodać wykonaną aktywność fizyczną">
+    <div class="section-container">
+      <app-popular-activities [popularActivities]="popularActivities" [allActivities]="allActivities" (addActivityEmit)="addUserActivity($event)"></app-popular-activities>
+    </div>
+  </app-collapsing-container-layout>
+
+  <app-collapsing-container-layout sectionTitle="Twoje dzisiejsze aktywności" [isCollapsed]="true">
+    <div class="section-container">
+      <app-user-activities></app-user-activities>
+    </div>
+  </app-collapsing-container-layout>
+
+  <app-collapsing-container-layout sectionTitle="Twoje wszystkie aktywności" [isCollapsed]="true">
+    <div class="section-container">
+      <app-user-activities></app-user-activities>
+    </div>
+  </app-collapsing-container-layout>
+</div>

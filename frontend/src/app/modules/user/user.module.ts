@@ -26,6 +26,11 @@ import { ParameterStatisticsComponent } from './components/parameter-statistics/
 import { DrugStatisticsComponent } from './components/drug-statistics/drug-statistics.component';
 import { ParameterChartComponent } from './components/parameter-statistics/parameter-chart/parameter-chart.component';
 import { DrugChartComponent } from './components/drug-statistics/drug-chart/drug-chart.component';
+import { PopularActivitiesComponent } from './components/popular-activities/popular-activities.component';
+import { UserActivitiesComponent } from './components/user-activities/user-activities.component';
+import { ActivityTileComponent } from './components/activity-tile/activity-tile.component';
+import { ActivityEditTileComponent } from './components/activity-edit-tile/activity-edit-tile.component';
+import { ManageUserActivityDialogComponent } from './components/manage-user-activity-dialog/manage-user-activity-dialog.component';
 
 
 @NgModule({
@@ -51,6 +56,11 @@ import { DrugChartComponent } from './components/drug-statistics/drug-chart/drug
     DrugStatisticsComponent,
     ParameterChartComponent,
     DrugChartComponent,
+    PopularActivitiesComponent,
+    UserActivitiesComponent,
+    ActivityTileComponent,
+    ActivityEditTileComponent,
+    ManageUserActivityDialogComponent,
   ],
   imports: [
     CommonModule,

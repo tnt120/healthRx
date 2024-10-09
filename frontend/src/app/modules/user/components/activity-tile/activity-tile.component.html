@@ -1,0 +1,4 @@
+<div class="container" (click)="onClick()">
+  <h4 #name [matTooltip]="activity().name" [matTooltipDisabled]="isOverflow(name)">{{ activity().name }}</h4>
+  <mat-icon class="blue-dark" aria-hidden="false" fontSet="material-symbols-outlined">{{ icon }}</mat-icon>
+</div>

@@ -1,0 +1,7 @@
+@if (popularActivities().length > 0) {
+  <div class="grid">
+    @for (activity of popularActivities(); track activity.id) {
+      <app-activity-tile [activity]="activity" (clickEmit)="addUserActivity($event)"></app-activity-tile>
+    }
+  </div>
+}
