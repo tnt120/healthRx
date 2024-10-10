@@ -5,6 +5,7 @@ import com.healthrx.backend.api.internal.*;
 import com.healthrx.backend.api.internal.enums.ChartType;
 import com.healthrx.backend.api.internal.enums.Days;
 import com.healthrx.backend.api.internal.enums.TrendType;
+import com.healthrx.backend.mapper.ActivityMapper;
 import com.healthrx.backend.mapper.DrugMapper;
 import com.healthrx.backend.mapper.ParameterMapper;
 import com.healthrx.backend.repository.*;
@@ -23,6 +24,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
 import static com.healthrx.backend.handler.BusinessErrorCodes.DRUG_NOT_FOUND;
@@ -37,11 +39,13 @@ public class StatisticsServiceImpl implements StatisticsService {
     private final DrugRepository drugRepository;
     private final UserDrugRepository userDrugRepository;
     private final ActivityRepository activityRepository;
+    private final ActivityLogRepository activityLogRepository;
     private final ParameterLogRepository parameterLogRepository;
     private final DrugLogRepository drugLogRepository;
     private final UserParameterRepository userParameterRepository;
     private final ParameterMapper parameterMapper;
     private final DrugMapper drugMapper;
+    private final ActivityMapper activityMapper;
 
     @Override
     public ChartResponse getChartData(ChartRequest request, ChartType type) {
@@ -207,6 +211,76 @@ public class StatisticsServiceImpl implements StatisticsService {
         });
 
         return response;
+    }
+
+    @Override
+    public List<ActivityStatisticsResponse> getActivitiesStatistics(StatisticsRequest req) {
+        User user = principalSupplier.get();
+
+        List<ActivityLog> logs = activityLogRepository.findActivityLogsByUserIdAndDateRange(
+                user.getId(),
+                req.getStartDate(),
+                req.getEndDate()
+        );
+
+        if (logs.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        Map<Activity, List<ActivityLog>> logsGroupedByActivity = logs.stream()
+                .collect(Collectors.groupingBy(ActivityLog::getActivity));
+
+        List<ActivityStatisticsResponse> res = new ArrayList<>();
+
+        for (Map.Entry<Activity, List<ActivityLog>> entry : logsGroupedByActivity.entrySet()) {
+            Activity activity = entry.getKey();
+            List<ActivityLog> activityLogs = entry.getValue();
+            int logsCount = activityLogs.size();
+
+            IntSummaryStatistics durationStats = activityLogs.stream()
+                    .mapToInt(ActivityLog::getDuration)
+                    .summaryStatistics();
+
+            double hoursCount = durationStats.getSum() / 60.0;
+
+            Optional<IntSummaryStatistics> heartRateStats = getStatistics(activityLogs, log -> Optional.ofNullable(log.getAverageHeartRate()).orElse(0));
+            Integer minHeartRate = heartRateStats.map(IntSummaryStatistics::getMin).orElse(null);
+            Integer maxHeartRate = heartRateStats.map(IntSummaryStatistics::getMax).orElse(null);
+            Double avgHeartRate = heartRateStats.map(IntSummaryStatistics::getAverage).orElse(null);
+
+            Optional<IntSummaryStatistics> caloriesBurnedStats = getStatistics(activityLogs, log -> Optional.ofNullable(log.getCaloriesBurned()).orElse(0));
+            Integer minCaloriesBurned = caloriesBurnedStats.map(IntSummaryStatistics::getMin).orElse(null);
+            Integer maxCaloriesBurned = caloriesBurnedStats.map(IntSummaryStatistics::getMax).orElse(null);
+            Double avgCaloriesBurned = caloriesBurnedStats.map(IntSummaryStatistics::getAverage).orElse(null);
+
+            res.add(ActivityStatisticsResponse.builder()
+                    .activity(activityMapper.map(activity))
+                    .minDuration(durationStats.getMin())
+                    .maxDuration(durationStats.getMax())
+                    .avgDuration(durationStats.getAverage())
+                    .minHeartRate(minHeartRate)
+                    .maxHeartRate(maxHeartRate)
+                    .avgHeartRate(avgHeartRate)
+                    .minCaloriesBurned(minCaloriesBurned)
+                    .maxCaloriesBurned(maxCaloriesBurned)
+                    .avgCaloriesBurned(avgCaloriesBurned)
+                    .logsCount(logsCount)
+                    .hoursCount(hoursCount)
+                    .firstLogDate(activityLogs.getFirst().getActivityTime())
+                    .lastLogDate(activityLogs.getLast().getActivityTime())
+                    .build());
+        }
+
+        return res;
+    }
+
+    private Optional<IntSummaryStatistics> getStatistics(List<ActivityLog> logs, ToIntFunction<ActivityLog> mapper) {
+        IntSummaryStatistics stats = logs.stream()
+                .mapToInt(mapper)
+                .filter(value -> value > 0)
+                .summaryStatistics();
+
+        return stats.getCount() > 0 ? Optional.of(stats) : Optional.empty();
     }
 
     private ChartResponse getParameterChartData(User user, ChartRequest request) {
@@ -432,8 +506,46 @@ public class StatisticsServiceImpl implements StatisticsService {
         }
     }
 
-    private ChartResponse getActivityChartData(User user, ChartRequest request) {
-        log.info("Getting activity chart data for user {}", user.getId());
-        return new ChartResponse();
+    private ChartResponse getActivityChartData(User user, ChartRequest req) {
+        List<ActivityLog> logs = activityLogRepository.findActivityLogsByUserIdAndDateRange(
+                user.getId(),
+                req.getStartDate(),
+                req.getEndDate()
+        );
+
+        if (logs.isEmpty()) {
+            return ChartResponse.builder()
+                    .name("Activity Logs")
+                    .startDate(req.getStartDate())
+                    .endDate(req.getEndDate())
+                    .data(new ArrayList<>())
+                    .build();
+        }
+
+        Map<String, List<ActivityLog>> logsGroupedByActivity = logs.stream()
+                .collect(Collectors.groupingBy(log -> log.getActivity().getName()));
+
+        List<ChartDataDTO> chartData = logsGroupedByActivity.entrySet().stream()
+                .map(entry -> {
+                    String name = entry.getKey();
+                    List<ActivityLog> activityLogs = entry.getValue();
+
+                    double logCount = activityLogs.size();
+                    double totalDuration = activityLogs.stream().mapToInt(ActivityLog::getDuration).sum();
+
+                    return ChartDataDTO.builder()
+                            .label(name)
+                            .value(logCount)
+                            .additionalValue(totalDuration)
+                            .build();
+                })
+                .toList();
+
+        return ChartResponse.builder()
+                .name("Activity Logs")
+                .startDate(req.getStartDate())
+                .endDate(req.getEndDate())
+                .data(chartData)
+                .build();
     }
 }

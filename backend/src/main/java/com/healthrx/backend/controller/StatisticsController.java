@@ -28,4 +28,9 @@ public class StatisticsController {
     public ResponseEntity<List<DrugStatisticsResponse>> getDrugsStatistics (@RequestBody StatisticsRequest request) {
         return ResponseEntity.ok(statisticsService.getDrugsStatistics(request));
     }
+
+    @PostMapping("/activities")
+    public ResponseEntity<List<ActivityStatisticsResponse>> getActivitiesStatistics (@RequestBody StatisticsRequest request) {
+        return ResponseEntity.ok(statisticsService.getActivitiesStatistics(request));
+    }
 }

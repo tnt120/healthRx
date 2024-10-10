@@ -9,4 +9,5 @@ public interface StatisticsService {
     ChartResponse getChartData(ChartRequest request, ChartType type);
     List<ParameterStatisticsResponse> getParametersStatistics(StatisticsRequest req);
     List<DrugStatisticsResponse> getDrugsStatistics(StatisticsRequest req);
+    List<ActivityStatisticsResponse> getActivitiesStatistics(StatisticsRequest req);
 }
