@@ -76,7 +76,7 @@ export class CabinetDashboardComponent implements OnInit {
   subscriptions: Subscription[] = [];
 
   ngOnInit(): void {
-    this.drugsService.getFilterChange().subscribe(() => this.loadUserDrugs());
+    this.subscriptions.push(this.drugsService.getFilterChange().subscribe(() => this.loadUserDrugs()));
     this.loadUserDrugMonitor();
   }
 

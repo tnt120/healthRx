@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import moment from 'moment';
 
 export type DateRangeType =
+  'today' |
   'currentWeek' |
   'previousWeek' |
   'currentMonth' |
@@ -44,6 +45,10 @@ moment.updateLocale('pl', {
 })
 export class DateService {
   private dateRangeCalculators = new Map<DateRangeType, () => { from: Date; to: Date }>([
+    [
+      'today',
+      () => this.getLastDaysRange(0),
+    ],
     [
       'currentWeek',
       () => this.getWeekRange(0),
@@ -125,5 +130,13 @@ export class DateService {
 
   getDateRange(type: DateRangeType): { from: Date, to: Date } {
     return this.dateRangeCalculators.get(type)!();
+  }
+
+  checkIfToday(date: Date): boolean {
+    const { from, } = this.getDateRange('today');
+
+    return date.getFullYear() === from.getFullYear() &&
+      date.getMonth() === from.getMonth() &&
+      date.getDate() === from.getDate();
   }
 }

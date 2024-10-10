@@ -11,6 +11,17 @@ export const drugSortOptions: SortOption[] = [
   }
 ];
 
+export const activitiesSortOptions: SortOption[] = [...drugSortOptions,
+  {
+    sortBy: 'activityTime',
+    order: 'asc'
+  },
+  {
+    sortBy: 'activityTime',
+    order: 'desc'
+  }
+];
+
 export const doctorSortOptions: SortOption[] = [
   {
     sortBy: 'firstName',

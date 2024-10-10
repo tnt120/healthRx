@@ -1,5 +1,6 @@
 export interface UserActivityRequest {
-  activityId?: string;
+  id?: string;
+  activityId: string;
   duration: number;
   activityTime: Date;
   averageHeartRate: number | null;

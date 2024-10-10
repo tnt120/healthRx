@@ -1,11 +1,12 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Activity } from '../../../../core/models/activity.model';
 import { ManageUserActivityData, ManageUserActivityDialogComponent } from '../../components/manage-user-activity-dialog/manage-user-activity-dialog.component';
-import { Store, on } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { ActivityService } from '../../../../core/services/activity/activity.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { UserActivityRequest } from '../../../../core/models/user-activity-request.model';
+import { DateService } from '../../../../core/services/date/date.service';
 
 @Component({
   selector: 'app-activites-dashboard',
@@ -18,6 +19,8 @@ export class ActivitesDashboardComponent implements OnInit, OnDestroy {
   private readonly activityService = inject(ActivityService);
 
   private readonly dialog = inject(MatDialog);
+
+  private readonly dateService = inject(DateService);
 
   subscriptions: Subscription[] = [];
 
@@ -59,7 +62,10 @@ export class ActivitesDashboardComponent implements OnInit, OnDestroy {
           }
 
           this.activityService.addUserActivity(req).subscribe((addedActivity) => {
-            console.log(addedActivity);
+            if (this.dateService.checkIfToday(addedActivity.activityTime)) {
+              this.activityService.emitFilterChange(true);
+            }
+            this.activityService.emitFilterChange(false);
           });
         }
       })

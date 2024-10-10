@@ -21,7 +21,7 @@ interface currActivity {
 @Component({
   selector: 'app-manage-user-activity-dialog',
   templateUrl: './manage-user-activity-dialog.component.html',
-  styleUrl: './manage-user-activity-dialog.component.scss'
+  styleUrl: './manage-user-activity-dialog.component.scss',
 })
 export class ManageUserActivityDialogComponent implements OnInit {
   data: ManageUserActivityData = inject(MAT_DIALOG_DATA);
@@ -48,19 +48,20 @@ export class ManageUserActivityDialogComponent implements OnInit {
   minutes: string[] = [];
 
   ngOnInit(): void {
+    this.generateHoursAndMinutes();
+
     if (this.data.userActivity) {
       this.currData.set({...this.data.userActivity});
+
       this.time.set({
-        hour: this.data.userActivity.activityTime.getHours().toString(),
-        minute: this.data.userActivity.activityTime.getMinutes().toString()
+        hour: this.hours[this.data.userActivity.activityTime.getHours()],
+        minute: this.minutes[this.data.userActivity.activityTime.getMinutes()]
       });
     }
 
     if (this.data.activity) {
       this.currData.set({ ...this.currData(), activity: this.data.activity });
     }
-
-    this.generateHoursAndMinutes();
   }
 
   getData(): UserActivityRequest | null {

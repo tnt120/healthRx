@@ -1,1 +1,24 @@
-<p>user-activities works!</p>
+@if (isToday()) {
+  <div class="grid">
+    @if (userActivities().length === 0) {
+      <p class="text-2">Brak dzisiejszych aktywności</p>
+    } @else {
+      @for (activity of userActivities(); track activity.id) {
+        <app-activity-edit-tile [userActivity]="activity" (editEmit)="onEdit($event)" (deleteEmit)="onDelete($event)" />
+      }
+    }
+  </div>
+} @else {
+  <app-table
+    [data]="tableData()"
+    [columns]="userDrugsDisplayedColumns"
+    [pagination]="pagination"
+    [isSearching]="false"
+    [searchable]="false"
+    emptyInfo="Brak aktywności"
+    type="editable"
+    (pageChange)="handlePageEvent($event)"
+    (edit)="onEdit($event)"
+    (delete)="onDelete($event)"
+  />
+}

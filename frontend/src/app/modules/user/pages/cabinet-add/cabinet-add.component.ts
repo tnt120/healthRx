@@ -1,5 +1,6 @@
+import { Subscription } from 'rxjs';
 import { CustomSnackbarService } from './../../../../core/services/custom-snackbar/custom-snackbar.service';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { DrugResponse } from '../../../../core/models/drug-response.model';
 import { Pagination } from '../../../../core/models/pagination.model';
 import { basePagination } from '../../../../core/constants/paginations-options';
@@ -20,7 +21,7 @@ import { DatePipe } from '@angular/common';
   styleUrl: './cabinet-add.component.scss',
   providers: [DatePipe]
 })
-export class CabinetAddComponent implements OnInit {
+export class CabinetAddComponent implements OnInit, OnDestroy {
   private readonly drugsService = inject(DrugsService);
 
   private readonly router = inject(Router);
@@ -50,9 +51,15 @@ export class CabinetAddComponent implements OnInit {
 
   isFirstLoad = signal(true);
 
+  subscriptions: Subscription[] = [];
+
   ngOnInit(): void {
-    this.drugsService.getFilterChange().subscribe(() => this.loadDrugs());
+    this.subscriptions.push(this.drugsService.getFilterChange().subscribe(() => this.loadDrugs()));
     this.isFirstLoad.set(false);
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   loadDrugs(): void {

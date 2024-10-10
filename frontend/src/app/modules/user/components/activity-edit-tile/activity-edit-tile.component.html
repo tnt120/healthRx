@@ -1,1 +1,28 @@
-<p>activity-edit-tile works!</p>
+<div class="container">
+  <div class="activity">
+    <h4 #name [matTooltip]="userActivity().activity.name" [matTooltipDisabled]="isOverflow(name)">{{ userActivity().activity.name }}</h4>
+    <mat-icon class="blue-dark" aria-hidden="false" fontSet="material-symbols-outlined">{{ icon }}</mat-icon>
+  </div>
+  <div class="details">
+    <div class="info">
+      <p class="subtitle-1 label">Godzina rozpoczęcia:</p>
+      <p class="text-1 value">{{ userActivity().activityTime | date: 'HH:mm' }}</p>
+    </div>
+    <div class="info">
+      <p class="subtitle-1 label">Czas trwania:</p>
+      <p class="text-1 value">{{ duration }}</p>
+    </div>
+    <div class="info">
+      <p class="subtitle-1 label">Średnie tętno:</p>
+      <p class="text-1 value">{{ userActivity().averageHeartRate ? userActivity().averageHeartRate : '-' }}</p>
+    </div>
+    <div class="info">
+      <p class="subtitle-1 label">Spalone kalorie:</p>
+      <p class="text-1 value">{{ userActivity().caloriesBurned ? userActivity().caloriesBurned + ' kcal' : '-' }}</p>
+    </div>
+  </div>
+  <div class="buttons">
+    <button mat-button (click)="onEdit()"><p class="primary-blue">Edytuj</p></button>
+    <button mat-button (click)="onDelete()"><p class="red">Usuń</p></button>
+  </div>
+</div>
