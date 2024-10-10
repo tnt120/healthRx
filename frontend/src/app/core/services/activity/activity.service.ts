@@ -35,7 +35,7 @@ export class ActivityService {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString())
-      .set('sortBy', sort.sortBy)
+      .set('sort', sort.sortBy)
       .set('order', sort.order);
 
     if (search?.activityId) params = params.set('activityId', search.activityId);

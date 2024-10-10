@@ -9,6 +9,37 @@
     }
   </div>
 } @else {
+  <div class="filters">
+    <div class="search-fields">
+      <mat-form-field appearance="outline">
+        <mat-label>Aktywność</mat-label>
+        <mat-select [(ngModel)]="searchParams.activityId" placeholder="Aktywność" (ngModelChange)="emitFilterChange()">
+          <mat-option [value]="null">-</mat-option>
+          @for (activity of activities(); track activity.id) {
+            <mat-option [value]="activity.id">{{ activity.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Zakres</mat-label>
+        <mat-select [(ngModel)]="date().label" placeholder="Zakres" (ngModelChange)="getDateFromLabel()">
+          @for (dateRange of dateRangeOptions; track dateRange.label) {
+            <mat-option [value]="dateRange.value">{{ dateRange.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="sorting">
+      <mat-form-field appearance="outline">
+        <mat-label>Sortuj po</mat-label>
+        <mat-select [(ngModel)]="sort" (ngModelChange)="emitFilterChange()">
+          @for (option of sortOptions; track getSortKey(option)) {
+            <mat-option [value]="option">{{ sortOptionMapper(option.sortBy) }} {{ option.order === 'asc' ? '(rosnąco)' : '(malecjąco)' }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
   <app-table
     [data]="tableData()"
     [columns]="userDrugsDisplayedColumns"

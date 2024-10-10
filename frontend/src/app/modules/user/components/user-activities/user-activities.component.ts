@@ -87,6 +87,10 @@ export class UserActivitiesComponent implements OnInit, OnDestroy {
     }));
   }
 
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(s => s.unsubscribe());
+  }
+
   loadActivities(): void {
     this.searchParams.startDate = this.datePipe.transform(this.date().from, 'yyyy-MM-dd')! + 'T00:00:00';
     this.searchParams.endDate = this.datePipe.transform(this.date().to, 'yyyy-MM-dd')! + 'T23:59:59'
@@ -190,11 +194,21 @@ export class UserActivitiesComponent implements OnInit, OnDestroy {
     )
   }
 
+  emitFilterChange(): void {
+    this.activityService.emitFilterChange();
+  }
 
   handlePageEvent(e: PageEvent): void {
     this.pagination.pageEvent = e;
     this.pagination.pageSize = e.pageSize;
     this.pagination.pageIndex = e.pageIndex;
+    this.activityService.emitFilterChange();
+  }
+
+  getDateFromLabel() {
+    const {from, to} = this.dateService.getDateRange(this.date().label);
+    this.date.set({ label: this.date().label, from, to });
+
     this.activityService.emitFilterChange();
   }
 
@@ -208,7 +222,17 @@ export class UserActivitiesComponent implements OnInit, OnDestroy {
     ]
   }
 
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(s => s.unsubscribe());
+  getSortKey(option: SortOption): string {
+    return `${option.sortBy}-${option.order}`;
+  }
+
+  sortOptionMapper(option: string): string {
+    switch (option) {
+      case 'activityTime': return 'Czas aktywności';
+      case 'duration' : return 'Czas trwania';
+      case 'averageHeartRate': return 'Średnie tętno';
+      case 'caloriesBurned': return 'Spalone kalorie';
+      default: return '';
+    }
   }
 }

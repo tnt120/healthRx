@@ -11,13 +11,37 @@ export const drugSortOptions: SortOption[] = [
   }
 ];
 
-export const activitiesSortOptions: SortOption[] = [...drugSortOptions,
+export const activitiesSortOptions: SortOption[] = [
   {
     sortBy: 'activityTime',
     order: 'asc'
   },
   {
     sortBy: 'activityTime',
+    order: 'desc'
+  },
+  {
+    sortBy: 'duration',
+    order: 'asc'
+  },
+  {
+    sortBy: 'duration',
+    order: 'desc'
+  },
+  {
+    sortBy: 'averageHeartRate',
+    order: 'asc'
+  },
+  {
+    sortBy: 'averageHeartRate',
+    order: 'desc'
+  },
+  {
+    sortBy: 'caloriesBurned',
+    order: 'asc'
+  },
+  {
+    sortBy: 'caloriesBurned',
     order: 'desc'
   }
 ];
