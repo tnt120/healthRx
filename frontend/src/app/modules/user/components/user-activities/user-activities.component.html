@@ -1,13 +1,21 @@
 @if (isToday()) {
-  <div class="grid">
-    @if (userActivities().length === 0) {
-      <p class="text-2">Brak dzisiejszych aktywności</p>
-    } @else {
-      @for (activity of userActivities(); track activity.id) {
-        <app-activity-edit-tile [userActivity]="activity" (editEmit)="onEdit($event)" (deleteEmit)="onDelete($event)" />
+  @if (isLoading$ | async) {
+    <div class="basic-spinner-container">
+      <mat-spinner></mat-spinner>
+    </div>
+  } @else {
+      @if (userActivities().length === 0) {
+        <div class="no-data">
+          <p class="subtitle-2">Brak dzisiejszych aktywności.</p>
+        </div>
+      } @else {
+        <div class="grid">
+          @for (activity of userActivities(); track activity.id) {
+            <app-activity-edit-tile [userActivity]="activity" (editEmit)="onEdit($event)" (deleteEmit)="onDelete($event)" />
+          }
+        </div>
       }
     }
-  </div>
 } @else {
   <div class="filters">
     <div class="search-fields">
@@ -44,9 +52,10 @@
     [data]="tableData()"
     [columns]="userDrugsDisplayedColumns"
     [pagination]="pagination"
-    [isSearching]="false"
+    [isSearching]="isLoading$ | async"
     [searchable]="false"
-    emptyInfo="Brak aktywności"
+    emptyInfo="Brak aktywności."
+    emptyAdditionalInfo="Zmień kryteria wyszukiwania."
     type="editable"
     (pageChange)="handlePageEvent($event)"
     (edit)="onEdit($event)"

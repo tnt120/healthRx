@@ -17,10 +17,13 @@ export const spinnerInterceptor: HttpInterceptorFn = (req, next) => {
     '/api/friendship/accepted',
     '/api/statistics/parameters',
     '/api/statistics/drugs',
-    '/api/statistics/chart'
+    '/api/statistics/chart',
   ];
 
-  const shouldIngore = excludeUrls.some(url => req.url.includes(url));
+  const excludeGetUrls = ['/api/activities/user'];
+
+  const shouldIngore = excludeUrls.some(url => req.url.includes(url)) ||
+    (excludeGetUrls.some(url => req.url.includes(url)) && req.method === 'GET');;
 
   if (!shouldIngore) {
     spinnerService.loadingOn();

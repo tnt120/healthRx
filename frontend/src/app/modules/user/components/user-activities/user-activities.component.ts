@@ -1,4 +1,4 @@
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { AcitivtySearchParams, ActivityService } from './../../../../core/services/activity/activity.service';
 import { Component, inject, input, OnDestroy, OnInit, signal } from '@angular/core';
 import { Pagination } from '../../../../core/models/pagination.model';
@@ -63,7 +63,11 @@ export class UserActivitiesComponent implements OnInit, OnDestroy {
     to: null
   });
 
+  isLoading$!: Observable<boolean>;
+
   ngOnInit(): void {
+    this.isLoading$ = this.activityService.getLoadingActivityState(this.isToday() ? 'today' : 'all');
+
     if (this.isToday()) {
       this.date.set({
         label: 'today',

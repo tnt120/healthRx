@@ -2,16 +2,18 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environments';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { SortOption } from '../../models/sort-option.model';
-import { map, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, catchError, finalize, map, Observable, Subject, tap, throwError } from 'rxjs';
 import { PageResponse } from '../../models/page-response.model';
 import { UserActivityResponse } from '../../models/user-activity-response.model';
 import { UserActivityRequest } from '../../models/user-activity-request.model';
+import { CustomSnackbarService } from '../custom-snackbar/custom-snackbar.service';
 
 export interface AcitivtySearchParams {
   activityId?: string | null;
   startDate: string | null;
   endDate: string | null;
 }
+
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +23,24 @@ export class ActivityService {
 
   private readonly http = inject(HttpClient);
 
+  private readonly customSnackbarService = inject(CustomSnackbarService);
+
   private filterChange = new Subject<boolean>();
+
+  private loadingActivitiesSubject = new BehaviorSubject<Map<'today' | 'all', boolean>>(new Map([['today', false], ['all', false]]));
+
+  getLoadingActivityState(type: 'today' | 'all'): Observable<boolean> {
+    return this.loadingActivitiesSubject.asObservable().pipe(
+      map(stateMap => stateMap.get(type) || false)
+    );
+  }
+
+  setLoadingActivityState(type: 'today' | 'all', loading: boolean) {
+    const currState = this.loadingActivitiesSubject.getValue();
+    const updatedState = new Map(currState).set(type, loading);
+
+    this.loadingActivitiesSubject.next(updatedState);
+  }
 
   getFilterChange() {
     return this.filterChange.asObservable();
@@ -42,6 +61,9 @@ export class ActivityService {
     if (search?.startDate) params = params.set('startDate', search.startDate);
     if (search?.endDate) params = params.set('endDate', search.endDate);
 
+    const type: 'today' | 'all' = search?.startDate?.substring(0, 10) === search?.endDate?.substring(0, 10) ? 'today' : 'all';
+
+    this.setLoadingActivityState(type, true);
     return this.http.get<PageResponse<UserActivityResponse>>(`${this.apiUrl}/user`, { params }).pipe(
       map(res => ({
         ...res,
@@ -49,7 +71,8 @@ export class ActivityService {
           ...activity,
           activityTime: new Date(activity.activityTime)
         }))
-      }))
+      })),
+      finalize(() => this.setLoadingActivityState(type, false))
     );
   }
 
@@ -58,7 +81,14 @@ export class ActivityService {
       map(activity => ({
         ...activity,
         activityTime: new Date(activity.activityTime)
-      }))
+      })),
+      tap(() => {
+        this.customSnackbarService.openCustomSnackbar({ title: 'Sukces', message: 'Pomyślnie dodano aktywność.', type: 'success', duration: 2500 });
+      }),
+      catchError((err) => {
+        this.customSnackbarService.openCustomSnackbar({ title: 'Błąd', message: 'Wystawił błąd podczas dodwania aktywności.', type: 'error', duration: 2500 });
+        return throwError(() => err)
+      })
     );
   }
 
@@ -67,12 +97,27 @@ export class ActivityService {
       map(activity => ({
         ...activity,
         activityTime: new Date(activity.activityTime)
-      }))
+      })),
+      tap(() => {
+        this.customSnackbarService.openCustomSnackbar({ title: 'Sukces', message: 'Pomyślnie edytowano aktywność.', type: 'success', duration: 2500 });
+      }),
+      catchError((err) => {
+        this.customSnackbarService.openCustomSnackbar({ title: 'Błąd', message: 'Wystawił błąd podczas edytowania aktywności.', type: 'error', duration: 2500 });
+        return throwError(() => err)
+      })
     );
   }
 
   deleteUserActivity(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/user/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/user/${id}`).pipe(
+      tap(() => {
+        this.customSnackbarService.openCustomSnackbar({ title: 'Sukces', message: 'Pomyślnie usunięto aktywność.', type: 'success', duration: 2500 });
+      }),
+      catchError((err) => {
+        this.customSnackbarService.openCustomSnackbar({ title: 'Błąd', message: 'Wystawił błąd podczas usuwania aktywności.', type: 'error', duration: 2500 });
+        return throwError(() => err)
+      })
+    );
   }
 
   getActivityDuration(duration: number): string {
