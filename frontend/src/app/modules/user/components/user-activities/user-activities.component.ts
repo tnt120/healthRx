@@ -199,6 +199,7 @@ export class UserActivitiesComponent implements OnInit, OnDestroy {
   }
 
   emitFilterChange(): void {
+    this.pagination.pageIndex = 0;
     this.activityService.emitFilterChange();
   }
 
@@ -212,6 +213,8 @@ export class UserActivitiesComponent implements OnInit, OnDestroy {
   getDateFromLabel() {
     const {from, to} = this.dateService.getDateRange(this.date().label);
     this.date.set({ label: this.date().label, from, to });
+
+    this.pagination.pageIndex = 0;
 
     this.activityService.emitFilterChange();
   }
@@ -232,7 +235,7 @@ export class UserActivitiesComponent implements OnInit, OnDestroy {
 
   sortOptionMapper(option: string): string {
     switch (option) {
-      case 'activityTime': return 'Czas aktywności';
+      case 'activityTime': return 'Data aktywności';
       case 'duration' : return 'Czas trwania';
       case 'averageHeartRate': return 'Średnie tętno';
       case 'caloriesBurned': return 'Spalone kalorie';
