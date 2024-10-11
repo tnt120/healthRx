@@ -1,0 +1,32 @@
+:host {
+  .no-data {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex-direction: column;
+  }
+
+  .activities-chart-filter-container {
+    display: flex;
+    gap: 16px;
+    align-items: baseline;
+    justify-content: flex-start;
+
+    mat-form-field {
+      width: 300px;
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  :host {
+    .activities-chart-filter-container {
+      flex-direction: column;
+
+      mat-form-field {
+        width: 100%;
+      }
+    }
+  }
+}

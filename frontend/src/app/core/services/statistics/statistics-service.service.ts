@@ -9,6 +9,7 @@ import { ParameterStatisticsResponse } from '../../models/parameter-statistics-m
 import { DrugStatisticsResponse } from '../../models/drug-statistics-model';
 import { StatisticsType } from '../../enums/statistics-type.enum';
 import { Statistics_Type_Init } from '../../constants/statistics-type-init';
+import { ActivityStatisticsResponse } from '../../models/activity-statistics-response.model';
 
 @Injectable({
   providedIn: 'root'
@@ -69,6 +70,13 @@ export class StatisticsServiceService {
     this.setLoadingStatsState(StatisticsType.DRUG, true);
     return this.http.post<DrugStatisticsResponse[]>(`${this.apiUrl}/drugs`, req).pipe(
       finalize(() => this.setLoadingStatsState(StatisticsType.DRUG, false))
+    );
+  }
+
+  getAcitvityStatistics(req: StatisticsRequest): Observable<ActivityStatisticsResponse[]> {
+    this.setLoadingStatsState(StatisticsType.ACTIVITY, true);
+    return this.http.post<ActivityStatisticsResponse[]>(`${this.apiUrl}/activities`, req).pipe(
+      finalize(() => this.setLoadingStatsState(StatisticsType.ACTIVITY, false))
     );
   }
 }

@@ -31,6 +31,8 @@ import { UserActivitiesComponent } from './components/user-activities/user-activ
 import { ActivityTileComponent } from './components/activity-tile/activity-tile.component';
 import { ActivityEditTileComponent } from './components/activity-edit-tile/activity-edit-tile.component';
 import { ManageUserActivityDialogComponent } from './components/manage-user-activity-dialog/manage-user-activity-dialog.component';
+import { ActivityStatisticsComponent } from './components/activity-statistics/activity-statistics.component';
+import { ActivityChartComponent } from './components/activity-statistics/activity-chart/activity-chart.component';
 
 
 @NgModule({
@@ -61,6 +63,8 @@ import { ManageUserActivityDialogComponent } from './components/manage-user-acti
     ActivityTileComponent,
     ActivityEditTileComponent,
     ManageUserActivityDialogComponent,
+    ActivityStatisticsComponent,
+    ActivityChartComponent,
   ],
   imports: [
     CommonModule,

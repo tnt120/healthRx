@@ -1,0 +1,38 @@
+<div class="container">
+  <div class="overall-statistics">
+    <mat-form-field appearance="outline">
+      <mat-label>Zakres</mat-label>
+      <mat-select [(ngModel)]="date().label" placeholder="Parametr" (ngModelChange)="getDateFromLabel()">
+        @for (dateRange of dateRangeOptions; track dateRange.label) {
+          <mat-option [value]="dateRange.value">{{ dateRange.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <app-table
+      [data]="tableData"
+      [columns]="columns"
+      [isSearching]="isStatsLoading$ | async"
+      emptyInfo="Brak danych do wyświetlenia"
+      emptyAdditionalInfo="Zmień kryteria wyszukiwania"
+      [searchable]="false"
+    />
+  </div>
+
+  <div class="chart">
+    <div class="buttons">
+      Wykres
+      <button mat-icon-button (click)="toggleChart()">
+        @if (chartState()) {
+          <mat-icon>remove</mat-icon>
+        } @else {
+          <mat-icon>add</mat-icon>
+        }
+      </button>
+    </div>
+
+    @if (chartState()) {
+      <app-activity-chart></app-activity-chart>
+    }
+  </div>
+</div>

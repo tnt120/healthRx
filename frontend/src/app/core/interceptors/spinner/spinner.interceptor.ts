@@ -18,6 +18,7 @@ export const spinnerInterceptor: HttpInterceptorFn = (req, next) => {
     '/api/statistics/parameters',
     '/api/statistics/drugs',
     '/api/statistics/chart',
+    '/api/statistics/activities',
   ];
 
   const excludeGetUrls = ['/api/activities/user'];
