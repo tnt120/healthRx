@@ -1,0 +1,7 @@
+<div class="photo-button">
+  <input type="file" #backPhoto (change)="onFileSelect($event)" hidden />
+  <button (click)="backPhoto.click()"><p class="subtitle-1 primary-blue">Wybierz zdjęcie <br *ngIf="label()" /> {{ label() ? label() : '' }}</p></button>
+</div>
+<div class="preview-image" *ngIf="imagePreview()">
+  <img [ngClass]="{profile: isProfile()}" [src]="imagePreview()" alt="karta pwz przód" />
+</div>

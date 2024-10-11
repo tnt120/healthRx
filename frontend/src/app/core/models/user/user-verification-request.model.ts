@@ -20,7 +20,4 @@ export interface UserVerificationRequest {
   city?: City;
   numberPWZ?: string;
   numberPESEL?: string;
-  idPhotoFrontUrl?: string;
-  idPhotoBackUrl?: string;
-  profilePictureUrl?: string;
 }

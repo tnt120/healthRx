@@ -2,7 +2,7 @@ import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { catchError, EMPTY, map, Observable, tap, Subscription } from 'rxjs';
+import { catchError, EMPTY, map, Observable, tap, Subscription, mergeMap } from 'rxjs';
 import { StepperOrientation } from '@angular/cdk/stepper';
 import { FormErrorsService } from '../../../../core/services/form-errors/form-errors.service';
 import { UserService } from '../../../../core/services/user/user.service';
@@ -14,6 +14,8 @@ import { UserSummary } from '../../models/user-summary-model';
 import { Sex } from '../../../../core/enums/sex.enum';
 import { CustomSnackbarService } from '../../../../core/services/custom-snackbar/custom-snackbar.service';
 import { DatePipe } from '@angular/common';
+import { ImageType } from '../../../../core/enums/image-type.enum';
+import { ImageService } from '../../../../core/services/image/image.service';
 
 @Component({
   selector: 'app-verification',
@@ -38,6 +40,14 @@ export class VerificationComponent implements OnInit, OnDestroy {
 
   private readonly datePipe = inject(DatePipe);
 
+  private readonly imageService = inject(ImageService);
+
+  previewImage = signal<{ [key in ImageType]: File | null }>({
+    [ImageType.PROFILE]: null,
+    [ImageType.FRONT_PWZ_PHOTO]: null,
+    [ImageType.BACK_PWZ_PHOTO]: null
+  });
+
   personalDataForm = new FormGroup({
     firstName: new FormControl('', Validators.required),
     lastName: new FormControl('', Validators.required),
@@ -61,9 +71,9 @@ export class VerificationComponent implements OnInit, OnDestroy {
     city: new FormControl(null, Validators.required),
     numberPESEL: new FormControl('', Validators.required),
     numberPWZ: new FormControl('', Validators.required),
-    idPhotoFrontUrl: new FormControl('front.jpg', Validators.required),
-    idPhotoBackUrl: new FormControl('back.jpg', Validators.required),
-    profilePictureUrl: new FormControl('profile.jpg', Validators.required),
+    idPhotoFrontUrl: new FormControl<File | null>(null, Validators.required),
+    idPhotoBackUrl: new FormControl<File | null>(null, Validators.required),
+    profilePictureUrl: new FormControl<File | null>(null, Validators.required),
   });
 
   verficationToken = '';
@@ -196,10 +206,7 @@ export class VerificationComponent implements OnInit, OnDestroy {
         specializations: doctorControls.specializations.value!,
         city: doctorControls.city.value!,
         numberPESEL: doctorControls.numberPESEL.value!,
-        numberPWZ: doctorControls.numberPWZ.value!,
-        idPhotoFrontUrl: doctorControls.idPhotoFrontUrl.value!,
-        idPhotoBackUrl: doctorControls.idPhotoBackUrl.value!,
-        profilePictureUrl: doctorControls.profilePictureUrl.value!
+        numberPWZ: doctorControls.numberPWZ.value!
       }
 
       this.userSummary = {...this.userSummary,
@@ -240,7 +247,27 @@ export class VerificationComponent implements OnInit, OnDestroy {
   }
 
   verify() {
-    this.subscription = this.userService.verifyUser(this.userData).subscribe({
+    const verifyUserReq$ = this.userService.verifyUser(this.userData);
+    let uploadImagesReq$: Observable<any> = EMPTY;
+
+    if (this.data.role === Roles.DOCTOR) {
+      const profilePicture = this.doctorPersonalizationForm.controls.profilePictureUrl.value!;
+      const idPhotoFront = this.doctorPersonalizationForm.controls.idPhotoFrontUrl.value!;
+      const idPhotoBack = this.doctorPersonalizationForm.controls.idPhotoBackUrl.value!;
+      const types = [ImageType.PROFILE, ImageType.FRONT_PWZ_PHOTO, ImageType.BACK_PWZ_PHOTO];
+      const files = [profilePicture, idPhotoFront, idPhotoBack];
+      uploadImagesReq$ = this.imageService.uploadPhotos(types, files, this.data.userEmail);
+    }
+
+    this.subscription = verifyUserReq$.pipe(
+      mergeMap(() => uploadImagesReq$),
+      catchError(err => {
+        const message = this.errorCodesService.getErrorMessage(err.error.code);
+        this.errorMessage.set(message);
+
+        return EMPTY;
+      })
+    ).subscribe({
       next: () => {
         this.customSnackbarService.openCustomSnackbar({ title: 'Weryfikacja', message: 'Konto zostało zweryfikowane. Możesz się zalogować', type: 'success', duration: 5000 });
         this.router.navigate(['/login']);
@@ -249,6 +276,25 @@ export class VerificationComponent implements OnInit, OnDestroy {
         const message = this.errorCodesService.getErrorMessage(err.error.code);
         this.errorMessage.set(message);
       }
-    })
+    });
+  }
+
+  changePhoto(event: { file: File, preview: string }, type: string) {
+    this.previewImage.update(images => ({
+      ...images,
+      [type]: event.preview
+    }));
+
+    switch (type) {
+      case ImageType.PROFILE:
+        this.doctorPersonalizationForm.controls.profilePictureUrl.setValue(event.file);
+        break;
+      case ImageType.FRONT_PWZ_PHOTO:
+        this.doctorPersonalizationForm.controls.idPhotoFrontUrl.setValue(event.file);
+        break;
+      case ImageType.BACK_PWZ_PHOTO:
+        this.doctorPersonalizationForm.controls.idPhotoBackUrl.setValue(event.file);
+        break;
+    }
   }
 }

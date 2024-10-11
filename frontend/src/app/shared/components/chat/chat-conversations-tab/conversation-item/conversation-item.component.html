@@ -2,7 +2,7 @@
   <div class="user-message-container">
     <div class="image">
       <div *ngIf="conversation()?.lastMessage && conversation().lastMessage.receiverId === chatUser().id && !conversation().lastMessage.isRead" class="unread"></div>
-      <img src="../../../../../../assets/images/user.png" alt="avatar" />
+      <img [src]="'data:image/jpeg;base64 ,' + conversation().user.pictureUrl" alt="avatar" />
     </div>
     <div class="info">
       <p class="fullname subtitle-2">{{ conversation().user.firstName }} {{ conversation().user.lastName }}</p>

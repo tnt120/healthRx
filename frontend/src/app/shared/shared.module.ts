@@ -34,6 +34,7 @@ import { ConversationItemComponent } from './components/chat/chat-conversations-
 import { MessagesContainerComponent } from './components/chat/messages-container/messages-container.component';
 import { LineChartComponent } from './components/line-chart/line-chart.component';
 import { BarChartComponent } from './components/bar-chart/bar-chart.component';
+import { ChoosePhotoButtonComponent } from './components/choose-photo-button/choose-photo-button.component';
 
 @NgModule({
   declarations: [
@@ -70,6 +71,7 @@ import { BarChartComponent } from './components/bar-chart/bar-chart.component';
     MessagesContainerComponent,
     LineChartComponent,
     BarChartComponent,
+    ChoosePhotoButtonComponent,
   ],
   imports: [
     CommonModule,
@@ -92,7 +94,8 @@ import { BarChartComponent } from './components/bar-chart/bar-chart.component';
     FriendshipFilterPanelComponent,
     ChatComponent,
     LineChartComponent,
-    BarChartComponent
+    BarChartComponent,
+    ChoosePhotoButtonComponent,
   ]
 })
 export class SharedModule { }

@@ -138,9 +138,14 @@
                   </mat-form-field>
                   <div class="heading">
                     <h4>Zdjęcia uprawnień lekarskich</h4>
+                    <div class="photos">
+                      <app-choose-photo-button label="(Przód)" (photoChange)="changePhoto($event, 'FRONT_PWZ_PHOTO')"></app-choose-photo-button>
+                      <app-choose-photo-button label="(Tył)" (photoChange)="changePhoto($event, 'BACK_PWZ_PHOTO')"></app-choose-photo-button>
+                    </div>
                   </div>
                   <div class="heading">
                     <h4>Zdjęcie profilowe lekarza</h4>
+                    <app-choose-photo-button [isProfile]="true" (photoChange)="changePhoto($event, 'PROFILE')"></app-choose-photo-button>
                   </div>
                 </form>
                 <div class="stepper-buttons">
@@ -233,22 +238,21 @@
                 <app-text-summary-row [title]="summary.title" [value]="summary.value"></app-text-summary-row>
               }
             </div>
-            <!-- @if () -->
-            <div class="heading">
-              <h4>Wybrane parametry do monitorowania</h4>
-            </div>
-            <div class="parameters-container">
-              @if (userData.parameters && userData.parameters.length === 0) {
-                <p>Brak wybranych parametrów</p>
-              } @else {
-                <div class="parameters-form">
-                  @for (parameter of userData.parameters; track parameter.id) {
-                    <app-parameter-tail [control]="null" [parameter]="parameter"></app-parameter-tail>
-                  }
-                </div>
-              }
-            </div>
             @if (userSummary.userNotifications) {
+              <div class="heading">
+                <h4>Wybrane parametry do monitorowania</h4>
+              </div>
+              <div class="parameters-container">
+                @if (userData.parameters && userData.parameters.length === 0) {
+                  <p>Brak wybranych parametrów</p>
+                } @else {
+                  <div class="parameters-form">
+                    @for (parameter of userData.parameters; track parameter.id) {
+                      <app-parameter-tail [control]="null" [parameter]="parameter"></app-parameter-tail>
+                    }
+                  </div>
+                }
+              </div>
               <div class="heading">
                 <h4>Powiadomienia dla parametrów</h4>
               </div>
@@ -269,8 +273,19 @@
               <div class="heading">
                 <h4>Dokument potwierdzający prawo do wykonywania zawodu</h4>
               </div>
+              <div class="photos">
+                <div class="photo">
+                  <img [src]="previewImage().FRONT_PWZ_PHOTO" alt="front" />
+                </div>
+                <div class="photo">
+                  <img [src]="previewImage().BACK_PWZ_PHOTO" alt="back" />
+                </div>
+              </div>
               <div class="heading">
                 <h4>Zdjęcie profilowe</h4>
+              </div>
+              <div class="photo">
+                <img [src]="previewImage().PROFILE" alt="profile" class="profile" />
               </div>
             }
             <div class="stepper-buttons">

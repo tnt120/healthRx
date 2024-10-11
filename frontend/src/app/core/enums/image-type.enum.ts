@@ -1,0 +1,5 @@
+export enum ImageType {
+  PROFILE = 'PROFILE',
+  FRONT_PWZ_PHOTO = 'FRONT_PWZ_PHOTO',
+  BACK_PWZ_PHOTO = 'BACK_PWZ_PHOTO',
+}
