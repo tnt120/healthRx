@@ -31,6 +31,7 @@ public class SecurityConfig {
                                 "/api/auth/**",
                                 "/api/user/verification",
                                 "/api/user/getVerificationData",
+                                "/api/image",
                                 "/v2/api-docs",
                                 "/v3/api-docs",
                                 "/v3/api-docs/**",

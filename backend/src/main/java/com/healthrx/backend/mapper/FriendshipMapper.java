@@ -6,6 +6,7 @@ import com.healthrx.backend.api.external.chat.ConversationDTO;
 import com.healthrx.backend.api.external.invitation.FriendshipResponse;
 import com.healthrx.backend.api.internal.User;
 import com.healthrx.backend.api.internal.chat.Friendship;
+import com.healthrx.backend.security.aes.AesHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +20,7 @@ public class FriendshipMapper {
                 .id(user.getId())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
-                .pictureUrl(user.getPictureUrl())
+                .pictureUrl(AesHandler.decrypt(user.getProfilePicture().getContent()))
                 .build();
     }
 

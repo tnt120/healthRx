@@ -33,12 +33,14 @@ public class User implements UserDetails {
     private String email;
     @Column(nullable = false)
     private String password;
-    private String pictureUrl;
     private String firstName;
     private String lastName;
     private String phoneNumber;
     private LocalDate birthDate;
     private Double height;
+
+    @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private Image profilePicture;
 
     @Enumerated(EnumType.STRING)
     private Role role;

@@ -22,5 +22,5 @@ public class UserResponse {
     private String phoneNumber;
     private Double height;
     private String role;
-    private String pictureUrl;
+    private byte[] pictureUrl;
 }

@@ -18,5 +18,5 @@ public class DoctorResponse {
     private List<SpecializationDTO> specializations;
     private CityDTO city;
     private String numberPWZ;
-    private String pictureUrl;
+    private byte[] pictureUrl;
 }

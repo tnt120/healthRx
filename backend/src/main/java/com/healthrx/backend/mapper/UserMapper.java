@@ -12,7 +12,7 @@ public class UserMapper {
                 .email(user.getEmail())
                 .firstName(user.getFirstName())
                 .role(user.getRole().name())
-                .pictureUrl(user.getPictureUrl())
+//                .pictureUrl(user.getPictureUrl())
                 .build();
     }
 

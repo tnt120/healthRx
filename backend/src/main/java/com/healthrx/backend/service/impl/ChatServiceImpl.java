@@ -14,6 +14,7 @@ import com.healthrx.backend.repository.UserRepository;
 import com.healthrx.backend.service.ChatService;
 import com.healthrx.backend.specification.FriendshipSpecification;
 import com.healthrx.backend.specification.MessageSpecification;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -92,6 +93,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
+    @Transactional
     public List<ConversationDTO> getConversations() {
         User user = principalSupplier.get();
 

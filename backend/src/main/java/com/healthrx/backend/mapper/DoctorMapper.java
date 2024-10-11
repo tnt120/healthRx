@@ -4,6 +4,7 @@ import com.healthrx.backend.api.external.DoctorResponse;
 import com.healthrx.backend.api.internal.DoctorDetails;
 import com.healthrx.backend.api.internal.Specialization;
 import com.healthrx.backend.api.internal.User;
+import com.healthrx.backend.security.aes.AesHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +24,7 @@ public class DoctorMapper {
                 .specializations(specializations.stream().map(specializationMapper::map).toList())
                 .city(cityMapper.map(doctorDetails.getCity()))
                 .numberPWZ(doctorDetails.getNumberPWZ())
-                .pictureUrl(user.getPictureUrl())
+                .pictureUrl(AesHandler.decrypt(user.getProfilePicture().getContent()))
                 .build();
     }
 }

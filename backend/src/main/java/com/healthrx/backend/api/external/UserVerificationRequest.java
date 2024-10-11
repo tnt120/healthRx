@@ -31,8 +31,8 @@ public class UserVerificationRequest {
     private List<SpecializationDTO> specializations;
     private String numberPWZ;
     private String numberPESEL;
-    private String idPhotoFrontUrl;
-    private String idPhotoBackUrl;
-    private String profilePictureUrl;
+    private byte[] backPWZPhoto;
+    private byte[] frontPWZPhoto;
+    private byte[] profilePicture;
     private CityDTO city;
 }

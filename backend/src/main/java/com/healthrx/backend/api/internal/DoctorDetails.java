@@ -22,8 +22,12 @@ public class DoctorDetails {
 
     private String numberPWZ;
     private String numberPESEL;
-    private String idPhotoFrontUrl;
-    private String idPhotoBackUrl;
+
+    @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private Image frontPwzCardImage;
+
+    @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private Image backPwzCardImage;
 
     @ManyToOne
     @JoinColumn(name = "city_id")

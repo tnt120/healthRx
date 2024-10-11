@@ -238,12 +238,9 @@ public class UserServiceImpl implements UserService {
                     .setUser(user)
                     .setNumberPWZ(request.getNumberPWZ())
                     .setNumberPESEL(request.getNumberPESEL())
-                    .setIdPhotoFrontUrl(request.getIdPhotoFrontUrl())
-                    .setIdPhotoBackUrl(request.getIdPhotoBackUrl())
                     .setCity(city);
 
             user.setDoctorDetails(doctorDetails);
-            user.setPictureUrl(request.getProfilePictureUrl());
 
             request.getSpecializations().forEach(specialization -> {
                 DoctorSpecialization doctorSpecialization = new DoctorSpecialization()

@@ -10,6 +10,7 @@ import com.healthrx.backend.repository.DoctorSpecializationRepository;
 import com.healthrx.backend.repository.UserRepository;
 import com.healthrx.backend.service.DoctorService;
 import com.healthrx.backend.specification.DoctorSpecification;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,6 +34,7 @@ public class DoctorServiceImpl implements DoctorService {
     private final Supplier<User> principalSupplier;
 
     @Override
+    @Transactional
     public PageResponse<DoctorResponse> getDoctors(Integer page, Integer size, String sortBy, String order, String firstName, String lastName, String specializationId, String cityId) {
         User user = principalSupplier.get();
 

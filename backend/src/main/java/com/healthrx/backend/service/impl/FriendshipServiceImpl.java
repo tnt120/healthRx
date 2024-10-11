@@ -41,6 +41,7 @@ public class FriendshipServiceImpl implements FriendshipService {
     private final FriendshipMapper friendshipMapper;
 
     @Override
+    @Transactional
     public List<FriendshipResponse> getFriendships(FriendshipStatus status) {
         User user = principalSupplier.get();
 
@@ -84,6 +85,7 @@ public class FriendshipServiceImpl implements FriendshipService {
     }
 
     @Override
+    @Transactional
     public PageResponse<FriendshipResponse> getFriendships(Integer page, Integer size, String sortBy, String order, String firstName, String lastName) {
         User user = principalSupplier.get();
 
