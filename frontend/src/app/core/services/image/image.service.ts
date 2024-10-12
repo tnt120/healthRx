@@ -24,4 +24,8 @@ export class ImageService {
 
     return this.http.post<ImageResponse>(`${this.apiUrl}`, formData);
   }
+
+  getProfilePicture(): Observable<ImageResponse> {
+    return this.http.get<ImageResponse>(`${this.apiUrl}/profile`);
+  }
 }

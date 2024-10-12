@@ -35,6 +35,7 @@ import { MessagesContainerComponent } from './components/chat/messages-container
 import { LineChartComponent } from './components/line-chart/line-chart.component';
 import { BarChartComponent } from './components/bar-chart/bar-chart.component';
 import { ChoosePhotoButtonComponent } from './components/choose-photo-button/choose-photo-button.component';
+import { ProfilePictureChangeComponent } from './components/settings/profile-picture-change/profile-picture-change.component';
 
 @NgModule({
   declarations: [
@@ -72,6 +73,7 @@ import { ChoosePhotoButtonComponent } from './components/choose-photo-button/cho
     LineChartComponent,
     BarChartComponent,
     ChoosePhotoButtonComponent,
+    ProfilePictureChangeComponent,
   ],
   imports: [
     CommonModule,

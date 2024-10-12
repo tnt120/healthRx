@@ -1,0 +1,5 @@
+<app-choose-photo-button [isProfile]="true" [imagePreview]="profilePicturePreview()" (photoChange)="changePicture($event)"></app-choose-photo-button>
+<div class="buttons">
+  <button mat-raised-button (click)="onReset()"><p>Resetuj</p></button>
+  <button mat-flat-button [disabled]="!pictureForUpdate()" (click)="onSave()"><p>Zapisz</p></button>
+</div>

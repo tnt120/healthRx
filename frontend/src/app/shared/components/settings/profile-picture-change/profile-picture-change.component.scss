@@ -1,0 +1,17 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+
+  .buttons {
+    display: flex;
+    gap: 1rem;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  :host {
+    align-items: center;
+  }
+}

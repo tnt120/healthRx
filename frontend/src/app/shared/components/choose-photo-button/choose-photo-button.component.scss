@@ -4,8 +4,9 @@
   display: flex;
   gap: 1rem;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-evenly;
   width: 100%;
+  max-width: 550px;
   height: 235px;
   padding: 40px;
 
