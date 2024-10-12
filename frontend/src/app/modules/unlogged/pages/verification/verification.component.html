@@ -156,7 +156,7 @@
             </div>
           </mat-step>
         } @else {
-          <mat-step label="Personalizacja" [editable]="true">
+          <mat-step [stepControl]="userPersonalizationForm" label="Personalizacja" [editable]="true">
             <div class="step-container">
               <form [formGroup]="userPersonalizationForm">
                 <div class="heading">
@@ -169,7 +169,7 @@
                 </div>
                 <div class="heading">
                   <h4>Uzpełnij swój wzrost</h4>
-                  <p><i>Opcjonalne</i></p>
+                  <p><i>Wymagane</i></p>
                 </div>
                 <div>
                   <mat-form-field appearance="outline">
@@ -180,9 +180,10 @@
                       placeholder="Wzrost [cm]"
                       formControlName="height"
                       min="100"
+                      max="300"
                     />
                     @if (userPersonalizationForm.controls.height.invalid) {
-                      <mat-error>Minimalny wzrost: 100 cm</mat-error>
+                      <mat-error>Akceptowany wzrost pomiędzy: 100-300 cm</mat-error>
                     }
                   </mat-form-field>
                 </div>
@@ -220,10 +221,15 @@
                   <h4>Czy chcesz otrzymywać powiadomienia o zażyciu leku z priorytetem wysokim?</h4>
                 </div>
                 <mat-slide-toggle formControlName="isDrugNotificationsEnabled">{{ userPersonalizationForm.get('isDrugNotificationsEnabled')?.value ? 'Tak' : 'Nie' }}</mat-slide-toggle>
+                <div class="heading">
+                  <h4>Zdjęcie profilowe</h4>
+                  <p><i>Opcjonalne</i></p>
+                </div>
+                <app-choose-photo-button [isProfile]="true" (photoChange)="changePhoto($event, 'USER_PROFILE')"></app-choose-photo-button>
               </form>
               <div class="stepper-buttons">
                 <button mat-stroked-button matStepperPrevious>Wróć</button>
-                <button mat-flat-button matStepperNext (click)="prepareData()">Dalej</button>
+                <button mat-flat-button matStepperNext [disabled]="userPersonalizationForm.invalid" (click)="prepareData()">Dalej</button>
               </div>
             </div>
           </mat-step>
@@ -261,6 +267,16 @@
                   <app-text-summary-row [title]="summary.title" [value]="summary.value"></app-text-summary-row>
                 }
               </div>
+              <div class="heading">
+                <h4>Zdjęcie profilowe</h4>
+              </div>
+              @if (previewImage().PROFILE) {
+                <div *ngIf="previewImage().PROFILE" class="photo">
+                  <img [src]="previewImage().PROFILE" alt="profile" class="profile" />
+                </div>
+              } @else {
+                <p class="center">Brak zdjęcia profilowego</p>
+              }
             } @else {
               <div class="heading">
                 <h4>Informacje szczegółowe lekarza</h4>

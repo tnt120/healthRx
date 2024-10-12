@@ -18,7 +18,7 @@ export function forbiddenNameValidator(type: keyof ForbiddenRegex): ValidatorFn 
         regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$/;
         break;
       case 'onlyLetters':
-        regex = /^[a-zA-Z]+$/;
+        regex = /^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+$/;
         break;
       case 'phoneNumber':
         regex = /^(?:\d{9}|\+\d{11})$/;

@@ -2,7 +2,7 @@ import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { catchError, EMPTY, map, Observable, tap, Subscription, mergeMap } from 'rxjs';
+import { catchError, EMPTY, map, Observable, tap, Subscription, mergeMap, of } from 'rxjs';
 import { StepperOrientation } from '@angular/cdk/stepper';
 import { FormErrorsService } from '../../../../core/services/form-errors/form-errors.service';
 import { UserService } from '../../../../core/services/user/user.service';
@@ -58,12 +58,13 @@ export class VerificationComponent implements OnInit, OnDestroy {
 
   userPersonalizationForm = new FormGroup({
     parameters: new FormGroup({}),
-    height: new FormControl(null),
+    height: new FormControl(null, [Validators.required, Validators.min(100), Validators.max(300)]),
     isParametersNotifications: new FormControl(false),
     parametersNotificationsHour: new FormControl('18'),
     parametersNotificationsMinute: new FormControl('00'),
     isBadResultsNotificationsEnabled: new FormControl(false),
     isDrugNotificationsEnabled: new FormControl(false),
+    profilePicture: new FormControl<File | null>(null),
   });
 
   doctorPersonalizationForm = new FormGroup({
@@ -248,7 +249,7 @@ export class VerificationComponent implements OnInit, OnDestroy {
 
   verify() {
     const verifyUserReq$ = this.userService.verifyUser(this.userData);
-    let uploadImagesReq$: Observable<any> = EMPTY;
+    let uploadImagesReq$: Observable<any> = of(null);
 
     if (this.data.role === Roles.DOCTOR) {
       const profilePicture = this.doctorPersonalizationForm.controls.profilePictureUrl.value!;
@@ -257,7 +258,13 @@ export class VerificationComponent implements OnInit, OnDestroy {
       const types = [ImageType.PROFILE, ImageType.FRONT_PWZ_PHOTO, ImageType.BACK_PWZ_PHOTO];
       const files = [profilePicture, idPhotoFront, idPhotoBack];
       uploadImagesReq$ = this.imageService.uploadPhotos(types, files, this.data.userEmail);
+    } else {
+      if (this.userPersonalizationForm.controls.profilePicture?.value) {
+        const profilePicture = this.userPersonalizationForm.controls.profilePicture.value!;
+        uploadImagesReq$ = this.imageService.uploadPhotos([ImageType.PROFILE], [profilePicture], this.data.userEmail);
+      }
     }
+    
 
     this.subscription = verifyUserReq$.pipe(
       mergeMap(() => uploadImagesReq$),
@@ -280,9 +287,12 @@ export class VerificationComponent implements OnInit, OnDestroy {
   }
 
   changePhoto(event: { file: File, preview: string }, type: string) {
+    let photoType = type as ImageType;
+    if (type === 'USER_PROFILE') photoType = ImageType.PROFILE;
+
     this.previewImage.update(images => ({
       ...images,
-      [type]: event.preview
+      [photoType]: event.preview
     }));
 
     switch (type) {
@@ -294,6 +304,9 @@ export class VerificationComponent implements OnInit, OnDestroy {
         break;
       case ImageType.BACK_PWZ_PHOTO:
         this.doctorPersonalizationForm.controls.idPhotoBackUrl.setValue(event.file);
+        break;
+      case 'USER_PROFILE':
+        this.userPersonalizationForm.controls.profilePicture.setValue(event.file);
         break;
     }
   }
