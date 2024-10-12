@@ -13,11 +13,14 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.TimeToLive;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 
 import static com.healthrx.backend.handler.BusinessErrorCodes.DOCTOR_DETAILS_NOT_FOUND;
 import static com.healthrx.backend.handler.BusinessErrorCodes.USER_NOT_FOUND;
@@ -29,6 +32,7 @@ public class ImageService {
     private final UserRepository userRepository;
     private final DoctorDetailsRepository doctorDetailsRepository;
     private final ImageRepository imageRepository;
+    private final Supplier<User> principalSupplier;
 
     @SneakyThrows
     @Transactional
@@ -48,6 +52,21 @@ public class ImageService {
         }
 
         return res;
+    }
+
+    @Transactional
+    public ImageResponse getProfilePicture() {
+        User user = principalSupplier.get();
+
+        Image image = null;
+        if (user.getProfilePicture() != null){
+            image = imageRepository.findById(user.getProfilePicture().getId()).orElse(null);
+        }
+
+        return ImageResponse.builder()
+                .imageType(ImageType.PROFILE)
+                .image(image != null ? AesHandler.decrypt(image.getContent()): null)
+                .build();
     }
 
     private void handleSaveImage(User user, ImageType type, byte[] content) {
