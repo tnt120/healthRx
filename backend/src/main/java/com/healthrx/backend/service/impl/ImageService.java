@@ -69,6 +69,17 @@ public class ImageService {
                 .build();
     }
 
+    public Void deleteProfilePicture() {
+        User user = principalSupplier.get();
+        Image profilePicture = user.getProfilePicture();
+        if (profilePicture != null) {
+            user.setProfilePicture(null);
+            userRepository.save(user);
+            imageRepository.delete(profilePicture);
+        }
+        return null;
+    }
+
     private void handleSaveImage(User user, ImageType type, byte[] content) {
         byte[] encryptedContent = AesHandler.encrypt(content);
 
