@@ -20,7 +20,7 @@ public class FriendshipMapper {
                 .id(user.getId())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
-                .pictureUrl(AesHandler.decrypt(user.getProfilePicture().getContent()))
+                .pictureUrl(user.getProfilePicture() != null ? AesHandler.decrypt(user.getProfilePicture().getContent()) : null)
                 .build();
     }
 

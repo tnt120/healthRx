@@ -1,5 +1,5 @@
 import { Subscription } from 'rxjs';
-import { Component, HostBinding, inject, input, model, OnDestroy, output } from '@angular/core';
+import { Component, HostBinding, inject, input, model, OnDestroy, OnInit, output, signal } from '@angular/core';
 import { FriendshipResponse } from '../../../core/models/friendship-response.model';
 import { FriendshipService } from '../../../core/services/friendship/friendship.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -11,7 +11,7 @@ import { ConfirmationDialogComponent, ConfirmationDialogData } from '../confirma
   templateUrl: './friendship-card.component.html',
   styleUrl: './friendship-card.component.scss'
 })
-export class FriendshipCardComponent implements OnDestroy {
+export class FriendshipCardComponent implements OnInit, OnDestroy {
   private readonly friendshipService = inject(FriendshipService);
 
   private readonly dialog = inject(MatDialog);
@@ -28,6 +28,14 @@ export class FriendshipCardComponent implements OnDestroy {
   emitResend = output<string>();
 
   subscriptions: Subscription[] = [];
+
+  profilePicture = signal<string>('../../../../../assets/images/user.png');
+
+  ngOnInit(): void {
+    if (this.friendship().user?.pictureUrl) {
+      this.profilePicture.set('data:image/jpeg;base64 ,' + this.friendship().user.pictureUrl);
+    }
+  }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());

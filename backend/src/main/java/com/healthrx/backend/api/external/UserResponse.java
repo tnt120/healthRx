@@ -1,5 +1,6 @@
 package com.healthrx.backend.api.external;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.healthrx.backend.api.internal.enums.Sex;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,5 +23,6 @@ public class UserResponse {
     private String phoneNumber;
     private Double height;
     private String role;
+    @JsonInclude
     private byte[] pictureUrl;
 }

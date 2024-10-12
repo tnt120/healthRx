@@ -2,7 +2,7 @@
   @if (conversation()) {
     <div class="top-bar">
       <div class="image">
-        <img [src]="'data:image/jpeg;base64 ,' + conversation()?.user?.pictureUrl" alt="profile-picture">
+        <img [src]="profilePicture()" alt="profile-picture">
       </div>
       <h3>{{ conversation()?.user?.firstName }} {{ conversation()?.user?.lastName }}</h3>
     </div>
@@ -21,7 +21,7 @@
             @if (message?.senderId !== chatUser().id) {
               <div class="image">
                 <img
-                [src]="'data:image/jpeg;base64 ,' + conversation()?.user?.pictureUrl"
+                [src]="profilePicture()"
                 alt="profile-picture"
                 *ngIf="conversation()?.messages?.[i-1]?.senderId !== message?.senderId"
                 >

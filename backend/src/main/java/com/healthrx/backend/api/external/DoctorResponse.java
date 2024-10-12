@@ -1,5 +1,6 @@
 package com.healthrx.backend.api.external;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,5 +19,6 @@ public class DoctorResponse {
     private List<SpecializationDTO> specializations;
     private CityDTO city;
     private String numberPWZ;
+    @JsonInclude
     private byte[] pictureUrl;
 }

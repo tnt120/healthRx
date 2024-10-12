@@ -24,7 +24,7 @@ public class DoctorMapper {
                 .specializations(specializations.stream().map(specializationMapper::map).toList())
                 .city(cityMapper.map(doctorDetails.getCity()))
                 .numberPWZ(doctorDetails.getNumberPWZ())
-                .pictureUrl(AesHandler.decrypt(user.getProfilePicture().getContent()))
+                .pictureUrl(user.getProfilePicture() != null ? AesHandler.decrypt(user.getProfilePicture().getContent()) : null)
                 .build();
     }
 }

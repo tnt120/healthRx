@@ -19,8 +19,14 @@ export class DoctorCardComponent implements OnInit, OnDestroy {
 
   subscriptions: Subscription[] = [];
 
+  profilePicture = signal<string>('../../../../../assets/images/user.png');
+
   ngOnInit(): void {
     this.doctor.set({...this.doctor()});
+
+    if (this.doctor()?.pictureUrl) {
+      this.profilePicture.set('data:image/jpeg;base64 ,' + this.doctor().pictureUrl);
+    }
   }
 
   ngOnDestroy(): void {

@@ -1,6 +1,6 @@
 <div class="doctor-info-container">
   <div class="image">
-    <img [src]="'data:image/jpeg;base64 ,' + doctor().pictureUrl" alt="doctor">
+    <img [src]="profilePicture()" alt="doctor">
   </div>
   <h3 #name [matTooltip]="doctor().firstName + ' ' + doctor().lastName" [matTooltipDisabled]="isOverflow(name)">{{ doctor().firstName + ' ' + doctor().lastName }}</h3>
   <div class="details-container">

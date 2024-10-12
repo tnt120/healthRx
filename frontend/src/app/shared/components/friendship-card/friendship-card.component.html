@@ -8,7 +8,7 @@
   </mat-menu>
 }
 <div class="image">
-  <img [src]="'data:image/jpeg;base64 ,' + friendship().user.pictureUrl" alt="user">
+  <img [src]="profilePicture()" alt="user">
 </div>
 <h3 #name [matTooltip]="friendship().user.firstName + ' ' + friendship().user.lastName" [matTooltipDisabled]="isOverflow(name)">
   <span *ngIf="!isDoctor()">lek. </span> {{ friendship().user.firstName + ' ' + friendship().user.lastName }}
