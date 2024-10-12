@@ -28,4 +28,8 @@ export class ImageService {
   getProfilePicture(): Observable<ImageResponse> {
     return this.http.get<ImageResponse>(`${this.apiUrl}/profile`);
   }
+
+  deleteProfilePicture(): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/profile`);
+  }
 }

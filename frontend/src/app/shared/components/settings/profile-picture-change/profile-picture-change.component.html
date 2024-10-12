@@ -2,4 +2,5 @@
 <div class="buttons">
   <button mat-raised-button (click)="onReset()"><p>Resetuj</p></button>
   <button mat-flat-button [disabled]="!pictureForUpdate()" (click)="onSave()"><p>Zapisz</p></button>
+  <button *ngIf="currPicturePreview()" mat-raised-button (click)="onDelete()"><p class="red">Usuń profilowe</p></button>
 </div>

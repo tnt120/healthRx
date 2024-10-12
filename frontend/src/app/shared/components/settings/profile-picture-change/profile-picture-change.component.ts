@@ -54,7 +54,7 @@ export class ProfilePictureChangeComponent implements OnInit, OnDestroy {
     if (this.pictureForUpdate() && this.userProfileData()?.email){
       this.subscriptions.push(
         this.imageService.uploadPhotos([ImageType.PROFILE], [this.pictureForUpdate()!], this.userProfileData()?.email!).subscribe({
-          next : res => {
+          next : () => {
             this.currPicturePreview.set(this.profilePicturePreview());
             this.pictureForUpdate.set(null);
             this.customSnackbarService.openCustomSnackbar({ title: 'Sukces', message: 'Pomyślnie zaktualizowano zdjęcie profilowe.', type: 'success', duration: 2500 });
@@ -65,5 +65,21 @@ export class ProfilePictureChangeComponent implements OnInit, OnDestroy {
         })
       );
     }
+  }
+
+  onDelete(): void {
+    this.subscriptions.push(
+      this.imageService.deleteProfilePicture().subscribe({
+        next: () => {
+          this.currPicturePreview.set(null);
+          this.profilePicturePreview.set(null);
+          this.pictureForUpdate.set(null);
+          this.customSnackbarService.openCustomSnackbar({ title: 'Sukces', message: 'Pomyślnie usunięto zdjęcie profilowe.', type: 'success', duration: 2500 });
+        },
+        error: () => {
+          this.customSnackbarService.openCustomSnackbar({ title: 'Błąd', message: 'Wystąpił błąd podczas usuwania zdjęcia profilowego.', type: 'error', duration: 2500 });
+        }
+      })
+    );
   }
 }
