@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { adminGuard, doctorGuard, notAuthorizedGuard, userGuard } from './core/guards/roleFactory/role-factory.guard';
+import { adminOrHeadAdminGuard, doctorGuard, notAuthorizedGuard, userGuard } from './core/guards/roleFactory/role-factory.guard';
 
 const routes: Routes = [
   {
@@ -21,7 +21,7 @@ const routes: Routes = [
   {
     path: 'admin',
     loadChildren: () => import('./modules/admin/admin.module').then(m => m.AdminModule),
-    canActivate: [adminGuard]
+    canActivate: [adminOrHeadAdminGuard]
   },
   {
     path: '**',

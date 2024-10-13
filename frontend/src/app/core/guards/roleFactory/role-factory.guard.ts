@@ -46,6 +46,19 @@ export const notAuthorizedGuard: CanActivateFn = (route, state) => {
 };
 
 export const userGuard: CanActivateFn = roleFactoryGuard(Roles.USER);
-export const adminGuard: CanActivateFn = roleFactoryGuard(Roles.ADMIN);
-export const headAdminGuard: CanActivateFn = roleFactoryGuard(Roles.HEAD_ADMIN);
 export const doctorGuard: CanActivateFn = roleFactoryGuard(Roles.DOCTOR);
+
+export const adminOrHeadAdminGuard: CanActivateFn = (route, state) => {
+  const router = inject(Router);
+  const store = inject(Store);
+
+  return store.select('user').pipe(
+    map((user) => {
+      if (user.role === Roles.ADMIN || user.role === Roles.HEAD_ADMIN) {
+        return true;
+      }
+      router.navigate(['/login']);
+      return false;
+    })
+  )
+};
