@@ -1,5 +1,6 @@
 package com.healthrx.backend.service.impl;
 
+import com.healthrx.backend.api.external.image.ImageRequest;
 import com.healthrx.backend.api.external.image.ImageResponse;
 import com.healthrx.backend.api.internal.DoctorDetails;
 import com.healthrx.backend.api.internal.Image;
@@ -53,18 +54,46 @@ public class ImageService {
     }
 
     @Transactional
-    public ImageResponse getProfilePicture() {
+    public List<ImageResponse> getPictures(ImageRequest req) {
         User user = principalSupplier.get();
 
-        Image image = null;
-        if (user.getProfilePicture() != null){
-            image = imageRepository.findById(user.getProfilePicture().getId()).orElse(null);
-        }
+        List<ImageResponse> res = new ArrayList<>();
 
-        return ImageResponse.builder()
-                .imageType(ImageType.PROFILE)
-                .image(image != null ? AesHandler.decrypt(image.getContent()): null)
-                .build();
+        req.getImageTypes().forEach(type -> {
+            switch (type) {
+                case PROFILE -> {
+                    if (user.getProfilePicture() != null){
+                        Image image = imageRepository.findById(user.getProfilePicture().getId()).orElse(null);
+                        res.add(ImageResponse.builder()
+                                .imageType(ImageType.PROFILE)
+                                .image(image != null ? AesHandler.decrypt(image.getContent()): null)
+                                .build());
+                    }
+                }
+                case FRONT_PWZ_PHOTO -> {
+                    DoctorDetails doctorDetails = doctorDetailsRepository.findByUserId(user.getId()).orElseThrow(DOCTOR_DETAILS_NOT_FOUND::getError);
+                    if (doctorDetails.getFrontPwzCardImage() != null){
+                        Image image = imageRepository.findById(doctorDetails.getFrontPwzCardImage().getId()).orElse(null);
+                        res.add(ImageResponse.builder()
+                                .imageType(ImageType.FRONT_PWZ_PHOTO)
+                                .image(image != null ? AesHandler.decrypt(image.getContent()): null)
+                                .build());
+                    }
+                }
+                case BACK_PWZ_PHOTO -> {
+                    DoctorDetails doctorDetails = doctorDetailsRepository.findByUserId(user.getId()).orElseThrow(DOCTOR_DETAILS_NOT_FOUND::getError);
+                    if (doctorDetails.getBackPwzCardImage() != null){
+                        Image image = imageRepository.findById(doctorDetails.getBackPwzCardImage().getId()).orElse(null);
+                        res.add(ImageResponse.builder()
+                                .imageType(ImageType.BACK_PWZ_PHOTO)
+                                .image(image != null ? AesHandler.decrypt(image.getContent()): null)
+                                .build());
+                    }
+                }
+            }
+        });
+
+        return res;
     }
 
     public Void deleteProfilePicture() {

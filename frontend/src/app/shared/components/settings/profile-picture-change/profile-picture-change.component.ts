@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { ImageType } from '../../../../core/enums/image-type.enum';
 import { UserResponse } from '../../../../core/models/user/user-response.model';
 import { CustomSnackbarService } from '../../../../core/services/custom-snackbar/custom-snackbar.service';
+import { ImageRequest } from '../../../../core/models/image-request.model';
 
 @Component({
   selector: 'app-profile-picture-change',
@@ -20,17 +21,21 @@ export class ProfilePictureChangeComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
 
   pictureForUpdate = signal<File | null>(null);
-  
+
   profilePicturePreview = signal<string | null>(null);
 
   currPicturePreview = signal<string | null>(null);
 
   ngOnInit(): void {
+    const req: ImageRequest = {
+      imageTypes: [ImageType.PROFILE]
+    }
+
     this.subscriptions.push(
-      this.imageService.getProfilePicture().subscribe(res => {
-        if (res.image) {
-          this.currPicturePreview.set('data:image/jpeg;base64 ,' + res.image);
-          this.profilePicturePreview.set('data:image/jpeg;base64 ,' + res.image);
+      this.imageService.getPictures(req).subscribe(res => {
+        if (res?.[0]?.imageType === ImageType.PROFILE && res[0]?.image) {
+          this.currPicturePreview.set('data:image/jpeg;base64 ,' + res[0].image);
+          this.profilePicturePreview.set('data:image/jpeg;base64 ,' + res[0].image);
         }
       })
     );

@@ -1,5 +1,6 @@
 package com.healthrx.backend.controller;
 
+import com.healthrx.backend.api.external.image.ImageRequest;
 import com.healthrx.backend.api.external.image.ImageResponse;
 import com.healthrx.backend.api.internal.Image;
 import com.healthrx.backend.api.internal.enums.ImageType;
@@ -17,9 +18,9 @@ import java.util.List;
 public class ImageController {
     private final ImageService imageService;
 
-    @GetMapping("/profile")
-    public ResponseEntity<ImageResponse> getProfilePicture() {
-        return ResponseEntity.ok(imageService.getProfilePicture());
+    @PostMapping("/get")
+    public ResponseEntity<List<ImageResponse>> getPictures(@RequestBody ImageRequest req) {
+        return ResponseEntity.ok(imageService.getPictures(req));
     }
 
     @PostMapping()

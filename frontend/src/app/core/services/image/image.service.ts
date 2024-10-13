@@ -4,6 +4,7 @@ import { environment } from '../../../../environments/environments';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ImageResponse } from '../../models/image-response.model';
+import { ImageRequest } from '../../models/image-request.model';
 
 @Injectable({
   providedIn: 'root'
@@ -25,8 +26,8 @@ export class ImageService {
     return this.http.post<ImageResponse>(`${this.apiUrl}`, formData);
   }
 
-  getProfilePicture(): Observable<ImageResponse> {
-    return this.http.get<ImageResponse>(`${this.apiUrl}/profile`);
+  getPictures(req: ImageRequest): Observable<ImageResponse[]> {
+    return this.http.post<ImageResponse[]>(`${this.apiUrl}/get`, req);
   }
 
   deleteProfilePicture(): Observable<void> {
