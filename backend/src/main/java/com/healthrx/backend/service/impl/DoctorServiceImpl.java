@@ -2,8 +2,10 @@ package com.healthrx.backend.service.impl;
 
 import com.healthrx.backend.api.external.DoctorResponse;
 import com.healthrx.backend.api.external.PageResponse;
+import com.healthrx.backend.api.external.ReVerifyDoctorRequest;
 import com.healthrx.backend.api.internal.DoctorSpecialization;
 import com.healthrx.backend.api.internal.User;
+import com.healthrx.backend.api.internal.enums.Role;
 import com.healthrx.backend.mapper.DoctorMapper;
 import com.healthrx.backend.repository.DoctorDetailsRepository;
 import com.healthrx.backend.repository.DoctorSpecializationRepository;
@@ -20,9 +22,11 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import static com.healthrx.backend.handler.BusinessErrorCodes.DOCTOR_DETAILS_NOT_FOUND;
+import static com.healthrx.backend.handler.BusinessErrorCodes.USER_NOT_PERMITTED;
 
 @Service
 @RequiredArgsConstructor
@@ -68,5 +72,20 @@ public class DoctorServiceImpl implements DoctorService {
                 .setTotalElements(doctors.getTotalElements())
                 .setLast(doctors.isLast())
                 .setFirst(doctors.isFirst());
+    }
+
+    @Override
+    public Void reVerifyDoctor(ReVerifyDoctorRequest req) {
+        User user = principalSupplier.get();
+
+        if (user.getRole() != Role.DOCTOR) {
+            throw USER_NOT_PERMITTED.getError();
+        }
+
+        user.getDoctorDetails().setUnverifiedMessage(null);
+        Optional.ofNullable(req.getNumberPESEL()).ifPresent(user.getDoctorDetails()::setNumberPESEL);
+        Optional.ofNullable(req.getNumberPWZ()).ifPresent(user.getDoctorDetails()::setNumberPWZ);
+        doctorDetailsRepository.save(user.getDoctorDetails());
+        return null;
     }
 }

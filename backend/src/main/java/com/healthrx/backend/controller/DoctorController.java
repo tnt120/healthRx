@@ -2,13 +2,11 @@ package com.healthrx.backend.controller;
 
 import com.healthrx.backend.api.external.DoctorResponse;
 import com.healthrx.backend.api.external.PageResponse;
+import com.healthrx.backend.api.external.ReVerifyDoctorRequest;
 import com.healthrx.backend.service.DoctorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/doctor")
@@ -28,5 +26,10 @@ public class DoctorController {
             @RequestParam(name = "city", required = false) String cityId
     ) {
         return ResponseEntity.ok(doctorService.getDoctors(page, size, sortBy, order, firstName, lastName, specializationId, cityId));
+    }
+
+    @PatchMapping("/reVerify")
+    public ResponseEntity<Void> reVerifyDoctor(@RequestBody ReVerifyDoctorRequest req) {
+        return ResponseEntity.ok(doctorService.reVerifyDoctor(req));
     }
 }
