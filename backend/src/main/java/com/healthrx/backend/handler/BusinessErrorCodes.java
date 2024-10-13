@@ -54,6 +54,7 @@ public enum BusinessErrorCodes {
     MESSAGE_NOT_FOUND(334, "Message not found", HttpStatus.NOT_FOUND),
     ACTIVITY_NOT_FOUND(335, "Activity not found", HttpStatus.NOT_FOUND),
     ACTIVITY_LOG_NOT_FOUND(336, "Activity log not found", HttpStatus.NOT_FOUND),
+    DOCTOR_ALREADY_VERIFIED(337, "Doctor already verified", HttpStatus.CONFLICT),
     ;
 
     private final int code;

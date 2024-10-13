@@ -50,7 +50,7 @@ public class User implements UserDetails {
 
     private Boolean configured;
 
-    private boolean isVerifiedDoctor;
+    private Boolean isVerifiedDoctor;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private DoctorDetails doctorDetails;

@@ -13,12 +13,10 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.TimeToLive;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -78,6 +76,24 @@ public class ImageService {
             imageRepository.delete(profilePicture);
         }
         return null;
+    }
+
+    @Transactional
+    public void deletePwzPhotos(DoctorDetails doctorDetails) {
+        Image frontPWZ = doctorDetails.getFrontPwzCardImage();
+        Image backPWZ = doctorDetails.getBackPwzCardImage();
+
+        if (frontPWZ != null) {
+            doctorDetails.setFrontPwzCardImage(null);
+            doctorDetailsRepository.save(doctorDetails);
+            imageRepository.delete(frontPWZ);
+        }
+
+        if (backPWZ != null) {
+            doctorDetails.setBackPwzCardImage(null);
+            doctorDetailsRepository.save(doctorDetails);
+            imageRepository.delete(backPWZ);
+        }
     }
 
     private void handleSaveImage(User user, ImageType type, byte[] content) {

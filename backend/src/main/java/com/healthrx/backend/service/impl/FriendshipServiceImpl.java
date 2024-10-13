@@ -155,7 +155,7 @@ public class FriendshipServiceImpl implements FriendshipService {
     public InvitationResponse sendInvitation(InvitationRequest request) {
         User user = principalSupplier.get();
 
-        if (user.isVerifiedDoctor() || user.getRole() != Role.USER) throw USER_NOT_PERMITTED.getError();
+        if (user.getIsVerifiedDoctor() || user.getRole() != Role.USER) throw USER_NOT_PERMITTED.getError();
 
         friendshipRepository.getFriendshipByUserIdAndDoctorId(
                 user.getId(),
@@ -167,7 +167,7 @@ public class FriendshipServiceImpl implements FriendshipService {
         User doctor = userRepository.findById(request.getTargetDoctorId())
                 .orElseThrow(USER_NOT_FOUND::getError);
 
-        if (!doctor.isVerifiedDoctor()) throw WRONG_INVITATION_TARGET.getError();
+        if (!doctor.getIsVerifiedDoctor()) throw WRONG_INVITATION_TARGET.getError();
 
         String invitationId = this.friendshipRepository.save(
                 Friendship.builder()
