@@ -23,6 +23,8 @@ public class DoctorDetails {
     private String numberPWZ;
     private String numberPESEL;
 
+    private String unverifiedMessage;
+
     @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private Image frontPwzCardImage;
 

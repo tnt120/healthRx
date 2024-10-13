@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DoctorVerificationRequest {
+    private Boolean validVerification;
     private String doctorId;
     private String message;
 }

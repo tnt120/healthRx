@@ -1,6 +1,7 @@
 package com.healthrx.backend.service.impl;
 
 import com.healthrx.backend.api.external.admin.DoctorVerificationRequest;
+import com.healthrx.backend.api.internal.DoctorDetails;
 import com.healthrx.backend.api.internal.User;
 import com.healthrx.backend.api.internal.enums.Role;
 import com.healthrx.backend.repository.UserRepository;
@@ -29,10 +30,19 @@ public class AdminServiceImpl implements AdminService {
         User doctor = userRepository.findById(req.getDoctorId())
                 .orElseThrow(USER_NOT_FOUND::getError);
 
-        if (doctor.getRole() != Role.DOCTOR)    throw USER_NOT_FOUND.getError();
-        if (doctor.getIsVerifiedDoctor())       throw DOCTOR_ALREADY_VERIFIED.getError();
+        if (doctor.getRole() != Role.DOCTOR) throw USER_NOT_FOUND.getError();
+        if (doctor.getIsVerifiedDoctor()) throw DOCTOR_ALREADY_VERIFIED.getError();
 
-        doctor.setIsVerifiedDoctor(true);
+
+        if (req.getValidVerification()) {
+            doctor.setIsVerifiedDoctor(true);
+        } else {
+            DoctorDetails doctorDetails = doctor.getDoctorDetails();
+            if (doctorDetails.getUnverifiedMessage() != null && !doctorDetails.getUnverifiedMessage().isEmpty()) throw DOCTOR_ALREADY_NOT_VERIFIED.getError();
+
+            doctorDetails.setUnverifiedMessage(req.getMessage());
+        }
+
         imageService.deletePwzPhotos(doctor.getDoctorDetails());
 
         return null;

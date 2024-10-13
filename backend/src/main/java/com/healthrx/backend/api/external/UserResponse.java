@@ -25,4 +25,6 @@ public class UserResponse {
     private String role;
     @JsonInclude
     private byte[] pictureUrl;
+    private Boolean isDoctorVerified;
+    private String unverifiedMessage;
 }

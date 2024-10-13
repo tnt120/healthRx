@@ -1,9 +1,6 @@
 package com.healthrx.backend.service.impl;
 
-import com.healthrx.backend.api.external.InitAndConfigResponse;
-import com.healthrx.backend.api.external.Token;
-import com.healthrx.backend.api.external.UserVerificationRequest;
-import com.healthrx.backend.api.external.VerificationDataResponse;
+import com.healthrx.backend.api.external.*;
 import com.healthrx.backend.api.internal.*;
 import com.healthrx.backend.api.internal.enums.Role;
 import com.healthrx.backend.handler.ExpiredTokenException;
@@ -193,6 +190,10 @@ public class UserServiceImpl implements UserService {
                      .map(notificationsMapper::map)
                      .orElseThrow(ACCOUNT_SETTINGS_NOT_FOUND::getError)
              );
+         } else if (user.getRole() == Role.DOCTOR) {
+             UserResponse us = response.getUser();
+             us.setIsDoctorVerified(user.getIsVerifiedDoctor());
+             us.setUnverifiedMessage(user.getDoctorDetails().getUnverifiedMessage());
          }
 
         return response;
