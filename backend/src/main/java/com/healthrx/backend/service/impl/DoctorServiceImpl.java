@@ -25,14 +25,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import static com.healthrx.backend.handler.BusinessErrorCodes.DOCTOR_DETAILS_NOT_FOUND;
 import static com.healthrx.backend.handler.BusinessErrorCodes.USER_NOT_PERMITTED;
 
 @Service
 @RequiredArgsConstructor
 public class DoctorServiceImpl implements DoctorService {
     private final UserRepository userRepository;
-    private final DoctorSpecializationRepository doctorSpecializationRepository;
     private final DoctorDetailsRepository doctorDetailsRepository;
     private final DoctorMapper doctorMapper;
     private final Supplier<User> principalSupplier;
@@ -59,9 +57,7 @@ public class DoctorServiceImpl implements DoctorService {
                 .map(doctor -> doctorMapper
                         .map(
                                 doctor,
-                                doctorDetailsRepository.findByUserId(doctor.getId()).orElseThrow(DOCTOR_DETAILS_NOT_FOUND::getError),
-                                doctorSpecializationRepository.findAllByDoctorDetailsId(doctor.getDoctorDetails().getId()).stream()
-                                        .map(DoctorSpecialization::getSpecialization)
+                                doctor.getDoctorDetails().getDoctorSpecializations().stream().map(DoctorSpecialization::getSpecialization)
                                         .toList()))
                 .toList();
 

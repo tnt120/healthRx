@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import static com.healthrx.backend.handler.BusinessErrorCodes.DOCTOR_DETAILS_NOT_FOUND;
@@ -54,8 +55,8 @@ public class ImageService {
     }
 
     @Transactional
-    public List<ImageResponse> getPictures(ImageRequest req) {
-        User user = principalSupplier.get();
+    public List<ImageResponse> getPictures(ImageRequest req, Optional<User> userOpt) {
+        User user = userOpt.orElse(principalSupplier.get());
 
         List<ImageResponse> res = new ArrayList<>();
 

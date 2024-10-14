@@ -43,6 +43,14 @@ public class DoctorSpecification {
         return (root, query, cb) -> cb.isTrue(root.get("isVerifiedDoctor"));
     }
 
+    public static Specification<User> isDoctorForVerification() {
+        return (root, query, cb) -> cb.and(
+                cb.isFalse(root.get("isVerifiedDoctor")),
+                cb.isNotNull(root.get("doctorDetails")),
+                cb.isNull(root.get("doctorDetails").get("unverifiedMessage"))
+        );
+    }
+
     public static Specification<User> isNotInFriendsList(String userId) {
         return ((root, query, cb) -> {
             assert query != null;

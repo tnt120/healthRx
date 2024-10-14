@@ -2,7 +2,6 @@ package com.healthrx.backend.controller;
 
 import com.healthrx.backend.api.external.image.ImageRequest;
 import com.healthrx.backend.api.external.image.ImageResponse;
-import com.healthrx.backend.api.internal.Image;
 import com.healthrx.backend.api.internal.enums.ImageType;
 import com.healthrx.backend.service.impl.ImageService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/image")
@@ -20,7 +20,7 @@ public class ImageController {
 
     @PostMapping("/get")
     public ResponseEntity<List<ImageResponse>> getPictures(@RequestBody ImageRequest req) {
-        return ResponseEntity.ok(imageService.getPictures(req));
+        return ResponseEntity.ok(imageService.getPictures(req, Optional.empty()));
     }
 
     @PostMapping()

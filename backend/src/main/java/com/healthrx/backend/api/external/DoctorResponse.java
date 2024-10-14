@@ -21,4 +21,6 @@ public class DoctorResponse {
     private String numberPWZ;
     @JsonInclude
     private byte[] pictureUrl;
+    private byte[] frontPwz;
+    private byte[] backPwz;
 }

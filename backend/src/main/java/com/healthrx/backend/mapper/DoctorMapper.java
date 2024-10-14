@@ -16,7 +16,9 @@ public class DoctorMapper {
     private final CityMapper cityMapper;
     private final SpecializationMapper specializationMapper;
 
-    public DoctorResponse map(User user, DoctorDetails doctorDetails, List<Specialization> specializations) {
+    public DoctorResponse map(User user, List<Specialization> specializations) {
+        DoctorDetails doctorDetails = user.getDoctorDetails();
+
         return DoctorResponse.builder()
                 .id(user.getId())
                 .firstName(user.getFirstName())
@@ -26,5 +28,12 @@ public class DoctorMapper {
                 .numberPWZ(doctorDetails.getNumberPWZ())
                 .pictureUrl(user.getProfilePicture() != null ? AesHandler.decrypt(user.getProfilePicture().getContent()) : null)
                 .build();
+    }
+
+    public DoctorResponse extendedVerifyMap(User user, List<Specialization> specializations, byte[] frontPwz, byte[] backPwz) {
+        DoctorResponse doctorResponse = map(user, specializations);
+        doctorResponse.setFrontPwz(frontPwz);
+        doctorResponse.setBackPwz(backPwz);
+        return doctorResponse;
     }
 }
