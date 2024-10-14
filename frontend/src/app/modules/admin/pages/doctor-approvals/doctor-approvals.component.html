@@ -1,0 +1,18 @@
+<div class="main-container">
+  @if (doctors$ | async; as doctors) {
+    <div class="grid">
+      @for (doctor of doctors; track doctor.id) {
+        <app-doctor-approval-card [doctor]="doctor" (emitApprove)="onApprove($event)" (emiReject)="onReject($event)"></app-doctor-approval-card>
+      }
+    </div>
+  }
+
+  <mat-paginator
+    (page)="handlePageEvent($event)"
+    [length]="pagination.totalElements"
+    [pageSize]="pagination.pageSize"
+    [pageSizeOptions]="pagination.pageSizeOptions"
+    [pageIndex]="pagination.pageIndex"
+    aria-label="Select page"
+  ></mat-paginator>
+</div>

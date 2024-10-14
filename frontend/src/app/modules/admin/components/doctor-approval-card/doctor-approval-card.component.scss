@@ -1,0 +1,63 @@
+@use '@angular/material' as mat;
+
+:host {
+  @include mat.elevation(2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  border-radius: 15px;
+  width: 400px;
+  padding: 10px;
+  margin: auto;
+
+  img {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+  }
+
+  .doctor-overview-container {
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 8px;
+
+    .info-container {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      .info-row {
+        display: flex;
+
+        .info-label {
+          width: 105px;
+        }
+
+        .info-value {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          max-width: calc(400px - 105px - 96px - 20px - 8px);
+        }
+      }
+    }
+  }
+
+  .bottom-panel {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    justify-content: center;
+
+    .photos, .buttons {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+      align-items: center;
+    }
+
+  }
+}

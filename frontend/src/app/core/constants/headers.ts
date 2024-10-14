@@ -93,5 +93,10 @@ export const adminHeaders: NavItem[] = [
     icon: 'dashboard',
     title: 'Dashboard',
     route: '/admin/dashboard'
+  },
+  {
+    icon: 'description',
+    title: 'Wnioski',
+    route: '/admin/approvals',
   }
 ];

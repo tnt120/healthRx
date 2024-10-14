@@ -1,0 +1,21 @@
+<h3 mat-dialog-title>Odrzucenie weryfikacji</h3>
+<mat-dialog-content class="mat-typography">
+  <div class="content">
+    <mat-form-field appearance="outline">
+      <mat-label>Wiadomość</mat-label>
+      <input
+        matInput
+        type="text"
+        placeholder="Wiadomość"
+        [(ngModel)]="message"
+      />
+      @if (message() === null || message() === '') {
+        <mat-error>Pole jest wymagane</mat-error>
+      }
+    </mat-form-field>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-stroked-button mat-dialog-close>Anuluj</button>
+  <button mat-flat-button [mat-dialog-close]="message()" [disabled]="message() === null || message() === ''">Odrzuć</button>
+</mat-dialog-actions>

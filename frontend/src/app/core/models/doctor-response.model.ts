@@ -9,4 +9,7 @@ export interface DoctorResponse {
   city: City;
   numberPWZ: string;
   pictureUrl: string;
+  numberPESEL?: string;
+  frontPwz?: string;
+  backPwz?: string;
 }

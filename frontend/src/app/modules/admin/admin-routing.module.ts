@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { MainLayoutComponent } from '../../core/components/main-layout/main-layout.component';
 import { SettingsComponent } from '../../shared/components/settings/settings.component';
+import { DoctorApprovalsComponent } from './pages/doctor-approvals/doctor-approvals.component';
 
 const routes: Routes = [
   {
@@ -12,6 +13,10 @@ const routes: Routes = [
       {
         path: 'dashboard',
         component: DashboardComponent
+      },
+      {
+        path: 'approvals',
+        component: DoctorApprovalsComponent
       },
       {
         path: 'settings',

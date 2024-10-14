@@ -34,6 +34,7 @@ public class DoctorMapper {
         DoctorResponse doctorResponse = map(user, specializations);
         doctorResponse.setFrontPwz(frontPwz);
         doctorResponse.setBackPwz(backPwz);
+        doctorResponse.setNumberPESEL(user.getDoctorDetails().getNumberPESEL());
         return doctorResponse;
     }
 }

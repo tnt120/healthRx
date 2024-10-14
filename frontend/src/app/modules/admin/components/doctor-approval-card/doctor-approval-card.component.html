@@ -1,0 +1,35 @@
+<div class="doctor-overview-container">
+  <img [src]="photosPreview().PROFILE" alt="profile-picture">
+  <div class="info-container">
+    <div class="info-row">
+      <div class="info-label subtitle-1">Imię:</div>
+      <div #firstName class="info-value" [matTooltip]="doctor().firstName" [matTooltipDisabled]="isOverflow(firstName)">{{ doctor().firstName }}</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label subtitle-1">Nazwisko:</div>
+      <div #lastName class="info-value" [matTooltip]="doctor().lastName" [matTooltipDisabled]="isOverflow(lastName)">{{ doctor().lastName }}</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label subtitle-1">Specjalizacja:</div>
+      <div #specializations class="info-value" [matTooltip]="getSpecializationsString()" [matTooltipDisabled]="isOverflow(specializations)">{{ getSpecializationsString() }}</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label subtitle-1">Numer PESEL:</div>
+      <div #pesel class="info-value" [matTooltip]="doctor().numberPESEL!" [matTooltipDisabled]="isOverflow(pesel)">{{ doctor().numberPESEL }}</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label subtitle-1">Numer PWZ:</div>
+      <div #pwz class="info-value" [matTooltip]="doctor().numberPWZ" [matTooltipDisabled]="isOverflow(pwz)">{{ doctor().numberPWZ }}</div>
+    </div>
+  </div>
+</div>
+<div class="bottom-panel">
+  <div class="photos">
+    <app-image-preview [smallVersion]="true" altImage="front-image" [imagePreview]="photosPreview().FRONT_PWZ_PHOTO!" />
+    <app-image-preview [smallVersion]="true" altImage="back-image" [imagePreview]="photosPreview().BACK_PWZ_PHOTO!" />
+  </div>
+  <div class="buttons">
+    <button mat-button (click)="approveDoctor()"><p class="primary-blue">Zatwierdź</p></button>
+    <button mat-button (click)="rejectDoctor()"><p class="red">Odrzuć</p></button>
+  </div>
+</div>

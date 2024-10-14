@@ -6,11 +6,17 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { SharedModule } from '../../shared/shared.module';
 import { MyMaterialModule } from '../../material';
 import { CoreModule } from '../../core/core.module';
+import { DoctorApprovalsComponent } from './pages/doctor-approvals/doctor-approvals.component';
+import { DoctorApprovalCardComponent } from './components/doctor-approval-card/doctor-approval-card.component';
+import { RejectDoctorVerificationDialogComponent } from './components/reject-doctor-verification-dialog/reject-doctor-verification-dialog.component';
 
 
 @NgModule({
   declarations: [
-    DashboardComponent
+    DashboardComponent,
+    DoctorApprovalsComponent,
+    DoctorApprovalCardComponent,
+    RejectDoctorVerificationDialogComponent
   ],
   imports: [
     CommonModule,

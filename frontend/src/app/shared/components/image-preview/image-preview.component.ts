@@ -1,4 +1,4 @@
-import { Component, inject, input, OnDestroy } from '@angular/core';
+import { Component, HostBinding, inject, input, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ImagePrefiewDialogData, ImagePreviewDialogComponent } from './image-preview-dialog/image-preview-dialog.component';
 import { Subscription } from 'rxjs';
@@ -14,13 +14,19 @@ export class ImagePreviewComponent implements OnDestroy {
 
   private readonly observer = inject(BreakpointObserver);
 
+  smallVersion = input<boolean>(false);
+
   subscriptions: Subscription = new Subscription();
 
   minWidth: string = '800px';
 
+  @HostBinding('class.small-version') get smallVersionClass() {
+    return this.smallVersion();
+  }
+
   ngOnInit(): void {
     this.observer.observe('(max-width: 768px)').subscribe(res => {
-      res.matches ? this.minWidth = '95%' : this.minWidth = '800px';
+      res.matches ? this.minWidth = '95vw' : this.minWidth = '800px';
     });
   }
 

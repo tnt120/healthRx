@@ -19,6 +19,7 @@ public class DoctorResponse {
     private List<SpecializationDTO> specializations;
     private CityDTO city;
     private String numberPWZ;
+    private String numberPESEL;
     @JsonInclude
     private byte[] pictureUrl;
     private byte[] frontPwz;
