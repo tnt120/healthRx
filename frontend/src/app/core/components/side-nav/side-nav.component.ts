@@ -3,10 +3,11 @@ import { AuthService } from './../../services/auth/auth.service';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { NavItem, adminHeaders, doctorHeaders, userHeaders } from '../../constants/headers';
+import { NavItem, adminHeaders, doctorHeaders, unverifiedDoctorHeaders, userHeaders } from '../../constants/headers';
 import { Store } from '@ngrx/store';
 import { Roles } from '../../enums/roles.enum';
 import { ROUTE_TITLES } from '../../constants/route-titles';
+import { UserResponse } from '../../models/user/user-response.model';
 
 @Component({
   selector: 'app-side-nav',
@@ -41,6 +42,8 @@ export class SideNavComponent implements OnInit, OnDestroy {
 
   navWidth = computed(() => this.isCollapsed() ? '56px' : '240px');
 
+  user$: Observable<UserResponse> = this.store.select('user');
+
   subscriptions: Subscription[] = [];
 
   pageTitle = signal<string>('');
@@ -53,7 +56,7 @@ export class SideNavComponent implements OnInit, OnDestroy {
 
     this.pageTitle.set(ROUTE_TITLES[this.router.url.slice(1)]);
 
-    this.navItems$ = this.store.select('user').pipe(
+    this.navItems$ = this.user$.pipe(
       map(user => {
         switch (user.role) {
           case Roles.ADMIN:
@@ -62,7 +65,10 @@ export class SideNavComponent implements OnInit, OnDestroy {
             return adminHeaders;
           case Roles.DOCTOR:
             this.settingsItem.route = '/doctor/settings';
-            return doctorHeaders;
+            if (user.isDoctorVerified) {
+              return doctorHeaders;
+            }
+            return unverifiedDoctorHeaders;
           case Roles.USER:
             this.settingsItem.route = '/user/settings';
             return userHeaders;

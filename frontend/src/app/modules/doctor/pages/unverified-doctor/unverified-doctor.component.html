@@ -1,0 +1,13 @@
+@let user = user$ | async;
+
+@if (user && user.unverifiedDoctor) {
+  @if (user.unverifiedDoctor.unverifiedMessage) {
+    <app-re-verify [user]="user"></app-re-verify>
+  } @else {
+    <app-preview-doctor-data [unverifiedDoctorData]="user.unverifiedDoctor"></app-preview-doctor-data>
+  }
+} @else {
+  <div class="no-data">
+    <h3>Brak danych</h3>
+  </div>
+}

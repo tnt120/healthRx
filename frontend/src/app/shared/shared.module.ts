@@ -36,6 +36,8 @@ import { LineChartComponent } from './components/line-chart/line-chart.component
 import { BarChartComponent } from './components/bar-chart/bar-chart.component';
 import { ChoosePhotoButtonComponent } from './components/choose-photo-button/choose-photo-button.component';
 import { ProfilePictureChangeComponent } from './components/settings/profile-picture-change/profile-picture-change.component';
+import { ImagePreviewComponent } from './components/image-preview/image-preview.component';
+import { ImagePreviewDialogComponent } from './components/image-preview/image-preview-dialog/image-preview-dialog.component';
 
 @NgModule({
   declarations: [
@@ -74,6 +76,8 @@ import { ProfilePictureChangeComponent } from './components/settings/profile-pic
     BarChartComponent,
     ChoosePhotoButtonComponent,
     ProfilePictureChangeComponent,
+    ImagePreviewComponent,
+    ImagePreviewDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -98,6 +102,7 @@ import { ProfilePictureChangeComponent } from './components/settings/profile-pic
     LineChartComponent,
     BarChartComponent,
     ChoosePhotoButtonComponent,
+    ImagePreviewComponent,
   ]
 })
 export class SharedModule { }

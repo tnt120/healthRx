@@ -62,6 +62,14 @@ export const userHeaders: NavItem[] = [
   }
 ];
 
+export const unverifiedDoctorHeaders: NavItem[] = [
+  {
+    icon: 'policy',
+    title: 'Weryfikacja',
+    route: '/doctor/unverified'
+  }
+];
+
 export const doctorHeaders: NavItem[] = [
   {
     icon: 'patient_list',

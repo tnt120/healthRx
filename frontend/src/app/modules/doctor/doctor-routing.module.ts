@@ -5,6 +5,8 @@ import { PatientsDashboardComponent } from './pages/patients-dashboard/patients-
 import { DoctorMessagesComponent } from './pages/doctor-messages/doctor-messages.component';
 import { MainLayoutComponent } from '../../core/components/main-layout/main-layout.component';
 import { SettingsComponent } from '../../shared/components/settings/settings.component';
+import { UnverifiedDoctorComponent } from './pages/unverified-doctor/unverified-doctor.component';
+import { doctorUnverifiedGuard, doctorVerifiedGuard } from '../../core/guards/doctorFactory/doctor-factory.guard';
 
 const routes: Routes = [
   {
@@ -13,15 +15,23 @@ const routes: Routes = [
     children: [
       {
         path: 'approvals',
-        component: ApprovalsComponent
+        component: ApprovalsComponent,
+        canActivate: [doctorVerifiedGuard]
       },
       {
         path: 'patients',
-        component: PatientsDashboardComponent
+        component: PatientsDashboardComponent,
+        canActivate: [doctorVerifiedGuard]
       },
       {
         path: 'messages',
-        component: DoctorMessagesComponent
+        component: DoctorMessagesComponent,
+        canActivate: [doctorVerifiedGuard]
+      },
+      {
+        path: 'unverified',
+        component: UnverifiedDoctorComponent,
+        canActivate: [doctorUnverifiedGuard]
       },
       {
         path: 'settings',

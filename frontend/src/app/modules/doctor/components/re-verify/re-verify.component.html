@@ -1,0 +1,49 @@
+<div class="info">
+  <h3>Twój wniosek został odrzucony -  wypełnij ponownie dane</h3>
+  <p class="subtitle-2">Powód odrzucenia: <span class="red"><i>{{ user().unverifiedDoctor!.unverifiedMessage }}</i></span></p>
+</div>
+<div class="filling-data">
+  <form [formGroup]="reVerifyForm">
+    <div class="sub-form">
+      <h4 class="primary-blue">Dane personalne:</h4>
+      <div class="items">
+        <mat-form-field appearance="outline">
+          <mat-label>Pesel</mat-label>
+          <input
+            matInput
+            type="text"
+            formControlName="numberPESEL"
+            placeholder="Imię"
+            (blur)="updateErrorMessage(reVerifyForm, 'reVerifyForm', 'numberPESEL', 'Pesel')"
+            [appForbiddenRegex]="'pesel'"
+          />
+          @if (reVerifyForm.controls.numberPESEL.invalid) {
+            <mat-error>{{ formErrors().reVerifyForm.numberPESEL}}</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Numer PWZ</mat-label>
+          <input
+            matInput
+            type="text"
+            formControlName="numberPWZ"
+            placeholder="Imię"
+            (blur)="updateErrorMessage(reVerifyForm, 'reVerifyForm', 'numberPWZ', 'numer PWZ')"
+            [appForbiddenRegex]="'numberPwz'"
+          />
+          @if (reVerifyForm.controls.numberPWZ.invalid) {
+            <mat-error>{{ formErrors().reVerifyForm.numberPWZ}}</mat-error>
+          }
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="sub-form">
+      <h4 class="primary-blue">Zdjęcia uprawnień lekarskich:</h4>
+      <div class="items">
+        <app-choose-photo-button label="(Przód)" (photoChange)="changePhoto($event, 'FRONT_PWZ_PHOTO')"></app-choose-photo-button>
+        <app-choose-photo-button label="(Tył)" (photoChange)="changePhoto($event, 'BACK_PWZ_PHOTO')"></app-choose-photo-button>
+      </div>
+    </div>
+    <button mat-flat-button (click)="onSubmit()" [disabled]="reVerifyForm.invalid">Wyślij</button>
+  </form>
+</div>

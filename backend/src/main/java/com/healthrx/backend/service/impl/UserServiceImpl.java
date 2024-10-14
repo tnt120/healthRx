@@ -193,7 +193,13 @@ public class UserServiceImpl implements UserService {
          } else if (user.getRole() == Role.DOCTOR) {
              UserResponse us = response.getUser();
              us.setIsDoctorVerified(user.getIsVerifiedDoctor());
-             us.setUnverifiedMessage(user.getDoctorDetails().getUnverifiedMessage());
+             if (!user.getIsVerifiedDoctor()) {
+                 us.setUnverifiedDoctor(UnverifiedDoctorDTO.builder()
+                                 .unverifiedMessage(user.getDoctorDetails().getUnverifiedMessage())
+                                 .numberPESEL(user.getDoctorDetails().getNumberPESEL())
+                                .numberPWZ(user.getDoctorDetails().getNumberPWZ())
+                         .build());
+             };
          }
 
         return response;

@@ -47,7 +47,7 @@ export class SettingsUserProfileComponent implements OnDestroy {
     return this.userProfileData()?.height ? this.userProfileData()?.height + ' cm' : 'Brak'
   }
 
-  onEdit(field: keyof UserResponse): void {
+  onEdit(field: keyof Omit<UserResponse, 'isDoctorVerified' | 'unverifiedDoctor'>): void {
     const dialogData: UserProfileEditDialog = {
       profilParameter: field,
       value: this.userProfileData()?.[field] || ''

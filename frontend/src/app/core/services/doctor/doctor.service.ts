@@ -6,6 +6,7 @@ import { DoctorSearch } from '../../models/doctor-search.model';
 import { BehaviorSubject, finalize, Observable, tap } from 'rxjs';
 import { PageResponse } from '../../models/page-response.model';
 import { DoctorResponse } from '../../models/doctor-response.model';
+import { ReVerifyDoctorRequest } from '../../models/user/re-verify-doctor-request.model';
 
 @Injectable({
   providedIn: 'root'
@@ -58,5 +59,9 @@ export class DoctorService {
       }),
       finalize(() => this.setLoadingDoctorsState(false))
     );
+  }
+
+  reVerify(req: ReVerifyDoctorRequest): Observable<void> {
+    return this.http.patch<void>(`${this.apiUrl}/reVerify`, req);
   }
 }

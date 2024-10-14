@@ -14,6 +14,7 @@ export const ROUTE_TITLES: { [key: string]: string } = {
   'doctor/patients': 'Moi pacjenci',
   'doctor/messages': 'Wiadomości',
   'doctor/settings': 'Ustawienia',
+  'doctor/unverified': 'Weryfikacja',
 
   'admin/dashboard': 'Dashboard',
   'admin/settings': 'Ustawienia',

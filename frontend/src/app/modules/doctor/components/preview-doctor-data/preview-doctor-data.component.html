@@ -1,0 +1,24 @@
+<div class="container">
+  <h3>Twoje uprawnienia lekarskie są weryfikowane przez administratora. Prosimy o cierpliwość.</h3>
+  <h3 class="primary-blue">Podgląd wniosku</h3>
+  <div class="preview-data">
+    <div class="overall-data">
+      <div class="item">
+        <div class="subtitle-1 label">Numer PESEL:</div>
+        <div class="value">{{ unverifiedDoctorData().numberPESEL }}</div>
+      </div>
+      <div class="item">
+        <div class="subtitle-1 label">Numer PWZ:</div>
+        <div class="value">{{ unverifiedDoctorData().numberPWZ }}</div>
+    </div>
+  </div>
+  <button mat-flat-button (click)="onImagesPreview()" [disabled]="photosPreview().front || photosPreview().back">Pokaż zdjęcia</button>
+  <div *ngIf="photosPreview().front && photosPreview().back" class="images-preview-container">
+    <h4>Zdjęcia PWZ:</h4>
+    <div class="images">
+      <app-image-preview [imagePreview]="photosPreview().front!" altImage="front-image"></app-image-preview>
+      <app-image-preview [imagePreview]="photosPreview().back!" altImage="back-image"></app-image-preview>
+
+    </div>
+  </div>
+</div>

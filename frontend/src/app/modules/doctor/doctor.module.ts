@@ -8,6 +8,9 @@ import { ApprovalsComponent } from './pages/approvals/approvals.component';
 import { SharedModule } from '../../shared/shared.module';
 import { MyMaterialModule } from '../../material';
 import { CoreModule } from '../../core/core.module';
+import { UnverifiedDoctorComponent } from './pages/unverified-doctor/unverified-doctor.component';
+import { ReVerifyComponent } from './components/re-verify/re-verify.component';
+import { PreviewDoctorDataComponent } from './components/preview-doctor-data/preview-doctor-data.component';
 
 
 @NgModule({
@@ -15,6 +18,9 @@ import { CoreModule } from '../../core/core.module';
     DoctorMessagesComponent,
     PatientsDashboardComponent,
     ApprovalsComponent,
+    UnverifiedDoctorComponent,
+    ReVerifyComponent,
+    PreviewDoctorDataComponent,
   ],
   imports: [
     CommonModule,
