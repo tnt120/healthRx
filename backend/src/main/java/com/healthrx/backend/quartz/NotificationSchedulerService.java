@@ -29,6 +29,7 @@ public class NotificationSchedulerService {
         if (drugsModel.getStartDate().isBefore(now)) {
             startDate = now;
         }
+        if (drugsModel.getEndDate() != null && drugsModel.getEndDate().isBefore(startDate)) return;
 
         for (Days day : drugsModel.getDays()) {
             List<LocalTime> mutableTimes = new ArrayList<>(drugsModel.getTimes());
