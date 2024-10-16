@@ -19,6 +19,12 @@ export class AdminService {
 
   private approvalsSubject = new BehaviorSubject<DoctorResponse[]>([]);
 
+  private approvalsLoadingSubject = new BehaviorSubject<boolean>(false);
+
+  getApprovalsLoading(): Observable<boolean> {
+    return this.approvalsLoadingSubject.asObservable();
+  }
+
   getApprovalsSubject() {
     return this.approvalsSubject.asObservable();
   }
@@ -28,8 +34,10 @@ export class AdminService {
       .set('page', page.toString())
       .set('size', size.toString())
 
+    this.approvalsLoadingSubject.next(true);
     return this.http.get<PageResponse<DoctorResponse>>(`${this.apiUrl}/approvals`, { params }).pipe(
-      tap(res => this.approvalsSubject.next(res.content))
+      tap(res => this.approvalsSubject.next(res.content)),
+      tap(() => this.approvalsLoadingSubject.next(false)),
     );
   }
 
