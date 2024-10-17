@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
@@ -38,7 +39,6 @@ public class StatisticsServiceImpl implements StatisticsService {
     private final ParameterRepository parameterRepository;
     private final DrugRepository drugRepository;
     private final UserDrugRepository userDrugRepository;
-    private final ActivityRepository activityRepository;
     private final ActivityLogRepository activityLogRepository;
     private final ParameterLogRepository parameterLogRepository;
     private final DrugLogRepository drugLogRepository;
@@ -62,25 +62,25 @@ public class StatisticsServiceImpl implements StatisticsService {
     public List<ParameterStatisticsResponse> getParametersStatistics(StatisticsRequest req) {
         User user = principalSupplier.get();
 
-        List<Parameter> parameters = userParameterRepository.findAllByUserId(user.getId())
+        return generateParameterStats(user.getId(), req.getStartDate(), req.getEndDate());
+    }
+
+    @Override
+    public List<ParameterStatisticsResponse> generateParameterStats(String userId, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        List<Parameter> parameters = userParameterRepository.findAllByUserId(userId)
                 .stream()
                 .map(UserParameter::getParameter)
                 .toList();
 
-        List<ParameterStatisticsResponse> response = new ArrayList<>();
+        List<ParameterStatisticsResponse> res = new ArrayList<>();
 
         parameters.forEach(parameter -> {
-            List<ParameterLog> logs = parameterLogRepository.findParameterLogsByParameterIdAndUserIdAndDateRange(
-                    parameter.getId(),
-                    user.getId(),
-                    req.getStartDate(),
-                    req.getEndDate()
-            );
+            List<ParameterLog> logs = getParameterLogs(parameter.getId(), userId, startDateTime, endDateTime);
 
             if (logs.isEmpty()) {
-                response.add(ParameterStatisticsResponse.builder()
-                                .parameter(parameterMapper.map(parameter))
-                                .build());
+                res.add(ParameterStatisticsResponse.builder()
+                        .parameter(parameterMapper.map(parameter))
+                        .build());
                 return;
             }
 
@@ -131,7 +131,6 @@ public class StatisticsServiceImpl implements StatisticsService {
 
             parametersRes.setTrend(TrendType.fromSlope(regression.getSlope(), threshold, stabilityThreshold));
 
-
             parametersRes.setFirstLogDate(logs.getFirst().getCreatedAt());
             parametersRes.setLastLogDate(logs.getLast().getCreatedAt());
             parametersRes.setAvgValue(sum / logs.size());
@@ -142,7 +141,7 @@ public class StatisticsServiceImpl implements StatisticsService {
             parametersRes.setLogsCount(logs.size());
 
             LocalDate firstLogDate = logs.getFirst().getCreatedAt().toLocalDate();
-            LocalDate endDate = req.getEndDate().toLocalDate();
+            LocalDate endDate = endDateTime.toLocalDate();
 
             long totalDays = ChronoUnit.DAYS.between(firstLogDate, endDate) + 1;
             int missedDays = Math.abs((int) (totalDays - logs.size()));
@@ -152,47 +151,52 @@ public class StatisticsServiceImpl implements StatisticsService {
 
             parametersRes.setLongestBreak((int) longestBreak);
 
-            response.add(parametersRes);
+            res.add(parametersRes);
         });
 
-        return response;
+        return res;
     }
 
     @Override
     public List<DrugStatisticsResponse> getDrugsStatistics(StatisticsRequest req) {
         User user = principalSupplier.get();
 
-        List<UserDrug> userDrugs = userDrugRepository.findAllByUserId(user.getId());
+        return generateDrugStats(user.getId(), req.getStartDate(), req.getEndDate());
+    }
 
-        List<DrugStatisticsResponse> response = new ArrayList<>();
+    @Override
+    public List<DrugStatisticsResponse> generateDrugStats(String userId, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        List<UserDrug> userDrugs = userDrugRepository.findAllByUserId(userId);
+
+        List<DrugStatisticsResponse> res = new ArrayList<>();
 
         userDrugs.forEach(userDrug -> {
             Drug drug = userDrug.getDrug();
 
             List<DrugLog> logs = drugLogRepository.findDrugLogsByDrugIdAndUserIdAndDateRange(
                     drug.getId(),
-                    user.getId(),
-                    req.getStartDate(),
-                    req.getEndDate()
+                    userId,
+                    startDateTime,
+                    endDateTime
             );
 
             if (logs.isEmpty()) {
-                response.add(DrugStatisticsResponse.builder()
+                res.add(DrugStatisticsResponse.builder()
                         .drug(drugMapper.simpleMap(drug))
                         .build());
                 return;
             }
 
-            DrugDayStatistics dayStatistics = calculateDayStatistics(userDrug, logs, req);
+            DrugDayStatistics dayStatistics = calculateDayStatistics(userDrug, logs, startDateTime, endDateTime);
 
             int totalDosesTaken = logs.size();
-            int totalDosesPlanned = calculateTotalPlannedDoses(userDrug, req.getStartDate().toLocalDate(), req.getEndDate().toLocalDate());
+            int totalDosesPlanned = calculateTotalPlannedDoses(userDrug, startDateTime.toLocalDate(), endDateTime.toLocalDate());
             int missedDoses = totalDosesPlanned - totalDosesTaken;
             double compliancePercentage = totalDosesPlanned > 0 ? (totalDosesTaken * 100.0 / totalDosesPlanned) : 0;
 
             DoseTimeStatistics timeStatistics = calculateTimeStatistics(logs);
 
-            response.add(
+            res.add(
                     DrugStatisticsResponse.builder()
                             .drug(drugMapper.simpleMap(drug))
                             .totalDosesTaken(totalDosesTaken)
@@ -210,17 +214,22 @@ public class StatisticsServiceImpl implements StatisticsService {
 
         });
 
-        return response;
+        return res;
     }
 
     @Override
     public List<ActivityStatisticsResponse> getActivitiesStatistics(StatisticsRequest req) {
         User user = principalSupplier.get();
 
+        return generateActivityStats(user.getId(), req.getStartDate(), req.getEndDate());
+    }
+
+    @Override
+    public List<ActivityStatisticsResponse> generateActivityStats(String userId, LocalDateTime startDateTime, LocalDateTime endDateTime) {
         List<ActivityLog> logs = activityLogRepository.findActivityLogsByUserIdAndDateRange(
-                user.getId(),
-                req.getStartDate(),
-                req.getEndDate()
+                userId,
+                startDateTime,
+                endDateTime
         );
 
         if (logs.isEmpty()) {
@@ -287,12 +296,7 @@ public class StatisticsServiceImpl implements StatisticsService {
         Parameter parameter = parameterRepository.findById(request.getDataId())
                 .orElseThrow(PARAMETER_NOT_FOUND::getError);
 
-        List<ParameterLog> logs = parameterLogRepository.findParameterLogsByParameterIdAndUserIdAndDateRange(
-                request.getDataId(),
-                user.getId(),
-                request.getStartDate(),
-                request.getEndDate()
-        );
+        List<ParameterLog> logs = getParameterLogs(request.getDataId(), user.getId(), request.getStartDate(), request.getEndDate());
 
         return ChartResponse.builder()
                 .startDate(request.getStartDate())
@@ -304,6 +308,15 @@ public class StatisticsServiceImpl implements StatisticsService {
                         .build())
                         .toList())
                 .build();
+    }
+
+    private List<ParameterLog> getParameterLogs(String dataId, String userId, LocalDateTime startDate, LocalDateTime endDate) {
+        return parameterLogRepository.findParameterLogsByParameterIdAndUserIdAndDateRange(
+                dataId,
+                userId,
+                startDate,
+                endDate
+        );
     }
 
     private ChartResponse getDrugChartData(User user, ChartRequest request) {
@@ -378,7 +391,7 @@ public class StatisticsServiceImpl implements StatisticsService {
         return map;
     }
 
-    private DrugDayStatistics calculateDayStatistics(UserDrug userDrug, List<DrugLog> logs, StatisticsRequest req) {
+    private DrugDayStatistics calculateDayStatistics(UserDrug userDrug, List<DrugLog> logs, LocalDateTime startDateTime, LocalDateTime endDateTime) {
         int dosesPerDay = userDrug.getDrugDoseTimes().size();
 
         Map<LocalDate, List<DrugLog>> logsByDate = logs.stream()
@@ -386,8 +399,8 @@ public class StatisticsServiceImpl implements StatisticsService {
 
         Set<DayOfWeek> plannedDaysOfWeek = getPlannedDaysOfWeek(userDrug);
 
-        LocalDate currDate = req.getStartDate().toLocalDate().isAfter(userDrug.getStartDate()) ? req.getStartDate().toLocalDate() : userDrug.getStartDate();;
-        LocalDate endDate = getEndDate(userDrug, req.getEndDate().toLocalDate());
+        LocalDate currDate = startDateTime.toLocalDate().isAfter(userDrug.getStartDate()) ? startDateTime.toLocalDate() : userDrug.getStartDate();;
+        LocalDate endDate = getEndDate(userDrug, endDateTime.toLocalDate());
 
         int totalDaysTaken = 0;
         int totalDaysPartiallyTaken = 0;
