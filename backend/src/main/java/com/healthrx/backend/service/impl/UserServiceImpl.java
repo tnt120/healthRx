@@ -205,6 +205,12 @@ public class UserServiceImpl implements UserService {
         return response;
     }
 
+    @Override
+    public User getUser(String userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(USER_NOT_FOUND::getError);
+    }
+
     private void sendMail(List<String> emails, String verificationToken) {
         KafkaReceiveModel kafkaReceiveModel = new KafkaReceiveModel()
                 .setSubject("Account verification")

@@ -152,6 +152,12 @@ public class FriendshipServiceImpl implements FriendshipService {
     }
 
     @Override
+    public Friendship getFriendshipByUsers(String doctor, String user) {
+        return friendshipRepository.getFriendshipByUserIdAndDoctorId(user, doctor)
+                .orElseThrow(FRIENDSHIP_NOT_FOUND::getError);
+    }
+
+    @Override
     public InvitationResponse sendInvitation(InvitationRequest request) {
         User user = principalSupplier.get();
 

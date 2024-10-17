@@ -25,10 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
@@ -119,7 +116,6 @@ public class DrugsServiceImpl implements DrugsService {
 
     @Override
     public PageResponse<UserDrugsResponse> getUserDrugs(Integer page, Integer size, String sortBy, String order) {
-
         User user = principalSupplier.get();
 
         Sort sort = order.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
@@ -129,8 +125,8 @@ public class DrugsServiceImpl implements DrugsService {
 
         List<UserDrugsResponse> userDrugsResponses = userDrugs.stream()
                 .map(userDrug -> userDrugMapper.map(
-                        userDrug,
-                        drugPackRepository.findPackUnitByDrugId(userDrug.getDrug().getId()).getFirst()
+                            userDrug,
+                            drugPackRepository.findPackUnitByDrugId(userDrug.getDrug().getId()).getFirst()
                 ))
                 .toList();
 
@@ -143,6 +139,16 @@ public class DrugsServiceImpl implements DrugsService {
                 .setTotalPages(userDrugs.getTotalPages())
                 .setLast(userDrugs.isLast())
                 .setFirst(userDrugs.isFirst());
+    }
+
+    @Override
+    public List<UserDrugsResponse> getAllUserDrugs(String userId) {
+        return userDrugRepository.findAllByUserId(userId)
+                .stream()
+                .map(userDrug -> userDrugMapper.map(
+                        userDrug,
+                        drugPackRepository.findPackUnitByDrugId(userDrug.getDrug().getId()).getFirst()
+                )).toList();
     }
 
     @Override
@@ -282,14 +288,18 @@ public class DrugsServiceImpl implements DrugsService {
 
         List<DrugDoseDay> drugDoseDays = addAllDoseEntities(
                 userDrug,
-                request.getDoseDays(),
+                request.getDoseDays().stream()
+                        .sorted(Comparator.comparing(Days::toDayOfWeek))
+                        .toList(),
                 (ud, day) -> DrugDoseDay.builder().day(day).userDrugs(ud).build(),
                 drugDoseDayRepository
         );
 
         List<DrugDoseTime> drugDoseTimes = addAllDoseEntities(
                 userDrug,
-                request.getDoseTimes(),
+                request.getDoseTimes().stream()
+                        .sorted()
+                        .toList(),
                 (ud, time) -> DrugDoseTime.builder().doseTime(time).userDrugs(ud).build(),
                 drugDoseTimeRepository
         );
@@ -399,7 +409,9 @@ public class DrugsServiceImpl implements DrugsService {
 
                     List<DrugDoseTime> drugDoseTimes = addAllDoseEntities(
                             userDrug,
-                            request.getDoseTimes(),
+                            request.getDoseTimes().stream()
+                                    .sorted()
+                                    .toList(),
                             (ud, time) -> DrugDoseTime.builder().doseTime(time).userDrugs(ud).build(),
                             drugDoseTimeRepository
                     );
@@ -413,7 +425,9 @@ public class DrugsServiceImpl implements DrugsService {
 
                     List<DrugDoseDay> drugDoseDays = addAllDoseEntities(
                             userDrug,
-                            request.getDoseDays(),
+                            request.getDoseDays().stream()
+                                    .sorted(Comparator.comparing(Days::toDayOfWeek))
+                                    .toList(),
                             (ud, day) -> DrugDoseDay.builder().day(day).userDrugs(ud).build(),
                             drugDoseDayRepository
                     );

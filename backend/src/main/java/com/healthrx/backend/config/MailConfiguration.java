@@ -38,7 +38,8 @@ public class MailConfiguration {
         return Map.of(
                 "VERIFICATION", "accountVerification",
                 "DRUG_REMINDER", "drugReminder",
-                "PARAMETER_REMINDER", "parameterReminder"
+                "PARAMETER_REMINDER", "parameterReminder",
+                "REPORT", "report"
         );
     }
 }

@@ -56,6 +56,9 @@ public enum BusinessErrorCodes {
     ACTIVITY_LOG_NOT_FOUND(336, "Activity log not found", HttpStatus.NOT_FOUND),
     DOCTOR_ALREADY_VERIFIED(337, "Doctor already verified", HttpStatus.CONFLICT),
     DOCTOR_ALREADY_NOT_VERIFIED(338, "Doctor already not verified", HttpStatus.CONFLICT),
+    NOT_PARAMS_STATS_PERMISSION(339, "User does not have permission to view parameters statistics", HttpStatus.FORBIDDEN),
+    NOT_DRUGS_STATS_PERMISSION(340, "User does not have permission to view drugs statistics", HttpStatus.FORBIDDEN),
+    NOT_ACTIVITIES_STATS_PERMISSION(341, "User does not have permission to view activities statistics", HttpStatus.FORBIDDEN),
     ;
 
     private final int code;

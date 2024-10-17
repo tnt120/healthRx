@@ -9,6 +9,7 @@ public interface DrugsService {
     List<DrugResponse> getDrugsFromUser();
     DrugPacksResponse getDrugPacks(Integer id);
     PageResponse<UserDrugsResponse> getUserDrugs(Integer page, Integer size, String sortBy, String order);
+    List<UserDrugsResponse> getAllUserDrugs(String userId);
     List<UserDrugMonitorResponse> getUserDrugMonitor();
     UserDrugMonitorResponse setUserDrugMonitor(UserDrugMonitorRequest userDrugMonitorRequest);
     UserDrugMonitorResponse editUserDrugMonitor(UserDrugMonitorRequest userDrugMonitorRequest);

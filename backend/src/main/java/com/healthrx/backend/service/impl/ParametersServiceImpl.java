@@ -43,12 +43,17 @@ public class ParametersServiceImpl implements ParametersService {
     public List<UserParametersResponse> getUserParameters() {
         User user = principalSupplier.get();
 
-        return userParameterRepository.findAllByUserId(user.getId())
+        return fetchUserParameters(user.getId());
+    }
+
+    @Override
+    public List<UserParametersResponse> fetchUserParameters(String userId) {
+        return userParameterRepository.findAllByUserId(userId)
                 .stream()
                 .map(userParameter -> {
                     Double parameterValue = parameterLogRepository.findParameterLogValueByParameterIdAndUserIdAndToday(
                             userParameter.getParameter().getId(),
-                            user.getId()
+                            userId
                     ).orElse(null);
 
                     return userParameterMapper.map(userParameter, parameterValue);

@@ -11,4 +11,5 @@ public interface UserService {
     User verifyUser(UserVerificationRequest request);
     VerificationDataResponse getVerificationData(Token request);
     InitAndConfigResponse getInitAndConfigData();
+    User getUser(String userId);
 }

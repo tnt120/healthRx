@@ -34,4 +34,16 @@ public enum Days {
             case SUNDAY -> SUNDAY;
         };
     }
+
+    public static String getTranslation(Days day) {
+        return switch (day) {
+            case MONDAY -> "Pon";
+            case TUESDAY -> "Wt";
+            case WEDNESDAY -> "Sr";
+            case THURSDAY -> "Czw";
+            case FRIDAY -> "Pt";
+            case SATURDAY -> "Sob";
+            case SUNDAY -> "Ndz";
+        };
+    }
 }
