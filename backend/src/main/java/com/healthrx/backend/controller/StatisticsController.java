@@ -2,6 +2,7 @@ package com.healthrx.backend.controller;
 
 import com.healthrx.backend.api.external.statistics.*;
 import com.healthrx.backend.service.StatisticsService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/statistics")
 @RequiredArgsConstructor
+@Tag(name = "Statistics controller", description = "Controller for managing statistics")
 public class StatisticsController {
     private final StatisticsService statisticsService;
 

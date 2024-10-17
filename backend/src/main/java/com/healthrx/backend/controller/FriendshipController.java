@@ -7,6 +7,7 @@ import com.healthrx.backend.api.external.invitation.InvitationRequest;
 import com.healthrx.backend.api.external.invitation.InvitationResponse;
 import com.healthrx.backend.api.internal.enums.FriendshipStatus;
 import com.healthrx.backend.service.FriendshipService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/friendship")
 @RequiredArgsConstructor
+@Tag(name = "Friendship controller", description = "Controller for managing friendships")
 public class FriendshipController {
     private final FriendshipService friendshipService;
 

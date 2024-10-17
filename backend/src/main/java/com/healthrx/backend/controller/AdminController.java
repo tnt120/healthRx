@@ -4,6 +4,7 @@ import com.healthrx.backend.api.external.DoctorResponse;
 import com.healthrx.backend.api.external.PageResponse;
 import com.healthrx.backend.api.external.admin.DoctorVerificationRequest;
 import com.healthrx.backend.service.AdminService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/admin")
 @RequiredArgsConstructor
+@Tag(name = "Admin controller", description = "Controller for managing admin actions")
 public class AdminController {
     private final AdminService adminService;
 

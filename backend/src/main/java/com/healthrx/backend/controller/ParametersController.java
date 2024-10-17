@@ -4,6 +4,7 @@ import com.healthrx.backend.api.external.ParameterDTO;
 import com.healthrx.backend.api.external.UserParametersRequest;
 import com.healthrx.backend.api.external.UserParametersResponse;
 import com.healthrx.backend.service.ParametersService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/parameters")
 @RequiredArgsConstructor
+@Tag(name = "Parameters controller", description = "Controller for managing user parameters")
 public class ParametersController {
 
     private final ParametersService parametersService;

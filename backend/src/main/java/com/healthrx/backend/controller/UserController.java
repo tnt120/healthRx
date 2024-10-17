@@ -6,6 +6,7 @@ import com.healthrx.backend.api.external.UserVerificationRequest;
 import com.healthrx.backend.api.external.VerificationDataResponse;
 import com.healthrx.backend.handler.BusinessErrorCodes;
 import com.healthrx.backend.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
+@Tag(name = "User controller", description = "Controller for managing user data")
 public class UserController {
 
     private final UserService userService;

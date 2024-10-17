@@ -3,11 +3,11 @@ package com.healthrx.backend.controller;
 import com.healthrx.backend.api.external.chat.ChatMessageDTO;
 import com.healthrx.backend.api.external.chat.ConversationDTO;
 import com.healthrx.backend.service.ChatService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +18,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/chat")
+@Tag(name = "Chat controller", description = "Controller for managing chat messages")
 public class ChatController {
 
     private final ChatService chatService;

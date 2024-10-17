@@ -4,6 +4,7 @@ import com.healthrx.backend.api.external.DoctorResponse;
 import com.healthrx.backend.api.external.PageResponse;
 import com.healthrx.backend.api.external.ReVerifyDoctorRequest;
 import com.healthrx.backend.service.DoctorService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/doctor")
 @RequiredArgsConstructor
+@Tag(name = "Doctor controller", description = "Controller for managing doctor actions")
 public class DoctorController {
     private final DoctorService doctorService;
 

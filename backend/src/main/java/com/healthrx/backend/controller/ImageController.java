@@ -4,6 +4,7 @@ import com.healthrx.backend.api.external.image.ImageRequest;
 import com.healthrx.backend.api.external.image.ImageResponse;
 import com.healthrx.backend.api.internal.enums.ImageType;
 import com.healthrx.backend.service.impl.ImageService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/image")
 @RequiredArgsConstructor
+@Tag(name = "Image controller", description = "Controller for managing images")
 public class ImageController {
     private final ImageService imageService;
 

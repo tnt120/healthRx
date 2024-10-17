@@ -4,6 +4,7 @@ import com.healthrx.backend.api.external.PageResponse;
 import com.healthrx.backend.api.external.activities.UserActivityRequest;
 import com.healthrx.backend.api.external.activities.UserActivityResponse;
 import com.healthrx.backend.service.ActivityService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @RestController
 @RequestMapping("/api/activities")
 @RequiredArgsConstructor
+@Tag(name = "Activities controller", description = "Controller for managing user activities")
 public class ActivitiesController {
     private final ActivityService activityService;
 

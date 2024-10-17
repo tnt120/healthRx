@@ -4,6 +4,7 @@ import com.healthrx.backend.api.external.LoginRequest;
 import com.healthrx.backend.api.external.RegisterRequest;
 import com.healthrx.backend.api.external.Token;
 import com.healthrx.backend.service.AuthenticationService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Tag(name = "Authentication controller", description = "Controller for managing user authentication")
 public class AuthenticationController {
 
     private final AuthenticationService authService;

@@ -4,6 +4,7 @@ import com.healthrx.backend.api.external.settings.NotificationsData;
 import com.healthrx.backend.api.external.settings.PasswordChangeRequest;
 import com.healthrx.backend.api.external.settings.PersonalDataChangeRequest;
 import com.healthrx.backend.service.SettingsService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/settings")
 @RequiredArgsConstructor
+@Tag(name = "Settings controller", description = "Controller for managing user settings")
 public class SettingsController {
     private final SettingsService settingsService;
 
