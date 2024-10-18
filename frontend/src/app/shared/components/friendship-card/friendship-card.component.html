@@ -4,6 +4,7 @@
   </div>
   <mat-menu #menu="matMenu">
     <button *ngIf="!isDoctor()" mat-menu-item (click)="editPermissions()"><p class="primary-blue">Edytuj uprawnienia</p></button>
+    <button *ngIf="isDoctor() && reportPermisison()" mat-menu-item (click)="onGenerateClick()"><p class="primary-blue">Generuj raport</p></button>
     <button mat-menu-item (click)="cancel()"><p class="red">Usuń</p></button>
   </mat-menu>
 }

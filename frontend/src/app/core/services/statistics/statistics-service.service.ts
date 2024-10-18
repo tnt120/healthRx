@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environments';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChartRequest } from '../../models/chart-request.model';
 import { BehaviorSubject, finalize, Observable, map } from 'rxjs';
 import { ChartResponse } from '../../models/chart-response.model';
@@ -10,6 +10,7 @@ import { DrugStatisticsResponse } from '../../models/drug-statistics-model';
 import { StatisticsType } from '../../enums/statistics-type.enum';
 import { Statistics_Type_Init } from '../../constants/statistics-type-init';
 import { ActivityStatisticsResponse } from '../../models/activity-statistics-response.model';
+import { GenerateReportRequest } from '../../models/generate-report-request.model';
 
 @Injectable({
   providedIn: 'root'
@@ -78,5 +79,14 @@ export class StatisticsServiceService {
     return this.http.post<ActivityStatisticsResponse[]>(`${this.apiUrl}/activities`, req).pipe(
       finalize(() => this.setLoadingStatsState(StatisticsType.ACTIVITY, false))
     );
+  }
+
+  generateReport(req: GenerateReportRequest): Observable<Blob> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/pdf',
+    });
+
+    return this.http.post<Blob>(`${this.apiUrl}/generate-report`, req, { headers: headers, responseType: 'blob' as 'json' });
   }
 }

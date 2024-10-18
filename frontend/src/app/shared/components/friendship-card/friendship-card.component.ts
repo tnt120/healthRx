@@ -1,10 +1,13 @@
-import { Subscription } from 'rxjs';
+import { Subscription, catchError, tap, throwError } from 'rxjs';
 import { Component, HostBinding, inject, input, model, OnDestroy, OnInit, output, signal } from '@angular/core';
-import { FriendshipResponse } from '../../../core/models/friendship-response.model';
+import { FriendshipPermissions, FriendshipResponse } from '../../../core/models/friendship-response.model';
 import { FriendshipService } from '../../../core/services/friendship/friendship.service';
 import { MatDialog } from '@angular/material/dialog';
 import { FriendshipPermissionUpdateDialogComponent } from '../friendship-permission-update-dialog/friendship-permission-update-dialog.component';
 import { ConfirmationDialogComponent, ConfirmationDialogData } from '../confirmation-dialog/confirmation-dialog.component';
+import { StatisticsServiceService } from '../../../core/services/statistics/statistics-service.service';
+import { GenerateReportRequest } from '../../../core/models/generate-report-request.model';
+import { GenerateRaportDialogComponent } from '../../../modules/doctor/components/generate-raport-dialog/generate-raport-dialog.component';
 
 @Component({
   selector: 'app-friendship-card',
@@ -13,6 +16,8 @@ import { ConfirmationDialogComponent, ConfirmationDialogData } from '../confirma
 })
 export class FriendshipCardComponent implements OnInit, OnDestroy {
   private readonly friendshipService = inject(FriendshipService);
+
+  private readonly statisticsService = inject(StatisticsServiceService);
 
   private readonly dialog = inject(MatDialog);
 
@@ -24,10 +29,12 @@ export class FriendshipCardComponent implements OnInit, OnDestroy {
   isDoctor = input<boolean>(false);
   isRejected = model<boolean>(false);
 
+  reportPermisison = signal<boolean>(false);
+
   emitAcceptedAndDeleted = output<string>();
   emitResend = output<string>();
 
-  subscriptions: Subscription[] = [];
+  subscriptions: Subscription = new Subscription();
 
   profilePicture = signal<string>('../../../../../assets/images/user.png');
 
@@ -35,10 +42,12 @@ export class FriendshipCardComponent implements OnInit, OnDestroy {
     if (this.friendship().user?.pictureUrl) {
       this.profilePicture.set('data:image/jpeg;base64 ,' + this.friendship().user.pictureUrl);
     }
+
+    this.reportPermisison.set(this.friendship().permissions.activitiesAccess || this.friendship().permissions.parametersAccess || this.friendship().permissions.userMedicineAccess);
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach((sub) => sub.unsubscribe());
+    this.subscriptions.unsubscribe();
   }
 
   isOverflow(e: HTMLElement): boolean {
@@ -46,7 +55,7 @@ export class FriendshipCardComponent implements OnInit, OnDestroy {
   }
 
   approve() {
-    this.subscriptions.push(
+    this.subscriptions.add(
       this.friendshipService.acceptInvitation({ invitationId: this.friendship().friendshipId }).subscribe((res) => {
         this.emitAcceptedAndDeleted.emit(res.friendshipId);
       })
@@ -54,7 +63,7 @@ export class FriendshipCardComponent implements OnInit, OnDestroy {
   }
 
   reject() {
-    this.subscriptions.push(
+    this.subscriptions.add(
       this.friendshipService.rejectInvitation({ invitationId: this.friendship().friendshipId }).subscribe((res) => {
         this.emitAcceptedAndDeleted.emit(res.friendshipId);
       })
@@ -62,12 +71,55 @@ export class FriendshipCardComponent implements OnInit, OnDestroy {
   }
 
   resend() {
-    this.subscriptions.push(
+    this.subscriptions.add(
       this.friendshipService.resendInvitation({ invitationId: this.friendship().friendshipId }).subscribe((res) => {
         this.emitResend.emit(res.friendshipId);
         this.isRejected.set(false);
       })
     )
+  }
+
+  onGenerateClick() {
+    const dialogData: FriendshipPermissions = this.friendship().permissions;
+
+    const dialogRef = this.dialog.open(GenerateRaportDialogComponent, { data: dialogData });
+
+    this.subscriptions.add(
+      dialogRef.afterClosed().pipe(
+        tap((res) => {
+          if (res) {
+            this.generateReport(res);
+          }
+        })
+      ).subscribe()
+    )
+  }
+
+  generateReport(dialogRes: Omit<GenerateReportRequest, 'userId'>) {
+    const req: GenerateReportRequest = {
+      ...dialogRes,
+      userId: this.friendship().user.id
+    }
+
+    this.subscriptions.add(
+      this.statisticsService.generateReport(req).pipe(
+        tap((res) => {
+          const blob = new Blob([res], { type: 'application/pdf' });
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `raport-${this.friendship().user.firstName}-${this.friendship().user.lastName}-${new Date().toLocaleDateString()}.pdf`;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          a.remove();
+        }),
+        catchError((err) => {
+          console.log('Error while generating report', err);
+          return throwError(() => err);
+        })
+      ).subscribe()
+    );
   }
 
   cancel() {
@@ -79,11 +131,11 @@ export class FriendshipCardComponent implements OnInit, OnDestroy {
 
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: dialogData });
 
-    this.subscriptions.push(
+    this.subscriptions.add(
       dialogRef.afterClosed().subscribe(res => {
         if (res) {
           const isAccepted = this.friendship().status === 'ACCEPTED';
-          this.subscriptions.push(
+          this.subscriptions.add(
             this.friendshipService.cancelInvitation(this.friendship().friendshipId, isAccepted).subscribe((res) => {
               this.emitAcceptedAndDeleted.emit(res.friendshipId);
             })
@@ -97,10 +149,10 @@ export class FriendshipCardComponent implements OnInit, OnDestroy {
   editPermissions() {
     const dialogRef = this.dialog.open(FriendshipPermissionUpdateDialogComponent, { data: this.friendship().permissions });
 
-    this.subscriptions.push(
+    this.subscriptions.add(
       dialogRef.afterClosed().subscribe(res => {
         if (res) {
-          this.subscriptions.push(
+          this.subscriptions.add(
             this.friendshipService.updatePermissions(this.friendship().friendshipId, res).subscribe()
           )
         }

@@ -1,0 +1,44 @@
+<h3 mat-dialog-title>Generuj raport</h3>
+<mat-dialog-content class="mat-typography">
+  <div class="content">
+    <mat-form-field appearance="outline">
+      <mat-label>Zakres</mat-label>
+      <mat-select [(ngModel)]="dateLabel" placeholder="Parametr" (ngModelChange)="setDateRange()">
+        @for (dateRange of dateRangeOptions; track dateRange.label) {
+          <mat-option [value]="dateRange.value">{{ dateRange.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <div class="options-container">
+      <div class="options-container-header">
+        <p class="subtitle-2">Opcje do wygenerowania: </p>
+        <p class="description"><i>Musi byc wybrana co najmniej jedna</i></p>
+      </div>
+      <div class="options-container-options">
+        @if (data.userMedicineAccess) {
+          <div class="checkbox-container">
+            <mat-checkbox [(ngModel)]="result().userDrugs"></mat-checkbox>
+            <p class="text-1">Zażywane leki</p>
+          </div>
+
+          <div class="checkbox-container">
+            <mat-checkbox [(ngModel)]="result().drugsStats"></mat-checkbox>
+            <p class="text-1">Statystyki leków</p>
+          </div>
+        }
+        <div *ngIf="data.parametersAccess" class="checkbox-container">
+          <mat-checkbox [(ngModel)]="result().parametersStats"></mat-checkbox>
+          <p class="text-1">Statystyki parametrów</p>
+        </div>
+        <div *ngIf="data.activitiesAccess" class="checkbox-container">
+          <mat-checkbox [(ngModel)]="result().activitiesStats"></mat-checkbox>
+          <p class="text-1">Statystyki aktywności</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-stroked-button mat-dialog-close>Anuluj</button>
+  <button mat-flat-button [mat-dialog-close]="result()" [disabled]="!isValid()">Zapisz</button>
+</mat-dialog-actions>
