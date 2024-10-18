@@ -15,11 +15,10 @@ export function doctorVerifyGuard(isVerified: boolean): CanActivateFn {
         }
 
         if (isVerified) {
-          router.navigate(['/doctor/unverified']);
-        } else {
-          router.navigate(['/doctor/patients']);
+          return router.createUrlTree(['/doctor/unverified']);
         }
-        return false;
+
+        return router.createUrlTree(['/doctor/patients']);
       })
     )
   };

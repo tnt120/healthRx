@@ -12,8 +12,7 @@ export function roleFactoryGuard(role: Roles): CanActivateFn {
     return store.select('user').pipe(
       map((user) => {;
         if (user.role !== role) {
-          router.navigate(['/login']);
-          return false;
+          return router.createUrlTree(['/login']);
         }
         return true;
       })
@@ -30,14 +29,11 @@ export const notAuthorizedGuard: CanActivateFn = (route, state) => {
       switch (user.role) {
         case Roles.HEAD_ADMIN:
         case Roles.ADMIN:
-          router.navigate(['/admin']);
-          return false;
+          return router.createUrlTree(['/admin']);
         case Roles.USER:
-          router.navigate(['/user']);
-          return false;
+          return router.createUrlTree(['/user']);
         case Roles.DOCTOR:
-          router.navigate(['/doctor']);
-          return false;
+          return router.createUrlTree(['/doctor']);
         default:
           return true;
       }
@@ -57,8 +53,7 @@ export const adminOrHeadAdminGuard: CanActivateFn = (route, state) => {
       if (user.role === Roles.ADMIN || user.role === Roles.HEAD_ADMIN) {
         return true;
       }
-      router.navigate(['/login']);
-      return false;
+      return router.createUrlTree(['/login']);
     })
   )
 };
