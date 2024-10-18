@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
-    <title>Raport</title>
+    <title th:text="'Raport - ' + ${firstName} + ' ' + ${lastName}"></title>
     <style>
         .header {
             display: flex;
