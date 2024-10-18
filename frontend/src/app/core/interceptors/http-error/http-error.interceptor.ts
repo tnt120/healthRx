@@ -1,5 +1,5 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
-import { catchError, EMPTY, retry, switchMap, tap, throwError } from 'rxjs';
+import { catchError, delay, EMPTY, retry, switchMap, tap, throwError } from 'rxjs';
 import { inject } from '@angular/core';
 import { AuthService } from '../../services/auth/auth.service';
 import { Router } from '@angular/router';
@@ -25,9 +25,10 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
             catchError((err) => {
               return authService.logout().pipe(
                 tap(() => {
-                  customSnackbarService.openCustomSnackbar({ title: 'Ostrzeżenie', message: 'Wystąpił problem z sesją i zostałeś wylogowany. Spróbuj zalogować się ponownie.', type: 'warning', duration: 5000 });
-                  router.navigate(['login']);
+                  customSnackbarService.openCustomSnackbar({ title: 'Ostrzeżenie', message: 'Wystąpił problem z sesją i zostaniesz ponownie wylogowany.', type: 'warning', duration: 3000 });
                 }),
+                delay(3000),
+                tap(() => router.navigate(['login'])),
                 switchMap(() => EMPTY)
               );
             })
