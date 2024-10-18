@@ -10,9 +10,10 @@ import com.healthrx.backend.mapper.DrugMapper;
 import com.healthrx.backend.mapper.ParameterMapper;
 import com.healthrx.backend.repository.*;
 import com.healthrx.backend.service.StatisticsService;
-import com.healthrx.backend.utils.ComplianceStats;
-import com.healthrx.backend.utils.DoseTimeStatistics;
-import com.healthrx.backend.utils.DrugDayStatistics;
+import com.healthrx.backend.utils.models.ComplianceStats;
+import com.healthrx.backend.utils.models.DoseTimeStatistics;
+import com.healthrx.backend.utils.models.DrugDayStatistics;
+import com.healthrx.backend.utils.statistics.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
@@ -22,7 +23,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
@@ -46,6 +46,8 @@ public class StatisticsServiceImpl implements StatisticsService {
     private final ParameterMapper parameterMapper;
     private final DrugMapper drugMapper;
     private final ActivityMapper activityMapper;
+    private final TimeStatisticsCalculator timeStatisticsCalculator;
+    private final DayStatisticsCalculator dayStatisticsCalculator;
 
     @Override
     public ChartResponse getChartData(ChartRequest request, ChartType type) {
@@ -187,14 +189,14 @@ public class StatisticsServiceImpl implements StatisticsService {
                 return;
             }
 
-            DrugDayStatistics dayStatistics = calculateDayStatistics(userDrug, logs, startDateTime, endDateTime);
+            DrugDayStatistics dayStatistics = dayStatisticsCalculator.calculateDayStatistics(userDrug, logs, startDateTime, endDateTime);
 
             int totalDosesTaken = logs.size();
-            int totalDosesPlanned = calculateTotalPlannedDoses(userDrug, startDateTime.toLocalDate(), endDateTime.toLocalDate());
+            int totalDosesPlanned = dayStatisticsCalculator.calculateTotalPlannedDoses(userDrug, startDateTime.toLocalDate(), endDateTime.toLocalDate());
             int missedDoses = totalDosesPlanned - totalDosesTaken;
             double compliancePercentage = totalDosesPlanned > 0 ? (totalDosesTaken * 100.0 / totalDosesPlanned) : 0;
 
-            DoseTimeStatistics timeStatistics = calculateTimeStatistics(logs);
+            DoseTimeStatistics timeStatistics = timeStatisticsCalculator.calculateTimeStatistics(logs);
 
             res.add(
                     DrugStatisticsResponse.builder()
@@ -343,11 +345,11 @@ public class StatisticsServiceImpl implements StatisticsService {
         }
 
         Map<DayOfWeek, ComplianceStats> complianceStatsMap = initComplianceStats();
-        Set<DayOfWeek> plannedDaysOfWeek = getPlannedDaysOfWeek(userDrug);
+        Set<DayOfWeek> plannedDaysOfWeek = dayStatisticsCalculator.getPlannedDaysOfWeek(userDrug);
         int totalPlannedDoses = 0;
 
         for (DayOfWeek day : plannedDaysOfWeek) {
-            int plannedDosesForDay = calculatePlannedDosesForDay(userDrug, request.getStartDate().toLocalDate(), request.getEndDate().toLocalDate(), day);
+            int plannedDosesForDay = dayStatisticsCalculator.calculatePlannedDosesForDay(userDrug, request.getStartDate().toLocalDate(), request.getEndDate().toLocalDate(), day);
             complianceStatsMap.get(day).setPlanned(plannedDosesForDay);
             totalPlannedDoses += plannedDosesForDay;
         }
@@ -389,122 +391,6 @@ public class StatisticsServiceImpl implements StatisticsService {
             map.put(day, new ComplianceStats());
         }
         return map;
-    }
-
-    private DrugDayStatistics calculateDayStatistics(UserDrug userDrug, List<DrugLog> logs, LocalDateTime startDateTime, LocalDateTime endDateTime) {
-        int dosesPerDay = userDrug.getDrugDoseTimes().size();
-
-        Map<LocalDate, List<DrugLog>> logsByDate = logs.stream()
-                .collect(Collectors.groupingBy(log -> log.getCreatedAt().toLocalDate()));
-
-        Set<DayOfWeek> plannedDaysOfWeek = getPlannedDaysOfWeek(userDrug);
-
-        LocalDate currDate = startDateTime.toLocalDate().isAfter(userDrug.getStartDate()) ? startDateTime.toLocalDate() : userDrug.getStartDate();;
-        LocalDate endDate = getEndDate(userDrug, endDateTime.toLocalDate());
-
-        int totalDaysTaken = 0;
-        int totalDaysPartiallyTaken = 0;
-        int totalDaysMissed = 0;
-
-        if (!plannedDaysOfWeek.contains(currDate.getDayOfWeek())) {
-            currDate = findNextPlannedDate(currDate, plannedDaysOfWeek);
-        }
-
-        while (!currDate.isAfter(endDate)) {
-            List<DrugLog> logsForDay = logsByDate.getOrDefault(currDate, Collections.emptyList());
-
-            if (logsForDay.isEmpty()) {
-                totalDaysMissed++;
-            } else if (logsForDay.size() == dosesPerDay) {
-                totalDaysTaken++;
-            } else {
-                totalDaysPartiallyTaken++;
-            }
-
-            currDate = findNextPlannedDate(currDate.plusDays(1), plannedDaysOfWeek);
-        }
-
-        return DrugDayStatistics.builder().totalDaysTaken(totalDaysTaken).totalDaysMissed(totalDaysMissed).totalDaysPartiallyTaken(totalDaysPartiallyTaken).build();
-    }
-
-    private DoseTimeStatistics calculateTimeStatistics(List<DrugLog> logs) {
-        double totalDelay = 0;
-        int onTimeDoses = 0;
-
-        for (DrugLog log : logs) {
-            int delay = Math.abs((int) ChronoUnit.MINUTES.between(log.getTime(), log.getTakenTime()));
-            totalDelay += delay;
-
-            if (delay <= 15) {
-                onTimeDoses++;
-            }
-        }
-
-        double avgDelay = totalDelay / logs.size();
-        double punctualityPercentage = onTimeDoses * 100.0 / logs.size();
-
-        return DoseTimeStatistics.builder().avgDelay(avgDelay).punctualityPercentage(punctualityPercentage).build();
-    }
-
-    private Set<DayOfWeek> getPlannedDaysOfWeek(UserDrug userDrug) {
-        return userDrug.getDrugDoseDays().stream()
-                .map(DrugDoseDay::getDay)
-                .map(Days::toDayOfWeek)
-                .sorted(Comparator.comparingInt(DayOfWeek::getValue))
-                .collect(Collectors.toCollection(LinkedHashSet::new));
-    }
-
-    private int calculatePlannedDosesForDay(UserDrug userDrug, LocalDate startDate, LocalDate endDate, DayOfWeek day) {
-        LocalDate start = startDate.isAfter(userDrug.getStartDate()) ? startDate : userDrug.getStartDate();
-        LocalDate end = getEndDate(userDrug, endDate);
-
-        if (start.isAfter(end)) {
-            return 0;
-        }
-
-        LocalDate firstOccurrence = start.with(TemporalAdjusters.nextOrSame(day));
-        if (firstOccurrence.isAfter(end)) {
-            return 0;
-        }
-
-        int totalDays = (int) ChronoUnit.DAYS.between(firstOccurrence, end);
-        int countOfSpecificDay = 1 + totalDays / 7;
-
-        return countOfSpecificDay * userDrug.getDrugDoseTimes().size();
-    }
-
-    private LocalDate getEndDate(UserDrug userDrug, LocalDate endDate) {
-        if (userDrug.getEndDate() == null) {
-            return endDate;
-        } else {
-            return endDate.isBefore(userDrug.getEndDate()) ? endDate : userDrug.getEndDate();
-        }
-    }
-
-    private LocalDate findNextPlannedDate(LocalDate date, Set<DayOfWeek> plannedDaysOfWeek) {
-        DayOfWeek currentDayOfWeek = date.getDayOfWeek();
-        TreeSet<DayOfWeek> sortedPlannedDays = new TreeSet<>(plannedDaysOfWeek);
-
-        for (DayOfWeek plannedDay : sortedPlannedDays) {
-            if (currentDayOfWeek.getValue() <= plannedDay.getValue()) {
-                return date.with(TemporalAdjusters.nextOrSame(plannedDay));
-            }
-        }
-
-        return date.with(TemporalAdjusters.next(sortedPlannedDays.first()));
-    }
-
-
-    private int calculateTotalPlannedDoses(UserDrug userDrug, LocalDate startDate, LocalDate endDate) {
-        Set<DayOfWeek> plannedDaysOfWeek = getPlannedDaysOfWeek(userDrug);
-
-        int totalPlannedDoses = 0;
-
-        for (DayOfWeek day : plannedDaysOfWeek) {
-            totalPlannedDoses += calculatePlannedDosesForDay(userDrug, startDate, endDate, day);
-        }
-
-        return totalPlannedDoses;
     }
 
     private void processDrugLog(DrugLog log, Map<DayOfWeek, ComplianceStats> complianceStatsMap) {

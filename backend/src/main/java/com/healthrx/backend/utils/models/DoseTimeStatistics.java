@@ -1,4 +1,4 @@
-package com.healthrx.backend.utils;
+package com.healthrx.backend.utils.models;
 
 import lombok.Builder;
 import lombok.Data;
