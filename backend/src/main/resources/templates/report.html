@@ -4,6 +4,14 @@
     <meta charset="UTF-8" />
     <title th:text="'Raport - ' + ${firstName} + ' ' + ${lastName}"></title>
     <style>
+        @font-face {
+            font-family: 'DejaVu Sans';
+            src: url('../fonts/Roboto/Roboto-Regular.ttf') format('truetype');
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
         .header {
             display: flex;
             flex-direction: column;
@@ -39,6 +47,7 @@
         tr,td {
             padding: 2px;
             text-align: center;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -52,9 +61,9 @@
 </div>
 
 <div th:if="${userDrugs != null}">
-    <h2>Zazywane leki</h2>
+    <h2>Zażywane leki</h2>
     <div th:if="${userDrugs.isEmpty()}">
-        <h4>Brak danych do wyswietlenia</h4>
+        <h4>Brak danych do wyświetlenia</h4>
     </div>
     <table border="1" th:if="${not userDrugs.isEmpty()}">
         <tr>
@@ -75,27 +84,27 @@
                 </span>
             </td>
             <td th:text="${#strings.arrayJoin(drug.doseTimes, ', ')}"></td>
-            <td th:text="${drug.startDate} + ' - ' + ${drug.endDate}"></td>
+            <td th:text="${drug.startDate} + ' do ' + ${drug.endDate}"></td>
         </tr>
     </table>
 </div>
 
 <div th:if="${drugs != null}">
-    <h2>Statystyki lekow</h2>
+    <h2>Statystyki leków</h2>
     <div th:if="${drugs.isEmpty()}">
-        <h4>Brak danych do wyswietlenia</h4>
+        <h4>Brak danych do wyświetlenia</h4>
     </div>
     <table border="1" th:if="${not drugs.isEmpty()}">
         <tr>
             <th>Nazwa [moc]</th>
             <th>Forma farmaceutyczna</th>
-            <th>Procent zazycia leku</th>
-            <th>Pierwsze zazycie</th>
-            <th>Ostatnie zazycie</th>
-            <th>Pelne dni zazyte (czesciowo)</th>
-            <th>Dni bez zazycia</th>
-            <th>Dawki zazyte / niezazyte</th>
-            <th>Punktualnosc [%]</th>
+            <th>Procent zażycia leku</th>
+            <th>Pierwsze zażycie</th>
+            <th>Ostatnie zażycie</th>
+            <th>Pełne dni zażyte (niepełne)</th>
+            <th>Dni bez zażycia</th>
+            <th>Dawki zażyte / niezażyte</th>
+            <th>Punktualność [%]</th>
         </tr>
         <tr th:each="drug : ${drugs}">
             <td th:text="${drug.drug.name} + ' [' + ${drug.drug.power} + ']'"></td>
@@ -112,19 +121,19 @@
 </div>
 
 <div th:if="${parameters != null}">
-    <h2>Statystyki parametrow</h2>
+    <h2>Statystyki parametrów</h2>
     <div th:if="${parameters.isEmpty()}">
-        <h4>Brak danych do wyswietlenia</h4>
+        <h4>Brak danych do wyświetlenia</h4>
     </div>
     <table border="1" th:if="${not parameters.isEmpty()}">
         <tr>
             <th>Parametr [jednostka]</th>
             <th>Norma (od - do)</th>
-            <th>Wartość (min / max / sr)</th>
-            <th>Dni poza norma (ponizej/powyzej)</th>
+            <th>Wartość (min / max / śr)</th>
+            <th>Dni poza norma (poniżej/powyżej)</th>
             <th>Pierwszy pomiar</th>
             <th>Ostatni pomiar</th>
-            <th>Dni bez pomiarów (najdluzsza przerwa)</th>
+            <th>Dni bez pomiarów (najdłuższa przerwa)</th>
             <th>Liczba pomiarów</th>
             <th>Trend</th>
         </tr>
@@ -143,20 +152,20 @@
 </div>
 
 <div th:if="${activities != null}">
-    <h2>Statystyki aktywnosci</h2>
+    <h2>Statystyki aktywności</h2>
     <div th:if="${activities.isEmpty()}">
-        <h4>Brak danych do wyswietlenia</h4>
+        <h4>Brak danych do wyświetlenia</h4>
     </div>
     <table border="1" th:if="${not activities.isEmpty()}">
         <tr>
-            <th>Aktywnosc</th>
+            <th>Aktywność</th>
             <th>Pierwsze wykonanie</th>
             <th>Ostatnie wykonanie</th>
-            <th>Ilosc</th>
+            <th>Ilość</th>
             <th>Suma w godzinach</th>
-            <th>Czas trwania (najkrotszy / najdluzszy / sredni) [min]</th>
-            <th>Tetno (min / max / sr)</th>
-            <th>Spalone kalorie (min / max / sr)</th>
+            <th>Czas trwania (najkrótszy / najdluższy / średni) [min]</th>
+            <th>Tętno (min / max / śr)</th>
+            <th>Spalone kalorie (min / max / śr)</th>
         </tr>
         <tr th:each="activity : ${activities}">
             <td th:text="${activity.activity.name}"></td>

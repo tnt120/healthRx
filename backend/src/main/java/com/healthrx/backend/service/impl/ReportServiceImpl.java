@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import static com.healthrx.backend.handler.BusinessErrorCodes.*;
@@ -149,6 +150,10 @@ public class ReportServiceImpl implements ReportService {
 
         OutputStream outputStream = response.getOutputStream();
         ITextRenderer renderer = new ITextRenderer();
+
+        String fontPath = Objects.requireNonNull(getClass().getClassLoader().getResource("fonts/Roboto/Roboto-Regular.ttf")).toExternalForm();
+        renderer.getFontResolver().addFont(fontPath, "Identity-H",true);
+
         renderer.setDocumentFromString(htmlContent);
         renderer.layout();
         renderer.createPDF(outputStream);

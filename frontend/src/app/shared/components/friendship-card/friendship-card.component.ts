@@ -113,10 +113,6 @@ export class FriendshipCardComponent implements OnInit, OnDestroy {
           a.click();
           window.URL.revokeObjectURL(url);
           a.remove();
-        }),
-        catchError((err) => {
-          console.log('Error while generating report', err);
-          return throwError(() => err);
         })
       ).subscribe()
     );

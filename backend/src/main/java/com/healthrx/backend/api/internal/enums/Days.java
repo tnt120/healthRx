@@ -39,7 +39,7 @@ public enum Days {
         return switch (day) {
             case MONDAY -> "Pon";
             case TUESDAY -> "Wt";
-            case WEDNESDAY -> "Sr";
+            case WEDNESDAY -> "Śr";
             case THURSDAY -> "Czw";
             case FRIDAY -> "Pt";
             case SATURDAY -> "Sob";

@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environments';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChartRequest } from '../../models/chart-request.model';
-import { BehaviorSubject, finalize, Observable, map } from 'rxjs';
+import { BehaviorSubject, finalize, Observable, map, throwError, catchError } from 'rxjs';
 import { ChartResponse } from '../../models/chart-response.model';
 import { StatisticsRequest } from '../../models/statistics-request.model';
 import { ParameterStatisticsResponse } from '../../models/parameter-statistics-model';
@@ -11,6 +11,7 @@ import { StatisticsType } from '../../enums/statistics-type.enum';
 import { Statistics_Type_Init } from '../../constants/statistics-type-init';
 import { ActivityStatisticsResponse } from '../../models/activity-statistics-response.model';
 import { GenerateReportRequest } from '../../models/generate-report-request.model';
+import { CustomSnackbarService } from '../custom-snackbar/custom-snackbar.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,8 @@ export class StatisticsServiceService {
   private readonly apiUrl = `${environment.apiUrl}/statistics`;
 
   private readonly http = inject(HttpClient);
+
+  private readonly customSnackbarService = inject(CustomSnackbarService);
 
   private loadingStatsSubject = new BehaviorSubject<Map<StatisticsType, boolean>>(Statistics_Type_Init);
 
@@ -87,6 +90,12 @@ export class StatisticsServiceService {
       Accept: 'application/pdf',
     });
 
-    return this.http.post<Blob>(`${this.apiUrl}/generate-report`, req, { headers: headers, responseType: 'blob' as 'json' });
+    return this.http.post<Blob>(`${this.apiUrl}/generate-report`, req, { headers: headers, responseType: 'blob' as 'json' }).pipe(
+      catchError((err) => {
+        console.log('Error while generating report', err);
+        this.customSnackbarService.openCustomSnackbar({ title: 'Błąd', message: 'Wystawił błąd podczas generowania raportu. Spróbuj ponownie za chwilę.', type: 'error', duration: 2500 });
+        return throwError(() => err);
+      })
+    );
   }
 }
