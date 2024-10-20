@@ -20,14 +20,19 @@ public class ParametersController {
 
     private final ParametersService parametersService;
 
-    @GetMapping("/users")
-    public ResponseEntity<List<UserParametersResponse>> getUserParameters() {
-        return ResponseEntity.ok(parametersService.getUserParameters());
+    @GetMapping
+    public ResponseEntity<List<ParameterDTO>> getParameters() {
+        return ResponseEntity.ok(parametersService.getAllParameters());
     }
 
     @PostMapping
     public ResponseEntity<ParameterDTO> addParameter(@RequestBody ParameterRequest req) {
         return ResponseEntity.ok(parametersService.addParameter(req));
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<UserParametersResponse>> getUserParameters() {
+        return ResponseEntity.ok(parametersService.getUserParameters());
     }
 
     @PatchMapping("/users")

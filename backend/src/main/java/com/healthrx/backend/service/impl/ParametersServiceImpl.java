@@ -63,6 +63,16 @@ public class ParametersServiceImpl implements ParametersService {
     }
 
     @Override
+    public List<ParameterDTO> getAllParameters() {
+        adminService.checkPermissions();
+
+        return parameterRepository.findAll()
+                .stream()
+                .map(parameterMapper::map)
+                .toList();
+    }
+
+    @Override
     @Transactional
     public List<UserParametersResponse> getUserParameters() {
         User user = principalSupplier.get();
