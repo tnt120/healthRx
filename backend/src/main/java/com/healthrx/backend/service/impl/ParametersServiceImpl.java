@@ -3,15 +3,15 @@ package com.healthrx.backend.service.impl;
 import com.healthrx.backend.api.external.ParameterDTO;
 import com.healthrx.backend.api.external.UserParametersRequest;
 import com.healthrx.backend.api.external.UserParametersResponse;
-import com.healthrx.backend.api.internal.Parameter;
-import com.healthrx.backend.api.internal.ParameterLog;
-import com.healthrx.backend.api.internal.User;
-import com.healthrx.backend.api.internal.UserParameter;
+import com.healthrx.backend.api.external.paramters.ParameterRequest;
+import com.healthrx.backend.api.internal.*;
 import com.healthrx.backend.mapper.ParameterMapper;
 import com.healthrx.backend.mapper.UserParameterMapper;
 import com.healthrx.backend.repository.ParameterLogRepository;
 import com.healthrx.backend.repository.ParameterRepository;
+import com.healthrx.backend.repository.UnitRepository;
 import com.healthrx.backend.repository.UserParameterRepository;
+import com.healthrx.backend.service.AdminService;
 import com.healthrx.backend.service.ParametersService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -34,9 +34,33 @@ public class ParametersServiceImpl implements ParametersService {
     private final ParameterRepository parameterRepository;
     private final UserParameterRepository userParameterRepository;
     private final ParameterLogRepository parameterLogRepository;
+    private final AdminService adminService;
+    private final UnitRepository unitRepository;
     private final ParameterMapper parameterMapper;
     private final UserParameterMapper userParameterMapper;
     private final Supplier<User> principalSupplier;
+
+    @Override
+    public ParameterDTO addParameter(ParameterRequest req) {
+        adminService.checkPermissions();
+
+        Unit unit = unitRepository.findById(req.getUnitId())
+                .orElseThrow(UNIT_NOT_FOUND::getError);
+
+        parameterRepository.findByName(req.getName()).ifPresent(parameter -> {
+            throw PARAMETER_ALREADY_EXISTS.getError();
+        });
+
+        return parameterMapper.map(parameterRepository.save(Parameter.builder()
+                .hint(req.getHint())
+                .maxValue(req.getMaxValue())
+                .minValue(req.getMinValue())
+                .maxStandardValue(req.getMaxStandardValue())
+                .minStandardValue(req.getMinStandardValue())
+                .name(req.getName())
+                .unit(unit)
+                .build()));
+    }
 
     @Override
     @Transactional

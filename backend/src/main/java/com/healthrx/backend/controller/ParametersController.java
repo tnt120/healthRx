@@ -3,6 +3,7 @@ package com.healthrx.backend.controller;
 import com.healthrx.backend.api.external.ParameterDTO;
 import com.healthrx.backend.api.external.UserParametersRequest;
 import com.healthrx.backend.api.external.UserParametersResponse;
+import com.healthrx.backend.api.external.paramters.ParameterRequest;
 import com.healthrx.backend.service.ParametersService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,11 @@ public class ParametersController {
     @GetMapping("/users")
     public ResponseEntity<List<UserParametersResponse>> getUserParameters() {
         return ResponseEntity.ok(parametersService.getUserParameters());
+    }
+
+    @PostMapping
+    public ResponseEntity<ParameterDTO> addParameter(@RequestBody ParameterRequest req) {
+        return ResponseEntity.ok(parametersService.addParameter(req));
     }
 
     @PatchMapping("/users")

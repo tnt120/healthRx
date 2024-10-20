@@ -98,7 +98,8 @@ public class AdminServiceImpl implements AdminService {
                 .setFirst(doctors.isFirst());
     }
 
-    private User checkPermissions() {
+    @Override
+    public User checkPermissions() {
         User user = principalSupplier.get();
 
         if (user.getRole() != Role.ADMIN && user.getRole() != Role.HEAD_ADMIN) {
