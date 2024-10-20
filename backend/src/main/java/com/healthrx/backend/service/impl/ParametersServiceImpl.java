@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -60,6 +61,35 @@ public class ParametersServiceImpl implements ParametersService {
                 .name(req.getName())
                 .unit(unit)
                 .build()));
+    }
+
+    @Override
+    @Transactional
+    public ParameterDTO editParameter(String id, ParameterRequest req) {
+        adminService.checkPermissions();
+
+        Parameter parameter = parameterRepository.findById(id)
+                .orElseThrow(PARAMETER_NOT_FOUND::getError);
+
+        Optional.ofNullable(req.getName()).ifPresent(name -> {
+            parameterRepository.findByName(name).ifPresent(p -> {
+                throw PARAMETER_ALREADY_EXISTS.getError();
+            });
+            parameter.setName(name);
+        });
+
+        Optional.ofNullable(req.getHint()).ifPresent(parameter::setHint);
+        Optional.ofNullable(req.getMaxValue()).ifPresent(parameter::setMaxValue);
+        Optional.ofNullable(req.getMinValue()).ifPresent(parameter::setMinValue);
+        Optional.ofNullable(req.getMaxStandardValue()).ifPresent(parameter::setMaxStandardValue);
+        Optional.ofNullable(req.getMinStandardValue()).ifPresent(parameter::setMinStandardValue);
+        Optional.ofNullable(req.getUnitId()).ifPresent(unitId -> {
+            Unit unit = unitRepository.findById(unitId)
+                    .orElseThrow(UNIT_NOT_FOUND::getError);
+            parameter.setUnit(unit);
+        });
+
+        return parameterMapper.map(parameterRepository.save(parameter));
     }
 
     @Override

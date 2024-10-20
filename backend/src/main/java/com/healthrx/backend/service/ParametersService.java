@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface ParametersService {
     ParameterDTO addParameter(ParameterRequest request);
+    ParameterDTO editParameter(String id, ParameterRequest request);
     List<ParameterDTO> getAllParameters();
     List<UserParametersResponse> getUserParameters();
     List<UserParametersResponse> fetchUserParameters(String userId);

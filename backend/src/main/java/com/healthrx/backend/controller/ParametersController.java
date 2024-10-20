@@ -30,6 +30,11 @@ public class ParametersController {
         return ResponseEntity.ok(parametersService.addParameter(req));
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<ParameterDTO> editParameter(@PathVariable String id, @RequestBody ParameterRequest req) {
+        return ResponseEntity.ok(parametersService.editParameter(id, req));
+    }
+
     @GetMapping("/users")
     public ResponseEntity<List<UserParametersResponse>> getUserParameters() {
         return ResponseEntity.ok(parametersService.getUserParameters());
