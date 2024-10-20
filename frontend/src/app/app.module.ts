@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, NgModule, isDevMode, LOCALE_ID } from '@angular/core';
+import { APP_INITIALIZER, NgModule, isDevMode, LOCALE_ID, provideExperimentalZonelessChangeDetection } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -71,6 +71,7 @@ function initializeAppFactory(store: Store, router: Router, actions$: Actions): 
   ],
   providers: [
     provideAnimationsAsync(),
+    provideExperimentalZonelessChangeDetection(),
     provideHttpClient(
       withInterceptors(
         [authInterceptor, httpErrorInterceptor, spinnerInterceptor]
