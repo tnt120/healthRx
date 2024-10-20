@@ -91,8 +91,8 @@ public class StatisticsServiceImpl implements StatisticsService {
             ParameterStatisticsResponse parametersRes = new ParameterStatisticsResponse();
 
             double sum = 0.0;
-            double paramMinValue = Double.parseDouble(parameter.getMinValue());
-            double paramMaxValue = Double.parseDouble(parameter.getMaxValue());
+            Double paramMinStandardValue = parameter.getMinStandardValue();
+            Double paramMaxStandardValue = parameter.getMaxStandardValue();
             int daysBelowMinValue = 0;
             int daysAboveMaxValue = 0;
             double min = Double.MAX_VALUE;
@@ -112,9 +112,9 @@ public class StatisticsServiceImpl implements StatisticsService {
                 min = Math.min(min, log.getValue());
                 max = Math.max(max, log.getValue());
 
-                if (log.getValue() < paramMinValue) {
+                if (log.getValue() < paramMinStandardValue) {
                     daysBelowMinValue++;
-                } else if (log.getValue() > paramMaxValue) {
+                } else if (log.getValue() > paramMaxStandardValue) {
                     daysAboveMaxValue++;
                 }
 
@@ -125,7 +125,7 @@ public class StatisticsServiceImpl implements StatisticsService {
 
             parametersRes.setParameter(parameterMapper.map(parameter));
 
-            double range = paramMaxValue - paramMinValue;
+            double range = paramMaxStandardValue - paramMinStandardValue;
             double threshold = range * 0.05;
             double stabilityThreshold = range * 0.01;
 

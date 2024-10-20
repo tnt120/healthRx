@@ -38,55 +38,78 @@ public class BackendApplication {
 //            Unit unit8 = unitRepository.save(new Unit().setName("Steps").setSymbol("steps"));
 //            Unit unit9 = unitRepository.save(new Unit().setName("Stress Level").setSymbol("Level"));
 //
-//            parameterRepository.save(new Parameter().setName("Waga").setUnit(unit1).setMinValue("18.5").setMaxValue("24.9").setHint("Podana w kg"));
-//            parameterRepository.save(new Parameter().setName("Sen").setUnit(unit2).setMinValue("7").setMaxValue("9").setHint("W godzinach snu"));
+//            parameterRepository.save(new Parameter().setName("Waga").setUnit(unit1).setMinValue(1.0).setMaxValue(400.0).setMinStandardValue(18.5).setMaxStandardValue(24.99).setHint("Podana w kg"));
+//            parameterRepository.save(new Parameter().setName("Sen").setUnit(unit2).setMinValue(1.0).setMaxValue(48.0).setMinStandardValue(7.0).setMaxStandardValue(9.0).setHint("W godzinach snu"));
 //            parameterRepository.save(new Parameter()
 //                    .setName("Tętno")
 //                    .setUnit(unit3)
-//                    .setMinValue("60")
-//                    .setMaxValue("100")
+//                    .setMinValue(30.0)
+//                    .setMaxValue(200.0)
+//                    .setMinStandardValue(60.0)
+//                    .setMaxStandardValue(100.0)
 //                    .setHint("BPM - uderzenia na minutę"));
 //
 //            parameterRepository.save(new Parameter()
 //                    .setName("Poziom cukru we krwi")
 //                    .setUnit(unit4)
-//                    .setMinValue("70")
-//                    .setMaxValue("140")
+//                    .setMinValue(0.0)
+//                    .setMaxValue(1000.0)
+//                    .setMinStandardValue(70.0)
+//                    .setMaxStandardValue(140.0)
 //                    .setHint("Podana w mg/dL"));
 //
 //            parameterRepository.save(new Parameter()
-//                    .setName("Ciśnienie krwi")
+//                    .setName("Ciśnienie skurczowe krwi")
 //                    .setUnit(unit5)
-//                    .setMinValue("90/60")
-//                    .setMaxValue("120/80")
+//                    .setMinValue(20.0)
+//                    .setMaxValue(300.0)
+//                    .setMinStandardValue(100.0)
+//                    .setMaxStandardValue(139.0)
+//                    .setHint("Podana w mmHg"));
+//
+//            parameterRepository.save(new Parameter()
+//                    .setName("Ciśnienie rozkurczowe krwi")
+//                    .setUnit(unit5)
+//                    .setMinValue(10.0)
+//                    .setMaxValue(300.0)
+//                    .setMinStandardValue(60.0)
+//                    .setMaxStandardValue(89.0)
 //                    .setHint("Podana w mmHg"));
 //
 //            parameterRepository.save(new Parameter()
 //                    .setName("Saturacja")
 //                    .setUnit(unit6)
-//                    .setMinValue("95")
-//                    .setMaxValue("100")
+//                    .setMinValue(0.0)
+//                    .setMaxValue(100.0)
+//                    .setMinStandardValue(95.0)
+//                    .setMaxStandardValue(100.0)
 //                    .setHint("Podana w procentach"));
 //
 //            parameterRepository.save(new Parameter()
 //                    .setName("Spożycie wody")
 //                    .setUnit(unit7)
-//                    .setMinValue("2000")
-//                    .setMaxValue("3000")
+//                    .setMinValue(0.0)
+//                    .setMaxValue(10000.0)
+//                    .setMinStandardValue(2000.0)
+//                    .setMaxStandardValue(8000.0)
 //                    .setHint("Podana w ml"));
 //
 //            parameterRepository.save(new Parameter()
 //                    .setName("Kroki")
 //                    .setUnit(unit8)
-//                    .setMinValue("5000")
-//                    .setMaxValue("10000")
+//                    .setMinValue(0.0)
+//                    .setMaxValue(100000.0)
+//                    .setMinStandardValue(5000.0)
+//                    .setMaxStandardValue(50000.0)
 //                    .setHint("Liczba kroków"));
 //
 //            parameterRepository.save(new Parameter()
 //                    .setName("Poziom stresu")
 //                    .setUnit(unit9)
-//                    .setMinValue("1")
-//                    .setMaxValue("10")
+//                    .setMinValue(1.0)
+//                    .setMaxValue(10.0)
+//                    .setMinStandardValue(1.0)
+//                    .setMaxStandardValue(4.0)
 //                    .setHint("Poziom stresu w skali od 1 do 10"));
 //
 //            cityRepository.save(new City().setName("Kraków"));

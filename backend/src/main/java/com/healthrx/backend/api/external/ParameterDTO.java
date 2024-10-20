@@ -1,5 +1,6 @@
 package com.healthrx.backend.api.external;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +14,9 @@ public class ParameterDTO {
     private String id;
     private String name;
     private String unit;
-    private String minValue;
-    private String maxValue;
+    private Double minValue;
+    private Double maxValue;
+    private Double minStandardValue;
+    private Double maxStandardValue;
     private String hint;
 }

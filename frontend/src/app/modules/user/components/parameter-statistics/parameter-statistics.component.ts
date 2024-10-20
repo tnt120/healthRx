@@ -71,7 +71,7 @@ export class ParameterStatisticsComponent implements OnInit, OnDestroy {
           .filter(stat => stat.trend)
           .map(stat => ({
             name: `${stat.parameter.name} [${stat.parameter.unit}]`,
-            standards: `${stat.parameter.minValue} - ${stat.parameter.maxValue}`,
+            standards: `${stat.parameter.minStandardValue} - ${stat.parameter.maxStandardValue}`,
             avg: Math.round(stat.avgValue * 100) / 100,
             min: stat.minValue,
             max: stat.maxValue,

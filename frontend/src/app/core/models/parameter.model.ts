@@ -4,5 +4,7 @@ export interface Parameter {
   unit: string;
   minValue: number;
   maxValue: number;
+  minStandardValue: number;
+  maxStandardValue: number;
   hint: string;
 }

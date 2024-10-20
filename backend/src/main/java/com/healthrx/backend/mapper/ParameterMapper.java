@@ -16,6 +16,8 @@ public class ParameterMapper {
                 .unit(parameter.getUnit().getSymbol())
                 .minValue(parameter.getMinValue())
                 .maxValue(parameter.getMaxValue())
+                .maxStandardValue(parameter.getMaxStandardValue())
+                .minStandardValue(parameter.getMinStandardValue())
                 .hint(parameter.getHint())
                 .build();
     }

@@ -31,7 +31,13 @@ public class Parameter {
     private Unit unit;
 
     @Column(nullable = false)
-    private String minValue;
+    private Double minValue;
     @Column(nullable = false)
-    private String maxValue;
+    private Double maxValue;
+
+    @Column(nullable = false)
+    private Double minStandardValue;
+
+    @Column(nullable = false)
+    private Double maxStandardValue;
 }

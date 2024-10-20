@@ -38,8 +38,10 @@ export class LineChartComponent implements OnInit {
 
   generateChart(): void {
     const dataPoints: number[] = this.chartData()?.data.map((d) => d.value) || [];
-    const minY = Math.min(...dataPoints, this.chartData().selectedParameter.minValue) - (this.chartData().selectedParameter.minValue > 1000 ? 100 : 10);
-    const maxY = Math.max(...dataPoints, this.chartData().selectedParameter.maxValue) + (this.chartData().selectedParameter.maxValue > 1000 ? 100 : 10);
+    const minTemp = Math.min(...dataPoints) - (this.chartData().selectedParameter.minStandardValue > 1000 ? 100 : 10);
+    const minY = minTemp >= 0 ? minTemp : 0;
+    const maxTemp = Math.max(...dataPoints) + (this.chartData().selectedParameter.maxStandardValue > 1000 ? 100 : 10)
+    const maxY = maxTemp <= this.chartData().selectedParameter.maxValue ? maxTemp : this.chartData().selectedParameter.maxValue;
 
     this.chart = new Chart('lineChart', {
       type: 'line',
@@ -103,15 +105,15 @@ export class LineChartComponent implements OnInit {
             annotations: {
               line1: {
                 type: 'line',
-                yMin: this.chartData().selectedParameter.minValue,
-                yMax: this.chartData().selectedParameter.minValue,
+                yMin: this.chartData().selectedParameter.minStandardValue,
+                yMax: this.chartData().selectedParameter.minStandardValue,
                 borderColor: 'red',
                 borderWidth: 1,
               },
               line2: {
                 type: 'line',
-                yMin: this.chartData().selectedParameter.maxValue,
-                yMax: this.chartData().selectedParameter.maxValue,
+                yMin: this.chartData().selectedParameter.maxStandardValue,
+                yMax: this.chartData().selectedParameter.maxStandardValue,
                 borderColor: 'red',
                 borderWidth: 1,
               }

@@ -3,10 +3,19 @@
   <div class="content">
     <mat-form-field appearance="outline">
       <mat-label>{{ userParam.parameter.name }}</mat-label>
-      <input matInput type="number" min="0" [placeholder]="userParam.parameter.name" [(ngModel)]="userParam.value">
+      <input
+        matInput
+        type="number"
+        [placeholder]="userParam.parameter.name"
+        [(ngModel)]="userParam.value"
+        [min]="data.userParameter.parameter.minValue"
+        [max]="data.userParameter.parameter.maxValue"
+      >
       <mat-hint>{{ userParam.parameter.hint }}</mat-hint>
-      @if (userParam.value && userParam.value < 0) {
-        <mat-error>Wartość nie może być ujemna</mat-error>
+      @if (userParam.value && userParam.value < data.userParameter.parameter.minValue) {
+        <mat-error>Wartość nie może być mniejsza niż {{ data.userParameter.parameter.minValue }}</mat-error>
+      } @else if (userParam.value && userParam.value > data.userParameter.parameter.maxValue) {
+        <mat-error>Wartość nie może być większa niż {{ data.userParameter.parameter.maxValue }}</mat-error>
       }
     </mat-form-field>
   </div>

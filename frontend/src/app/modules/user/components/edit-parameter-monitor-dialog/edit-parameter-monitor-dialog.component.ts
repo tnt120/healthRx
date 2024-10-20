@@ -21,6 +21,11 @@ export class EditParameterMonitorDialogComponent implements OnInit {
   }
 
   isValid(): boolean {
-    return !!(this.userParam.value && this.userParam.value > 0 && this.data.userParameter.value !== this.userParam.value);
+    return !!(
+      this.userParam.value &&
+      this.userParam.value <= this.data.userParameter.parameter.maxValue &&
+      this.userParam.value >= this.data.userParameter.parameter.minValue &&
+      this.userParam.value &&
+      this.data.userParameter.value !== this.userParam.value);
   }
 }

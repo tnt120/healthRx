@@ -113,12 +113,14 @@ export class ParametersDashboardComponent implements OnInit, OnDestroy {
 
     const anyNegativeValue = this.parametersToSet.some(param => param.value && param.value <= 0);
     const anyPositiveValue = this.parametersToSet.some(param => param.value && param.value > 0);
+    const anyValueAboveMax = this.parametersToSet.some(param => param.value && param.value > param.parameter.maxValue);
+    const anyValueBelowMin = this.parametersToSet.some(param => param.value && param.value < param.parameter.minValue);
 
-    return singleParamExist || anyNegativeValue || !anyPositiveValue;
+    return singleParamExist || anyNegativeValue || !anyPositiveValue || anyValueAboveMax || anyValueBelowMin;
   }
 
   getTooltipText(param: UserParameterResponse): string {
-    return `Wartość prawidłowa wynosi pomiędzy: ${param.parameter.minValue} a ${param.parameter.maxValue}`;
+    return `Wartość prawidłowa wynosi pomiędzy: ${param.parameter.minStandardValue} a ${param.parameter.maxStandardValue}`;
   }
 
   editParameter(param: UserParameterResponse) {
@@ -150,5 +152,9 @@ export class ParametersDashboardComponent implements OnInit, OnDestroy {
         }
       })
     )
+  }
+
+  protected checkStandards(paramter: Parameter, value: number): boolean {
+    return value! <= paramter.maxStandardValue && value! >= paramter.minStandardValue;
   }
 }

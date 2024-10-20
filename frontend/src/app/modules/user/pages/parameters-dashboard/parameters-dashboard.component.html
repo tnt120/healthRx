@@ -20,10 +20,14 @@
             @for (param of parametersToSet; track param.id) {
               <mat-form-field appearance="outline">
                 <mat-label>{{ param.parameter.name }}</mat-label>
-                <input matInput type="number" min="0" [placeholder]="param.parameter.name" [(ngModel)]="param.value">
+                <input matInput type="number" min="0" [placeholder]="param.parameter.name" [(ngModel)]="param.value" [min]="param.parameter.minValue" [max]="param.parameter.maxValue">
                 <mat-hint>{{ param.parameter.hint }}</mat-hint>
                 @if (param.value && param.value < 0) {
                   <mat-error>Wartość nie może być ujemna</mat-error>
+                } @else if (param.value && param.value < param.parameter.minValue) {
+                  <mat-error>Wartość nie może być mniejsza niż {{ param.parameter.minValue }}</mat-error>
+                } @else if (param.value && param.value > param.parameter.maxValue) {
+                  <mat-error>Wartość nie może być większa niż {{ param.parameter.maxValue }}</mat-error>
                 }
               </mat-form-field>
             }
@@ -65,7 +69,7 @@
                     <td>
                       <div class="edit-parameter-container">
                         <div [matTooltip]="getTooltipText(param)">
-                          @if (param.value! <= param.parameter.maxValue && param.value! >= param.parameter.minValue) {
+                          @if (checkStandards(param.parameter, param.value!)) {
                             <mat-icon class="green" aria-hidden="true" matListItemIcon fontSet="material-symbols-outlined">check_circle</mat-icon>
                           } @else {
                             <mat-icon class="yellow" aria-hidden="true" matListItemIcon fontSet="material-symbols-outlined">warning</mat-icon>
