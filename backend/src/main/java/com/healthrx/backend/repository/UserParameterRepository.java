@@ -8,4 +8,5 @@ import java.util.List;
 public interface UserParameterRepository extends JpaRepository<UserParameter, String> {
 
     List<UserParameter> findAllByUserId(String userId);
+    void deleteAllByParameterId(String parameterId);
 }

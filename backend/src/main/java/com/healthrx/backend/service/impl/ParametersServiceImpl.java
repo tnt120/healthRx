@@ -93,6 +93,20 @@ public class ParametersServiceImpl implements ParametersService {
     }
 
     @Override
+    @Transactional
+    public Void deleteParameter(String id) {
+        adminService.checkPermissions();
+
+        Parameter parameter = parameterRepository.findById(id)
+                .orElseThrow(PARAMETER_NOT_FOUND::getError);
+
+        parameterLogRepository.deleteAllByParameterId(id);
+        userParameterRepository.deleteAllByParameterId(id);
+        parameterRepository.delete(parameter);
+        return null;
+    }
+
+    @Override
     public List<ParameterDTO> getAllParameters() {
         adminService.checkPermissions();
 

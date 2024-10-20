@@ -6,6 +6,7 @@ import com.healthrx.backend.api.external.UserParametersResponse;
 import com.healthrx.backend.api.external.paramters.ParameterRequest;
 import com.healthrx.backend.service.ParametersService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +34,12 @@ public class ParametersController {
     @PatchMapping("/{id}")
     public ResponseEntity<ParameterDTO> editParameter(@PathVariable String id, @RequestBody ParameterRequest req) {
         return ResponseEntity.ok(parametersService.editParameter(id, req));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteParameter(@PathVariable String id) {
+        parametersService.deleteParameter(id);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/users")
