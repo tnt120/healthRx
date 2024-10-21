@@ -21,26 +21,6 @@ import java.util.List;
 public class ActivitiesController {
     private final ActivityService activityService;
 
-    @GetMapping("/admin")
-    public ResponseEntity<List<ActivityDTO>> getAllActivities() {
-        return ResponseEntity.ok(activityService.getAllActivitiesDTOs());
-    }
-
-    @PostMapping("/admin")
-    public ResponseEntity<ActivityDTO> addActivity(@RequestBody ActivityRequest req) {
-        return ResponseEntity.ok(activityService.addActivity(req));
-    }
-
-    @PatchMapping("/admin/{id}")
-    public ResponseEntity<ActivityDTO> editActivity(@PathVariable String id, @RequestBody ActivityRequest req) {
-        return ResponseEntity.ok(activityService.editActivity(id, req));
-    }
-
-    @DeleteMapping("/admin/{id}")
-    public ResponseEntity<Void> deleteActivity(@PathVariable String id) {
-        return ResponseEntity.ok(activityService.deleteActivity(id));
-    }
-
     @GetMapping("/user")
     public ResponseEntity<PageResponse<UserActivityResponse>> getUserActivities(
             @RequestParam(name = "page", defaultValue = "0", required = false) Integer page,

@@ -21,27 +21,6 @@ public class ParametersController {
 
     private final ParametersService parametersService;
 
-    @GetMapping("/admin")
-    public ResponseEntity<List<ParameterDTO>> getParameters() {
-        return ResponseEntity.ok(parametersService.getAllParameters());
-    }
-
-    @PostMapping("/admin")
-    public ResponseEntity<ParameterDTO> addParameter(@RequestBody ParameterRequest req) {
-        return ResponseEntity.ok(parametersService.addParameter(req));
-    }
-
-    @PatchMapping("/admin/{id}")
-    public ResponseEntity<ParameterDTO> editParameter(@PathVariable String id, @RequestBody ParameterRequest req) {
-        return ResponseEntity.ok(parametersService.editParameter(id, req));
-    }
-
-    @DeleteMapping("/admin/{id}")
-    public ResponseEntity<Void> deleteParameter(@PathVariable String id) {
-        parametersService.deleteParameter(id);
-        return ResponseEntity.ok().build();
-    }
-
     @GetMapping("/users")
     public ResponseEntity<List<UserParametersResponse>> getUserParameters() {
         return ResponseEntity.ok(parametersService.getUserParameters());
