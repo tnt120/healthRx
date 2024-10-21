@@ -61,6 +61,7 @@ public enum BusinessErrorCodes {
     NOT_ACTIVITIES_STATS_PERMISSION(341, "User does not have permission to view activities statistics", HttpStatus.FORBIDDEN),
     UNIT_NOT_FOUND(342, "Unit not found", HttpStatus.NOT_FOUND),
     PARAMETER_ALREADY_EXISTS(343, "Parameter already exists", HttpStatus.CONFLICT),
+    ACTIVITY_ALREADY_EXISTS(344, "Activity already exists", HttpStatus.CONFLICT),
     ;
 
     private final int code;

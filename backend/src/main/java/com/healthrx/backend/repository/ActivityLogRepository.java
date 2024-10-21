@@ -22,4 +22,6 @@ public interface ActivityLogRepository extends JpaRepository<ActivityLog, String
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate
     );
+
+    void deleteAllByActivityId(String activityId);
 }
