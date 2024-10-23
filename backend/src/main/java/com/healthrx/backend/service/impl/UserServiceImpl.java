@@ -9,12 +9,21 @@ import com.healthrx.backend.mapper.*;
 import com.healthrx.backend.quartz.NotificationSchedulerService;
 import com.healthrx.backend.quartz.QuartzNotificationParametersModel;
 import com.healthrx.backend.repository.*;
+import com.healthrx.backend.security.aes.AesHandler;
 import com.healthrx.backend.security.service.JwtService;
 import com.healthrx.backend.service.ActivityService;
+import com.healthrx.backend.service.AdminService;
 import com.healthrx.backend.service.UserService;
+import com.healthrx.backend.specification.UserSpecification;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.SchedulerException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +41,7 @@ import static com.healthrx.backend.security.util.TokenType.VERIFICATION;
 public class UserServiceImpl implements UserService {
 
     private final JwtService jwtService;
+    private final AdminService adminService;
     private final UserRepository userRepository;
     private final SpecializationRepository specializationRepository;
     private final ParameterRepository parameterRepository;
@@ -50,6 +60,39 @@ public class UserServiceImpl implements UserService {
     private final Supplier<User> principalSupplier;
     private final ActivityService activityService;
     private final NotificationSchedulerService notificationSchedulerService;
+
+    @Override
+    @Transactional
+    public PageResponse<UserResponse> getUsers(Integer page, Integer size, Role role, String firstName, String lastName) {
+        adminService.checkPermissions();
+
+        Sort sort = Sort.by("id").ascending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Specification<User> spec = Specification.where(null);
+        if (firstName != null) spec = spec.and(UserSpecification.firstNameContains(firstName));
+        if (lastName != null) spec = spec.and(UserSpecification.lastNameContains(lastName));
+        if (role != null) spec = spec.and(UserSpecification.roleEquals(role));
+
+        Page<User> users = userRepository.findAll(spec, pageable);
+
+        List<UserResponse> userResponse = users.stream().map(user -> {
+            Image profile = user.getProfilePicture();
+            if (profile == null) {
+                return userMapper.map(user);
+            } else {
+                return userMapper.mapWithProfile(user, AesHandler.decrypt(profile.getContent()));
+            }
+        }).toList();
+
+        return new PageResponse<UserResponse>()
+                .setContent(userResponse)
+                .setCurrentPage(users.getNumber())
+                .setPageSize(users.getSize())
+                .setTotalElements(users.getTotalElements())
+                .setLast(users.isLast())
+                .setFirst(users.isFirst());
+    }
 
     @Override
     public User verifyUser(UserVerificationRequest request) {

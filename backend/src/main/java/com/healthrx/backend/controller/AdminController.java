@@ -3,13 +3,16 @@ package com.healthrx.backend.controller;
 import com.healthrx.backend.api.external.DoctorResponse;
 import com.healthrx.backend.api.external.PageResponse;
 import com.healthrx.backend.api.external.ParameterDTO;
+import com.healthrx.backend.api.external.UserResponse;
 import com.healthrx.backend.api.external.activities.ActivityDTO;
 import com.healthrx.backend.api.external.activities.ActivityRequest;
 import com.healthrx.backend.api.external.admin.DoctorVerificationRequest;
 import com.healthrx.backend.api.external.paramters.ParameterRequest;
+import com.healthrx.backend.api.internal.enums.Role;
 import com.healthrx.backend.service.ActivityService;
 import com.healthrx.backend.service.AdminService;
 import com.healthrx.backend.service.ParametersService;
+import com.healthrx.backend.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +26,7 @@ import java.util.List;
 @Tag(name = "Admin controller", description = "Controller for managing admin actions")
 public class AdminController {
     private final AdminService adminService;
+    private final UserService userService;
     private final ParametersService parametersService;
     private final ActivityService activityService;
 
@@ -78,5 +82,16 @@ public class AdminController {
     @DeleteMapping("/activities/{id}")
     public ResponseEntity<Void> deleteActivity(@PathVariable String id) {
         return ResponseEntity.ok(activityService.deleteActivity(id));
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<PageResponse<UserResponse>> getUsers(
+            @RequestParam(name = "page", defaultValue = "0", required = false) Integer page,
+            @RequestParam(name = "size", defaultValue = "10", required = false) Integer size,
+            @RequestParam(name = "role", required = false) Role role,
+            @RequestParam(name = "firstName", required = false) String firstName,
+            @RequestParam(name = "lastName", required = false) String lastName
+    ) {
+        return ResponseEntity.ok(userService.getUsers(page, size, role, firstName, lastName));
     }
 }
