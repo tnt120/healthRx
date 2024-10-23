@@ -39,7 +39,8 @@ public class MailConfiguration {
                 "VERIFICATION", "accountVerification",
                 "DRUG_REMINDER", "drugReminder",
                 "PARAMETER_REMINDER", "parameterReminder",
-                "REPORT", "report"
+                "REPORT", "report",
+                "ACCOUNT_DELETED", "accountDeleted"
         );
     }
 }

@@ -28,4 +28,5 @@ public interface DrugLogRepository extends JpaRepository<DrugLog, String> {
     );
 
     void deleteAllByDrugId(Integer drugId);
+    void deleteAllByUserId(String userId);
 }

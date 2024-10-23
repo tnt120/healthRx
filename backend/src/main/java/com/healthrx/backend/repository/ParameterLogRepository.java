@@ -31,4 +31,5 @@ public interface ParameterLogRepository extends JpaRepository<ParameterLog, Stri
     );
 
     void deleteAllByParameterId(String parameterId);
+    void deleteAllByUserId(String userId);
 }

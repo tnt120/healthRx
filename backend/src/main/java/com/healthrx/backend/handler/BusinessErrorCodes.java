@@ -62,6 +62,10 @@ public enum BusinessErrorCodes {
     UNIT_NOT_FOUND(342, "Unit not found", HttpStatus.NOT_FOUND),
     PARAMETER_ALREADY_EXISTS(343, "Parameter already exists", HttpStatus.CONFLICT),
     ACTIVITY_ALREADY_EXISTS(344, "Activity already exists", HttpStatus.CONFLICT),
+    USER_ALREADY_HAS_ROLE(345, "User already has this role", HttpStatus.CONFLICT),
+    CANNOT_SET_ROLE(346, "Cannot set this role", HttpStatus.BAD_REQUEST),
+    CANNOT_CHANGE_ROLE(347, "Cannot change this role", HttpStatus.BAD_REQUEST),
+    CANNOT_DELETE_HEAD_ADMIN(348, "Cannot delete head admin", HttpStatus.BAD_REQUEST),
     ;
 
     private final int code;

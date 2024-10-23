@@ -99,13 +99,17 @@ public class ImageService {
 
     public Void deleteProfilePicture() {
         User user = principalSupplier.get();
+        deleteProfilePictureByUser(user);
+        return null;
+    }
+
+    public void deleteProfilePictureByUser(User user) {
         Image profilePicture = user.getProfilePicture();
         if (profilePicture != null) {
             user.setProfilePicture(null);
             userRepository.save(user);
             imageRepository.delete(profilePicture);
         }
-        return null;
     }
 
     @Transactional

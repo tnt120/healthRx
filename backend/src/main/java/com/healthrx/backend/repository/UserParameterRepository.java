@@ -9,4 +9,5 @@ public interface UserParameterRepository extends JpaRepository<UserParameter, St
 
     List<UserParameter> findAllByUserId(String userId);
     void deleteAllByParameterId(String parameterId);
+    void deleteAllByUserId(String userId);
 }

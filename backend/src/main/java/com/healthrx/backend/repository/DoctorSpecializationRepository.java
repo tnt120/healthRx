@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface DoctorSpecializationRepository extends JpaRepository<DoctorSpecialization, String> {
     List<DoctorSpecialization> findAllByDoctorDetailsId(String doctorDetailsId);
+    void deleteAllByDoctorDetailsId(String doctorDetailsId);
 }

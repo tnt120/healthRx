@@ -16,7 +16,7 @@ public class UserMapper {
     }
 
     public UserResponse mapWithProfile(User user, byte[] profile) {
-        UserResponse userResponse = map(user);
+        UserResponse userResponse = extendedMap(user);
         userResponse.setPictureUrl(profile);
         return userResponse;
     }

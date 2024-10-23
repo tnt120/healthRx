@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Account verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        p {
+            color: #555;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 0.9em;
+            text-align: left;
+            color: #888;
+        }
+        .primary-blue {
+            color: #1469C0;
+        }
+        a {
+            cursor: pointer;
+            font-weight: bold;
+            color: #1469C0;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .black {
+            color: #000000;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Health<span class="primary-blue">Rx</span> - przypomnienie o uzupełnieniu parametrów</h2>
+    <p>Witamy,</p>
+    <p>
+        Twoje konto zostało usunięte przez administratora.</br>
+    </p>
+    <p>
+        Powód usunięcia konta: <strong th:text="${message}">[message]</strong>
+    </p>
+    <div class="footer">
+        Pozdrawiamy,<br>
+        Zespół <span class="black">health</span><span class="primary-blue">Rx</span>
+    </div>
+</div>
+</body>
+</html>

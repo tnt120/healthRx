@@ -21,4 +21,6 @@ public interface UserDrugRepository extends JpaRepository<UserDrug, String> {
             @Param("drugId") Integer drugId,
             @Param("userId") String userId
     );
+
+    void deleteAllByUserId(String userId);
 }

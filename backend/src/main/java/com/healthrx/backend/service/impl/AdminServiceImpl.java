@@ -108,4 +108,11 @@ public class AdminServiceImpl implements AdminService {
 
         return user;
     }
+
+    @Override
+    public void checkHeadAdminPermissions(User user) {
+        if (user.getRole() != Role.HEAD_ADMIN) {
+            throw USER_NOT_PERMITTED.getError();
+        }
+    }
 }

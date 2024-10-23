@@ -9,4 +9,5 @@ public interface AdminService {
     Void verifyDoctor(DoctorVerificationRequest req);
     PageResponse<DoctorResponse> getApprovals(Integer page, Integer size);
     User checkPermissions();
+    void checkHeadAdminPermissions(User user);
 }

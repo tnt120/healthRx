@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface AccountSettingsRepository extends JpaRepository<AccountSettings, String> {
     Optional<AccountSettings> findAccountSettingsByUserId(String userId);
+    void deleteByUserId(String userId);
 }

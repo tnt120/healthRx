@@ -108,6 +108,13 @@ public class SettingsServiceImpl implements SettingsService {
             throw NOTIFICATIONS_DATA_BAD_REQUEST.getError();
         }
 
+        processNotificationChange(request, accountSettings, user);
+
+        return null;
+    }
+
+    @Override
+    public void processNotificationChange(NotificationsData request, AccountSettings accountSettings, User user) {
         if (request.getIsDrugNotificationsEnabled() != accountSettings.isDrugNotificationsEnabled()) {
             List<UserDrug> userDrugsPriorityHigh = userDrugRepository.findAllByUserId(user.getId())
                     .stream()
@@ -178,7 +185,5 @@ public class SettingsServiceImpl implements SettingsService {
         accountSettings.setParametersNotifications(request.getParametersNotifications());
         accountSettings.setDrugNotificationsEnabled(request.getIsDrugNotificationsEnabled());
         accountSettings.setBadResultsNotificationsEnabled(request.getIsBadResultsNotificationsEnabled());
-
-        return null;
     }
 }

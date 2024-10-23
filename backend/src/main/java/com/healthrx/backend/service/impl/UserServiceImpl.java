@@ -1,6 +1,9 @@
 package com.healthrx.backend.service.impl;
 
 import com.healthrx.backend.api.external.*;
+import com.healthrx.backend.api.external.admin.ChangeRoleReqRes;
+import com.healthrx.backend.api.external.admin.DeleteUserRequest;
+import com.healthrx.backend.api.external.settings.NotificationsData;
 import com.healthrx.backend.api.internal.*;
 import com.healthrx.backend.api.internal.enums.Role;
 import com.healthrx.backend.handler.ExpiredTokenException;
@@ -13,6 +16,7 @@ import com.healthrx.backend.security.aes.AesHandler;
 import com.healthrx.backend.security.service.JwtService;
 import com.healthrx.backend.service.ActivityService;
 import com.healthrx.backend.service.AdminService;
+import com.healthrx.backend.service.SettingsService;
 import com.healthrx.backend.service.UserService;
 import com.healthrx.backend.specification.UserSpecification;
 import jakarta.transaction.Transactional;
@@ -42,6 +46,7 @@ public class UserServiceImpl implements UserService {
 
     private final JwtService jwtService;
     private final AdminService adminService;
+    private final SettingsService settingsService;
     private final UserRepository userRepository;
     private final SpecializationRepository specializationRepository;
     private final ParameterRepository parameterRepository;
@@ -49,6 +54,9 @@ public class UserServiceImpl implements UserService {
     private final DoctorSpecializationRepository doctorSpecializationRepository;
     private final CityRepository cityRepository;
     private final ParameterLogRepository parameterLogRepository;
+    private final ActivityLogRepository activityLogRepository;
+    private final DrugLogRepository drugLogRepository;
+    private final DoctorDetailsRepository doctorDetailsRepository;
     private final AccountSettingsRepository accountSettingsRepository;
     private final ParameterMapper parameterMapper;
     private final SpecializationMapper specializationMapper;
@@ -60,6 +68,8 @@ public class UserServiceImpl implements UserService {
     private final Supplier<User> principalSupplier;
     private final ActivityService activityService;
     private final NotificationSchedulerService notificationSchedulerService;
+    private final ImageService imageService;
+    private final UserDrugRepository userDrugRepository;
 
     @Override
     @Transactional
@@ -92,6 +102,80 @@ public class UserServiceImpl implements UserService {
                 .setTotalElements(users.getTotalElements())
                 .setLast(users.isLast())
                 .setFirst(users.isFirst());
+    }
+
+    @Override
+    public ChangeRoleReqRes changeRole(String userId, ChangeRoleReqRes req) {
+        User admin = adminService.checkPermissions();
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(USER_NOT_FOUND::getError);
+
+        Role role = req.getRole();
+
+        if (user.getRole().equals(Role.DOCTOR) || user.getRole().equals(Role.HEAD_ADMIN)) {
+            throw CANNOT_CHANGE_ROLE.getError();
+        }
+
+        if (role.equals(Role.DOCTOR) || role.equals(Role.HEAD_ADMIN)) {
+            throw CANNOT_SET_ROLE.getError();
+        }
+
+        if (user.getRole() == role) {
+            throw USER_ALREADY_HAS_ROLE.getError();
+        }
+
+        if (user.getRole() == Role.ADMIN) {
+            adminService.checkHeadAdminPermissions(admin);
+        } else {
+            disableNotifications(user);
+
+        }
+
+        user.setRole(role);
+        userRepository.save(user);
+        return ChangeRoleReqRes.builder().role(role).build();
+    }
+
+    @Override
+    @Transactional
+    public Void deleteUser(String userId, DeleteUserRequest req) {
+        User admin = adminService.checkPermissions();
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(USER_NOT_FOUND::getError);
+
+        if (user.getRole() == Role.HEAD_ADMIN) {
+            throw CANNOT_DELETE_HEAD_ADMIN.getError();
+        }
+
+        switch (user.getRole()) {
+            case ADMIN:
+                adminService.checkHeadAdminPermissions(admin);
+                break;
+            case DOCTOR:
+                imageService.deletePwzPhotos(user.getDoctorDetails());
+                doctorSpecializationRepository.deleteAllByDoctorDetailsId(user.getDoctorDetails().getId());
+                break;
+        }
+
+        imageService.deleteProfilePictureByUser(user);
+        disableNotifications(user);
+        parameterLogRepository.deleteAllByUserId(userId);
+        activityLogRepository.deleteAllByUserId(userId);
+        drugLogRepository.deleteAllByUserId(userId);
+        doctorDetailsRepository.deleteByUserId(userId);
+        accountSettingsRepository.deleteByUserId(userId);
+        userParameterRepository.deleteAllByUserId(userId);
+        userDrugRepository.deleteAllByUserId(userId);
+        userRepository.delete(user);
+
+        Map<String, String> data = Map.of(
+                "message", req.getMessage()
+        );
+        this.sendMail(Collections.singletonList(user.getEmail()), data, "ACCOUNT_DELETED", "Account deletion");
+
+        return null;
     }
 
     @Override
@@ -151,7 +235,10 @@ public class UserServiceImpl implements UserService {
                     .orElseThrow(INVALID_VERIFICATION::getError);
 
             var newToken = jwtService.generateToken(user, VERIFICATION);
-            this.sendMail(Collections.singletonList(user.getEmail()), newToken);
+            Map<String, String> data = Map.of(
+                    "link", "http://localhost:4200/verification/" + newToken
+            );
+            this.sendMail(Collections.singletonList(user.getEmail()), data, "VERIFICATION", "Account verification");
             throw VERIFICATION_TOKEN_EXPIRED.getError();
         }
 
@@ -254,14 +341,12 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(USER_NOT_FOUND::getError);
     }
 
-    private void sendMail(List<String> emails, String verificationToken) {
+    private void sendMail(List<String> emails, Map<String, String> data, String strategy, String subject) {
         KafkaReceiveModel kafkaReceiveModel = new KafkaReceiveModel()
-                .setSubject("Account verification")
-                .setStrategy("VERIFICATION")
+                .setSubject(subject)
+                .setStrategy(strategy)
                 .setEmails(emails)
-                .setData(Map.of(
-                        "link", "http://localhost:4200/verification/" + verificationToken
-                ));
+                .setData(data);
 
         this.kafkaTemplate.send("mails", kafkaReceiveModel);
     }
@@ -307,6 +392,20 @@ public class UserServiceImpl implements UserService {
 
                 doctorSpecializationRepository.save(doctorSpecialization);
             });
+        }
+    }
+
+    private void disableNotifications(User user) {
+        AccountSettings accountSettings = user.getAccountSettings();
+        if (accountSettings != null) {
+            settingsService.processNotificationChange(
+                    NotificationsData.builder()
+                    .isBadResultsNotificationsEnabled(false)
+                    .isDrugNotificationsEnabled(false)
+                    .parametersNotifications(null).build(),
+                    accountSettings,
+                    user
+            );
         }
     }
 }

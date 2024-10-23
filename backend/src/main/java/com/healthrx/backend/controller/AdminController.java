@@ -6,6 +6,8 @@ import com.healthrx.backend.api.external.ParameterDTO;
 import com.healthrx.backend.api.external.UserResponse;
 import com.healthrx.backend.api.external.activities.ActivityDTO;
 import com.healthrx.backend.api.external.activities.ActivityRequest;
+import com.healthrx.backend.api.external.admin.ChangeRoleReqRes;
+import com.healthrx.backend.api.external.admin.DeleteUserRequest;
 import com.healthrx.backend.api.external.admin.DoctorVerificationRequest;
 import com.healthrx.backend.api.external.paramters.ParameterRequest;
 import com.healthrx.backend.api.internal.enums.Role;
@@ -93,5 +95,15 @@ public class AdminController {
             @RequestParam(name = "lastName", required = false) String lastName
     ) {
         return ResponseEntity.ok(userService.getUsers(page, size, role, firstName, lastName));
+    }
+
+    @PatchMapping("/users/{id}")
+    public ResponseEntity<ChangeRoleReqRes> changeUserRole(@PathVariable String id, @RequestBody ChangeRoleReqRes req) {
+        return ResponseEntity.ok(userService.changeRole(id, req));
+    }
+
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable String id, @RequestBody DeleteUserRequest req) {
+        return ResponseEntity.ok(userService.deleteUser(id, req));
     }
 }

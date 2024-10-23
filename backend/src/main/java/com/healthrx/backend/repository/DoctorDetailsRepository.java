@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface DoctorDetailsRepository extends JpaRepository<DoctorDetails, String> {
     Optional<DoctorDetails> findByUserId(String userId);
+    void deleteByUserId(String userId);
 }
