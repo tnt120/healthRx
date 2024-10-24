@@ -30,11 +30,12 @@ export class ErrorCodesService {
     321: { message: 'Niepoprawne aktualne hasło', status: 'BAD_REQUEST' },
     322: { message: 'Hasła do siebie nie pasują', status: 'BAD_REQUEST' },
     323: { message: 'Nowe hasło jest takie samo jak stare hasło', status: 'BAD_REQUEST' },
+    343: { message: 'Parametr z podaną nazwą już istnieje. Spróbuj ponownie z inną nazwą.', status: 'CONFLICT' },
     500: { message: 'Błąd serwera', status: 'NOT_IMPLEMENTED' }
   };
 
   getErrorMessage(code: number): string {
     const error = this.errorCodes[code];
-    return error ? error.message : 'Wystąpił nieznany błąd';
+    return error ? error.message : 'Wystąpił nieznany błąd.';
   }
 }

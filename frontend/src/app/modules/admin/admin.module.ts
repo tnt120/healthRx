@@ -9,6 +9,8 @@ import { CoreModule } from '../../core/core.module';
 import { DoctorApprovalsComponent } from './pages/doctor-approvals/doctor-approvals.component';
 import { DoctorApprovalCardComponent } from './components/doctor-approval-card/doctor-approval-card.component';
 import { RejectDoctorVerificationDialogComponent } from './components/reject-doctor-verification-dialog/reject-doctor-verification-dialog.component';
+import { ParametersManageComponent } from './pages/parameters-manage/parameters-manage.component';
+import { ParameterMangeDialogComponent } from './components/parameter-mange-dialog/parameter-mange-dialog.component';
 
 
 @NgModule({
@@ -16,7 +18,9 @@ import { RejectDoctorVerificationDialogComponent } from './components/reject-doc
     DashboardComponent,
     DoctorApprovalsComponent,
     DoctorApprovalCardComponent,
-    RejectDoctorVerificationDialogComponent
+    RejectDoctorVerificationDialogComponent,
+    ParametersManageComponent,
+    ParameterMangeDialogComponent
   ],
   imports: [
     CommonModule,

@@ -1,0 +1,54 @@
+<h3 mat-dialog-title>{{ data.parameter ? 'Edytuj parametr' : 'Dodaj parametr' }}</h3>
+<mat-dialog-content class="mat-typography">
+  <div class="content">
+    <form [formGroup]="manageParameterForm">
+      <mat-form-field appearance="fill">
+        <mat-label>Nazwa parametru</mat-label>
+        <input type="text" matInput formControlName="name" required />
+        <mat-error *ngIf="manageParameterForm.get('name')?.hasError('required')">Nazwa parametru jest wymagana</mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Jednostka</mat-label>
+        <mat-select formControlName="unitId" placeholder="Jednostka">
+            @for (unit of data.units; track unit.id) {
+              <mat-option [value]="unit.id">{{ unit.name }} [{{ unit.symbol }}]</mat-option>
+            }
+        </mat-select>
+        <mat-error *ngIf="manageParameterForm.get('unitId')?.hasError('required')">Jednostka jest wymagany</mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Wskazówka</mat-label>
+        <input type="text" matInput formControlName="hint" required />
+        <mat-error *ngIf="manageParameterForm.get('hint')?.hasError('required')">Wskazówka jest wymagana</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Min. wartość normy</mat-label>
+        <input type="number" min="0" matInput formControlName="minStandardValue" required>
+        <mat-error *ngIf="manageParameterForm.get('minStandardValue')?.hasError('required')">Minimalna wartość normy jest wymagana</mat-error>
+        <mat-error *ngIf="manageParameterForm.get('minStandardValue')?.hasError('min')">Minimalna wartość wynosi 0</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Max. wartość normy</mat-label>
+        <input type="number" min="0" matInput formControlName="maxStandardValue" required>
+        <mat-error *ngIf="manageParameterForm.get('maxStandardValue')?.hasError('required')">Maksymalna wartość normy jest wymagana</mat-error>
+        <mat-error *ngIf="manageParameterForm.get('maxStandardValue')?.hasError('min')">Maksymalna wartość wynosi 0</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Min. wartość dozwolona</mat-label>
+        <input type="number" min="0" matInput formControlName="minValue" required>
+        <mat-error *ngIf="manageParameterForm.get('minValue')?.hasError('required')">Minimalna wartość dozwolona jest wymagana</mat-error>
+        <mat-error *ngIf="manageParameterForm.get('minValue')?.hasError('min')">Minimalna wartość wynosi 0</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Max. wartość dozwolona</mat-label>
+        <input type="number" min="0" matInput formControlName="maxValue" required>
+        <mat-error *ngIf="manageParameterForm.get('maxValue')?.hasError('required')">Maksymalna wartość dozwolona jest wymagana</mat-error>
+        <mat-error *ngIf="manageParameterForm.get('maxValue')?.hasError('min')">Maksymalna wartość wynosi 0</mat-error>
+      </mat-form-field>
+    </form>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-stroked-button mat-dialog-close>Anuluj</button>
+  <button mat-flat-button [mat-dialog-close]="manageParameterForm.value" [disabled]="!isValid()">Zapisz</button>
+</mat-dialog-actions>

@@ -27,7 +27,7 @@ export class DoctorApprovalsComponent implements OnDestroy {
 
   doctors$: Observable<DoctorResponse[]> = this.adminService.getApprovalsSubject();
 
-  isLoading$: Observable<boolean> = this.adminService.getApprovalsLoading();
+  isLoading$: Observable<boolean> = this.adminService.getLoading();
 
   subscriptions: Subscription = new Subscription();
 

@@ -19,4 +19,5 @@ export const ROUTE_TITLES: { [key: string]: string } = {
   'admin/dashboard': 'Dashboard',
   'admin/settings': 'Ustawienia',
   'admin/approvals': 'Weryfikacja lekarzy',
+  'admin/parameters-manage': 'Zarządzanie parametrami',
 };

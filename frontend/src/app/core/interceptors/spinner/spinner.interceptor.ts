@@ -19,10 +19,10 @@ export const spinnerInterceptor: HttpInterceptorFn = (req, next) => {
     '/api/statistics/drugs',
     '/api/statistics/chart',
     '/api/statistics/activities',
-    '/api/admin/approvals'
+    '/api/admin/approvals',
   ];
 
-  const excludeGetUrls = ['/api/activities/user'];
+  const excludeGetUrls = ['/api/activities/user', '/api/admin/parameters'];
 
   const shouldIngore = excludeUrls.some(url => req.url.includes(url)) ||
     (excludeGetUrls.some(url => req.url.includes(url)) && req.method === 'GET');;

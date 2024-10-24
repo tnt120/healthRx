@@ -1,0 +1,16 @@
+<button mat-flat-button (click)="onAdd()">Dodaj nowy parametr</button>
+
+@let res = parametersAndUnits$ | async;
+
+  <h4>Lista parametrów</h4>
+  <app-table
+    [isSearching]="isLoading$ | async"
+    [data]="parametersAndUnits()?.parameters || []"
+    [columns]="columns"
+    emptyInfo="Brak parametrów"
+    emptyAdditionalInfo="Spróbuj wyszukać ponownie"
+    [searchable]="false"
+    type="editable"
+    (edit)="onEdit($event)"
+    (delete)="onDelete($event)"
+  />

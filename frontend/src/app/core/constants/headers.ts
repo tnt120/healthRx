@@ -98,5 +98,10 @@ export const adminHeaders: NavItem[] = [
     icon: 'description',
     title: 'Wnioski',
     route: '/admin/approvals',
+  },
+  {
+    icon: 'monitor_heart',
+    title: 'Parametry',
+    route: '/admin/parameters-manage'
   }
 ];
