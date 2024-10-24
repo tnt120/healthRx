@@ -1,11 +1,14 @@
 package com.healthrx.backend.service.impl;
 
 import com.healthrx.backend.api.external.ParameterDTO;
+import com.healthrx.backend.api.external.UnitDTO;
 import com.healthrx.backend.api.external.UserParametersRequest;
 import com.healthrx.backend.api.external.UserParametersResponse;
+import com.healthrx.backend.api.external.admin.AdminParameterResponse;
 import com.healthrx.backend.api.external.paramters.ParameterRequest;
 import com.healthrx.backend.api.internal.*;
 import com.healthrx.backend.mapper.ParameterMapper;
+import com.healthrx.backend.mapper.UnitMapper;
 import com.healthrx.backend.mapper.UserParameterMapper;
 import com.healthrx.backend.repository.ParameterLogRepository;
 import com.healthrx.backend.repository.ParameterRepository;
@@ -38,6 +41,7 @@ public class ParametersServiceImpl implements ParametersService {
     private final AdminService adminService;
     private final UnitRepository unitRepository;
     private final ParameterMapper parameterMapper;
+    private final UnitMapper unitMapper;
     private final UserParameterMapper userParameterMapper;
     private final Supplier<User> principalSupplier;
 
@@ -107,13 +111,23 @@ public class ParametersServiceImpl implements ParametersService {
     }
 
     @Override
-    public List<ParameterDTO> getAllParameters() {
+    public AdminParameterResponse getAllParameters() {
         adminService.checkPermissions();
 
-        return parameterRepository.findAll()
+        List<ParameterDTO> parameters = parameterRepository.findAll()
                 .stream()
                 .map(parameterMapper::map)
                 .toList();
+
+        List<UnitDTO> units = unitRepository.findAll()
+                .stream()
+                .map(unitMapper::map)
+                .toList();
+
+        return AdminParameterResponse.builder()
+                .parameters(parameters)
+                .units(units)
+                .build();
     }
 
     @Override

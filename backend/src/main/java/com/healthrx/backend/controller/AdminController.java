@@ -6,6 +6,7 @@ import com.healthrx.backend.api.external.ParameterDTO;
 import com.healthrx.backend.api.external.UserResponse;
 import com.healthrx.backend.api.external.activities.ActivityDTO;
 import com.healthrx.backend.api.external.activities.ActivityRequest;
+import com.healthrx.backend.api.external.admin.AdminParameterResponse;
 import com.healthrx.backend.api.external.admin.ChangeRoleReqRes;
 import com.healthrx.backend.api.external.admin.DeleteUserRequest;
 import com.healthrx.backend.api.external.admin.DoctorVerificationRequest;
@@ -46,7 +47,7 @@ public class AdminController {
     }
 
     @GetMapping("/parameters")
-    public ResponseEntity<List<ParameterDTO>> getParameters() {
+    public ResponseEntity<AdminParameterResponse> getParameters() {
         return ResponseEntity.ok(parametersService.getAllParameters());
     }
 
