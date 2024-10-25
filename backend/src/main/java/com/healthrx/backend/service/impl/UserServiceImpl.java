@@ -138,7 +138,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Void deleteUser(String userId, DeleteUserRequest req) {
+    public Void deleteUser(String userId, String message) {
         User admin = adminService.checkPermissions();
 
         User user = userRepository.findById(userId)
@@ -170,7 +170,7 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(user);
 
         Map<String, String> data = Map.of(
-                "message", req.getMessage()
+                "message", message
         );
         this.sendMail(Collections.singletonList(user.getEmail()), data, "ACCOUNT_DELETED", "Account deletion");
 

@@ -104,7 +104,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable String id, @RequestBody DeleteUserRequest req) {
-        return ResponseEntity.ok(userService.deleteUser(id, req));
+    public ResponseEntity<Void> deleteUser(@PathVariable String id, @RequestParam(name = "message") String message) {
+        return ResponseEntity.ok(userService.deleteUser(id, message));
     }
 }
