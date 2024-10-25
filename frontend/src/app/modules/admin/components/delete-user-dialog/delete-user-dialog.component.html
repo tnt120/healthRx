@@ -1,0 +1,14 @@
+<h3 mat-dialog-title>Usuń użytkownika</h3>
+<mat-dialog-content class="mat-typography">
+  <div class="content">
+    <p class="text-1">Czy na pewno chcesz usunąć użytkownika: {{ data.firstName }} {{ data.lastName }}</p>
+    <mat-form-field appearance="fill">
+      <mat-label>Powód usunięcia</mat-label>
+      <input [(ngModel)]="message" type="text" matInput placeholder="Podaj powód usunięcia" required />
+    </mat-form-field>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-stroked-button mat-dialog-close>Anuluj</button>
+  <button mat-flat-button [mat-dialog-close]="message()" [disabled]="message().length === 0">Usuń</button>
+</mat-dialog-actions>

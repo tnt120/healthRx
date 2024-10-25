@@ -36,6 +36,8 @@ $frontend-theme: mat.define-theme((
   --mdc-list-list-item-focus-icon-color: white;
   --mat-list-active-indicator-color: #003E7D;
   --mat-list-active-indicator-shape: 0;
+  --mdc-fab-container-color: #1469C0;
+  --mat-fab-foreground-color: white;
 }
 
 mat-sidenav, mat-toolbar {

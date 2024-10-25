@@ -1,0 +1,15 @@
+<div class="actions-button" [matMenuTriggerFor]="menu" *ngIf="actionsEnabled()">
+  <mat-icon class="primary-blue" aria-hidden="false" matListItemIcon fontSet="material-symbols-outlined">more_vert</mat-icon>
+</div>
+<mat-menu #menu="matMenu">
+  <button *ngIf="changeRoleEnabled()" mat-menu-item (click)="changeRole()"><p class="primary-blue">Zmień rolę</p></button>
+  <button mat-menu-item (click)="deleteUser()"><p class="red">Usuń użytkownika</p></button>
+</mat-menu>
+<div class="profile-picture">
+  <img [src]="profilePicture()" alt="profile-picture" />
+</div>
+<div class="info">
+  <p class="subtitle-1">{{ providedUser().firstName }} {{ providedUser().lastName }}</p>
+  <p class="text-1">{{ providedUser().email }}</p>
+  <p class="text-1">{{ getRoleString() }}</p>
+</div>

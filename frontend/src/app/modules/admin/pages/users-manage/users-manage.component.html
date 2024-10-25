@@ -1,0 +1,32 @@
+@let filters = filterChange$ | async;
+@let user = user$ | async;
+
+<app-users-search-bar (search)="onSearch($event)" />
+@if (isLoading$ | async) {
+  <div class="basic-spinner-container">
+    <mat-spinner></mat-spinner>
+  </div>
+} @else {
+  @if (users$ | async; as users) {
+    @if (users.length > 0) {
+      <div class="grid">
+        @for (provUser of users; track provUser.id) {
+          <app-user-card [user]="user!" [providedUser]="provUser" (changeRoleEmit)="onRoleChange($event)" (deleteUserEmit)="onDeleteUser($event)" />
+        }
+      </div>
+    } @else {
+      <div class="no-data">
+        <p class="subtitle-2" style="text-align: center;">Brak użytkowników</p>
+        <p style="text-align: center;">Zmień filtry wyszukiwania.</p>
+      </div>
+    }
+  }
+  <mat-paginator
+    (page)="handlePageEvent($event)"
+    [length]="pagination.totalElements"
+    [pageSize]="pagination.pageSize"
+    [pageSizeOptions]="pagination.pageSizeOptions"
+    [pageIndex]="pagination.pageIndex"
+    aria-label="Select page"
+  ></mat-paginator>
+}

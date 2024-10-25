@@ -108,5 +108,10 @@ export const adminHeaders: NavItem[] = [
     icon: 'directions_walk',
     title: 'Aktywności',
     route: '/admin/activities-manage'
+  },
+  {
+    icon: 'people',
+    title: 'Użytkownicy',
+    route: '/admin/users-manage'
   }
 ];

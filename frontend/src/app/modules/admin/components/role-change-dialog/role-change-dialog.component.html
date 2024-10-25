@@ -1,0 +1,17 @@
+<h3 mat-dialog-title>Edytuj rolę</h3>
+<mat-dialog-content class="mat-typography">
+  <div class="content">
+    <mat-form-field appearance="fill">
+      <mat-label>Rola</mat-label>
+      <mat-select [(ngModel)]="newRole" placeholder="Rola">
+          @for (r of roles(); track r.role) {
+            <mat-option [value]="r.role">{{ r.translation }}</mat-option>
+          }
+      </mat-select>
+    </mat-form-field>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-stroked-button mat-dialog-close>Anuluj</button>
+  <button mat-flat-button [mat-dialog-close]="newRole()" [disabled]="!isValid()">Zapisz</button>
+</mat-dialog-actions>

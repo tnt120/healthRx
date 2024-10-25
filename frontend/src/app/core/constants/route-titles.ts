@@ -21,4 +21,5 @@ export const ROUTE_TITLES: { [key: string]: string } = {
   'admin/approvals': 'Weryfikacja lekarzy',
   'admin/parameters-manage': 'Zarządzanie parametrami',
   'admin/activities-manage': 'Zarządzanie aktywnościami',
+  'admin/users-manage': 'Zarządzanie użytkownikami',
 };

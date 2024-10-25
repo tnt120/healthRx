@@ -26,6 +26,7 @@ export const spinnerInterceptor: HttpInterceptorFn = (req, next) => {
     '/api/activities/user',
     '/api/admin/parameters',
     '/api/admin/activities',
+    '/api/admin/users',
   ];
 
   const shouldIngore = excludeUrls.some(url => req.url.includes(url)) ||

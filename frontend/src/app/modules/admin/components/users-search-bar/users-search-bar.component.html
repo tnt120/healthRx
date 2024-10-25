@@ -1,0 +1,20 @@
+<div class="filters">
+  <mat-form-field appearance="fill">
+    <mat-label>Imię</mat-label>
+    <input type="text" matInput [(ngModel)]="filters().firstName" />
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Nazwisko</mat-label>
+    <input type="text" matInput [(ngModel)]="filters().lastName" />
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Rola</mat-label>
+    <mat-select [(ngModel)]="filters().role" placeholder="Rola">
+      <mat-option [value]="null">-</mat-option>
+      @for (r of roles(); track r.role) {
+        <mat-option [value]="r.role">{{ r.translation }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <button mat-flat-button (click)="onSearch()">Szukaj</button>
+</div>
