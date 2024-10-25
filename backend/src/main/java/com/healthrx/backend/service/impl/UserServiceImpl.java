@@ -127,10 +127,9 @@ public class UserServiceImpl implements UserService {
 
         if (user.getRole() == Role.ADMIN) {
             adminService.checkHeadAdminPermissions(admin);
-        } else {
-            disableNotifications(user);
-
         }
+
+        disableNotifications(user);
 
         user.setRole(role);
         userRepository.save(user);
@@ -159,8 +158,8 @@ public class UserServiceImpl implements UserService {
                 break;
         }
 
-        imageService.deleteProfilePictureByUser(user);
         disableNotifications(user);
+        imageService.deleteProfilePictureByUser(user);
         parameterLogRepository.deleteAllByUserId(userId);
         activityLogRepository.deleteAllByUserId(userId);
         drugLogRepository.deleteAllByUserId(userId);
