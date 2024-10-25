@@ -5,6 +5,7 @@ import { MainLayoutComponent } from '../../core/components/main-layout/main-layo
 import { SettingsComponent } from '../../shared/components/settings/settings.component';
 import { DoctorApprovalsComponent } from './pages/doctor-approvals/doctor-approvals.component';
 import { ParametersManageComponent } from './pages/parameters-manage/parameters-manage.component';
+import { ActivitiesManageComponent } from './pages/activities-manage/activities-manage.component';
 
 const routes: Routes = [
   {
@@ -22,6 +23,10 @@ const routes: Routes = [
       {
         path: 'parameters-manage',
         component: ParametersManageComponent
+      },
+      {
+        path: 'activities-manage',
+        component: ActivitiesManageComponent
       },
       {
         path: 'settings',

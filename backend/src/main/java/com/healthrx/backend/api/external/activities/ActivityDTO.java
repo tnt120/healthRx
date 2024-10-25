@@ -13,4 +13,5 @@ public class ActivityDTO {
     private String id;
     private String name;
     private Double metFactor;
+    private Boolean isPopular;
 }

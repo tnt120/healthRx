@@ -1,13 +1,13 @@
-<button mat-flat-button (click)="onAdd()">Dodaj nowy parametr</button>
+<button mat-flat-button (click)="onAdd()">Dodaj nową aktywność</button>
 
-@let res = parametersAndUnits$ | async;
+@let res = activities$ | async;
 
-<h4>Lista parametrów</h4>
+<h4>Lista aktywności</h4>
 <app-table
   [isSearching]="isLoading$ | async"
-  [data]="parametersAndUnits()?.parameters || []"
+  [data]="activities() || []"
   [columns]="columns"
-  emptyInfo="Brak parametrów"
+  emptyInfo="Brak aktywności"
   emptyAdditionalInfo="Spróbuj wyszukać ponownie"
   [searchable]="false"
   type="editable"

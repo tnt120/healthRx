@@ -14,6 +14,7 @@ public class ActivityMapper {
                 .id(activity.getId())
                 .name(activity.getName())
                 .metFactor(activity.getMetFactor())
+                .isPopular(activity.getIsPopular())
                 .build();
     }
 

@@ -103,5 +103,10 @@ export const adminHeaders: NavItem[] = [
     icon: 'monitor_heart',
     title: 'Parametry',
     route: '/admin/parameters-manage'
+  },
+  {
+    icon: 'directions_walk',
+    title: 'Aktywności',
+    route: '/admin/activities-manage'
   }
 ];

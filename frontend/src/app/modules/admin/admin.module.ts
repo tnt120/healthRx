@@ -11,6 +11,8 @@ import { DoctorApprovalCardComponent } from './components/doctor-approval-card/d
 import { RejectDoctorVerificationDialogComponent } from './components/reject-doctor-verification-dialog/reject-doctor-verification-dialog.component';
 import { ParametersManageComponent } from './pages/parameters-manage/parameters-manage.component';
 import { ParameterMangeDialogComponent } from './components/parameter-mange-dialog/parameter-mange-dialog.component';
+import { ActivitiesManageComponent } from './pages/activities-manage/activities-manage.component';
+import { ActivityManageDialogComponent } from './components/activity-manage-dialog/activity-manage-dialog.component';
 
 
 @NgModule({
@@ -20,7 +22,9 @@ import { ParameterMangeDialogComponent } from './components/parameter-mange-dial
     DoctorApprovalCardComponent,
     RejectDoctorVerificationDialogComponent,
     ParametersManageComponent,
-    ParameterMangeDialogComponent
+    ParameterMangeDialogComponent,
+    ActivitiesManageComponent,
+    ActivityManageDialogComponent
   ],
   imports: [
     CommonModule,

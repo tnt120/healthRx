@@ -45,23 +45,27 @@ export class TableComponent {
 
   searchString = '';
 
-  onSearch(): void {
+  protected isBoolean(value: any): boolean {
+    return typeof value === 'boolean';
+  }
+
+  protected onSearch(): void {
     this.onSearchEmit.emit(this.searchString);
   }
 
-  onEdit(item: any): void {
+  protected onEdit(item: any): void {
     this.edit.emit(item);
   }
 
-  onDelete(item: any): void {
+  protected onDelete(item: any): void {
     this.delete.emit(item);
   }
 
-  onSelect(item: any): void {
+  protected onSelect(item: any): void {
     this.onSelectEmit.emit(item);
   }
 
-  handlePageEvent(e: PageEvent): void {
+  protected handlePageEvent(e: PageEvent): void {
     this.pageChange.emit(e);
   }
 }

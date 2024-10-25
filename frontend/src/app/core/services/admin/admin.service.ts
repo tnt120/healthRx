@@ -10,6 +10,8 @@ import { AdminParameterResponse } from '../../models/admin/admin-parameter-respo
 import { ParameterRequest } from '../../models/admin/parameter-request.model';
 import { Parameter } from '../../models/parameter.model';
 import { ErrorCodesService } from '../error-codes/error-codes.service';
+import { Activity } from '../../models/activity.model';
+import { ActivityRequest } from '../../models/admin/activity-request.model';
 
 @Injectable({
   providedIn: 'root'
@@ -94,6 +96,46 @@ export class AdminService {
     return this.http.delete<void>(`${this.apiUrl}/parameters/${id}`).pipe(
       tap(() => {
         this.customSnackbarService.openCustomSnackbar({ title: 'Sukces', message: 'Pomyślnie usunięto parametr.', type: 'success', duration: 3000 });
+      }),
+      catchError(err => {
+        return this.handleError(err);
+      })
+    );
+  }
+
+  getActivities(): Observable<Activity[]> {
+    this.loadingSubject.next(true);
+    return this.http.get<Activity[]>(`${this.apiUrl}/activities`).pipe(
+      finalize(() => this.loadingSubject.next(false)),
+    );
+  }
+
+  addActivity(req: ActivityRequest): Observable<Activity> {
+    return this.http.post<Activity>(`${this.apiUrl}/activities`, req).pipe(
+      tap(() => {
+        this.customSnackbarService.openCustomSnackbar({ title: 'Sukces', message: 'Pomyślnie dodano aktywność.', type: 'success', duration: 3000 });
+      }),
+      catchError(err => {
+        return this.handleError(err);
+      })
+    );
+  }
+
+  editActivity(req: Partial<ActivityRequest>, id: string): Observable<Activity> {
+    return this.http.patch<Activity>(`${this.apiUrl}/activities/${id}`, req).pipe(
+      tap(() => {
+        this.customSnackbarService.openCustomSnackbar({ title: 'Sukces', message: 'Pomyślnie edytowano aktywność.', type: 'success', duration: 3000 });
+      }),
+      catchError(err => {
+        return this.handleError(err);
+      })
+    );
+  }
+
+  deleteActivity(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/activities/${id}`).pipe(
+      tap(() => {
+        this.customSnackbarService.openCustomSnackbar({ title: 'Sukces', message: 'Pomyślnie usunięto aktywność.', type: 'success', duration: 3000 });
       }),
       catchError(err => {
         return this.handleError(err);

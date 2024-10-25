@@ -1,0 +1,26 @@
+<h3 mat-dialog-title>{{ data.activity ? 'Edytuj parametr' : 'Dodaj parametr' }}</h3>
+<mat-dialog-content class="mat-typography">
+  <div class="content">
+    <form [formGroup]="manageActivityForm">
+      <mat-form-field appearance="fill">
+        <mat-label>Nazwa aktywności</mat-label>
+        <input type="text" matInput formControlName="name" required />
+        <mat-error *ngIf="manageActivityForm.get('name')?.hasError('required')">Nazwa aktywności jest wymagana</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Wskaźnik MET</mat-label>
+        <input type="number" min="0" matInput formControlName="metFactor" required>
+        <mat-error *ngIf="manageActivityForm.get('metFactor')?.hasError('required')">Wartość wskaźnika jest wymagana</mat-error>
+        <mat-error *ngIf="manageActivityForm.get('metFactor')?.hasError('min')">Minimalna wartość wynosi 0</mat-error>
+      </mat-form-field>
+      <div class="slide-conteinr">
+        <p class="subtitle-2">Czy popularne:</p>
+        <mat-slide-toggle formControlName="isPopular">{{ manageActivityForm.get('isPopular')?.value ? 'Tak' : 'Nie' }}</mat-slide-toggle>
+      </div>
+    </form>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-stroked-button mat-dialog-close>Anuluj</button>
+  <button mat-flat-button [mat-dialog-close]="manageActivityForm.value" [disabled]="!isValid()">Zapisz</button>
+</mat-dialog-actions>

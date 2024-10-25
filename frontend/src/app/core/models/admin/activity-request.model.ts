@@ -1,5 +1,4 @@
-export interface Activity {
-  id: string;
+export interface ActivityRequest {
   name: string;
   metFactor: number;
   isPopular: boolean;

@@ -31,6 +31,7 @@ export class ErrorCodesService {
     322: { message: 'Hasła do siebie nie pasują', status: 'BAD_REQUEST' },
     323: { message: 'Nowe hasło jest takie samo jak stare hasło', status: 'BAD_REQUEST' },
     343: { message: 'Parametr z podaną nazwą już istnieje. Spróbuj ponownie z inną nazwą.', status: 'CONFLICT' },
+    344: { message: 'Aktywność z podaną nazwą już istnieje. Spróbuj ponownie z inna nazwą.', status: 'CONFLICT' },
     500: { message: 'Błąd serwera', status: 'NOT_IMPLEMENTED' }
   };
 
