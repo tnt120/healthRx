@@ -263,6 +263,23 @@ public class FriendshipServiceImpl implements FriendshipService {
                 .build();
     }
 
+    @Override
+    @Transactional
+    public void removeFriendshipByUser(String id, Boolean isDoctor) {
+        Friendship friendship;
+
+        if (isDoctor) {
+            friendship = friendshipRepository.getFriendshipByDoctorId(id)
+                    .orElseThrow(FRIENDSHIP_NOT_FOUND::getError);
+        } else {
+            friendship = friendshipRepository.getFriendshipByUserId(id)
+                    .orElseThrow(FRIENDSHIP_NOT_FOUND::getError);
+        }
+
+        messageRepository.deleteAllByFriendshipId(friendship.getId());
+        friendshipRepository.delete(friendship);
+    }
+
     private Friendship getDoctorFriendship(InvitationRequest request, String doctorId) {
         Friendship friendship = friendshipRepository.findById(request.getInvitationId())
                 .orElseThrow(INVITATION_NOT_FOUND::getError);

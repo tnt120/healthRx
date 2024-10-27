@@ -2,7 +2,6 @@ package com.healthrx.backend.service.impl;
 
 import com.healthrx.backend.api.external.*;
 import com.healthrx.backend.api.external.admin.ChangeRoleReqRes;
-import com.healthrx.backend.api.external.admin.DeleteUserRequest;
 import com.healthrx.backend.api.external.settings.NotificationsData;
 import com.healthrx.backend.api.internal.*;
 import com.healthrx.backend.api.internal.enums.Role;
@@ -14,10 +13,7 @@ import com.healthrx.backend.quartz.QuartzNotificationParametersModel;
 import com.healthrx.backend.repository.*;
 import com.healthrx.backend.security.aes.AesHandler;
 import com.healthrx.backend.security.service.JwtService;
-import com.healthrx.backend.service.ActivityService;
-import com.healthrx.backend.service.AdminService;
-import com.healthrx.backend.service.SettingsService;
-import com.healthrx.backend.service.UserService;
+import com.healthrx.backend.service.*;
 import com.healthrx.backend.specification.UserSpecification;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -58,6 +54,7 @@ public class UserServiceImpl implements UserService {
     private final DrugLogRepository drugLogRepository;
     private final DoctorDetailsRepository doctorDetailsRepository;
     private final AccountSettingsRepository accountSettingsRepository;
+    private final FriendshipService friendshipService;
     private final ParameterMapper parameterMapper;
     private final SpecializationMapper specializationMapper;
     private final UserParameterMapper userParameterMapper;
@@ -151,10 +148,15 @@ public class UserServiceImpl implements UserService {
         switch (user.getRole()) {
             case ADMIN:
                 adminService.checkHeadAdminPermissions(admin);
+                friendshipService.removeFriendshipByUser(userId, true);
+                break;
+            case USER:
+                friendshipService.removeFriendshipByUser(userId, false);
                 break;
             case DOCTOR:
                 imageService.deletePwzPhotos(user.getDoctorDetails());
                 doctorSpecializationRepository.deleteAllByDoctorDetailsId(user.getDoctorDetails().getId());
+                friendshipService.removeFriendshipByUser(userId, true);
                 break;
         }
 

@@ -10,6 +10,8 @@ import java.util.Optional;
 
 public interface FriendshipRepository extends JpaRepository<Friendship, String>, JpaSpecificationExecutor<Friendship> {
     Optional<Friendship> getFriendshipByUserIdAndDoctorId(String userId, String doctorId);
+    Optional<Friendship> getFriendshipByDoctorId(String doctorId);
+    Optional<Friendship> getFriendshipByUserId(String userId);
     List<Friendship> getFriendshipsByUserId(String userId);
     List<Friendship> getFriendshipsByDoctorId(String doctorId);
     Integer countAllByStatus(FriendshipStatus status);

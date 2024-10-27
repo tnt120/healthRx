@@ -20,4 +20,5 @@ public interface FriendshipService {
     InvitationResponse rejectInvitation(InvitationRequest request);
     InvitationResponse resendInvitation(InvitationRequest request);
     InvitationResponse removeInvitation(String id);
+    void removeFriendshipByUser(String id, Boolean isDoctor);
 }
