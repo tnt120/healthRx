@@ -18,6 +18,7 @@ import { UserCardComponent } from './components/user-card/user-card.component';
 import { UsersSearchBarComponent } from './components/users-search-bar/users-search-bar.component';
 import { RoleChangeDialogComponent } from './components/role-change-dialog/role-change-dialog.component';
 import { DeleteUserDialogComponent } from './components/delete-user-dialog/delete-user-dialog.component';
+import { DashboardCardComponent } from './components/dashboard-card/dashboard-card.component';
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import { DeleteUserDialogComponent } from './components/delete-user-dialog/delet
     UserCardComponent,
     UsersSearchBarComponent,
     RoleChangeDialogComponent,
-    DeleteUserDialogComponent
+    DeleteUserDialogComponent,
+    DashboardCardComponent
   ],
   imports: [
     CommonModule,

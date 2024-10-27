@@ -1,0 +1,30 @@
+@use '@angular/material' as mat;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  gap: 24px;
+  border-radius: 5px;
+  @include mat.elevation(4);
+  width: 300px;
+  margin: auto;
+
+  h3 {
+    text-align: center;
+  }
+
+  .divider {
+    width: 50%;
+    height: 1px;
+    background-color: #6c757d;
+  }
+
+  .value {
+    font-size: 3rem;
+    line-height: 3.25rem;
+    font-weight: 600;
+  }
+}

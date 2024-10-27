@@ -1,1 +1,18 @@
-<p>dashboard works!</p>
+@let dashboardData = dashboardData$ | async;
+
+@if (isLoading$ | async) {
+  <div class="basic-spinner-container">
+    <mat-spinner></mat-spinner>
+  </div>
+} @else {
+  @if (dashboardData) {
+    <div class="grid">
+      <app-dashboard-card text="Liczba użytkowników" [value]="dashboardData.users"></app-dashboard-card>
+      <app-dashboard-card text="Liczba lekarzy" [value]="dashboardData.doctors - dashboardData.pendingApprovals"></app-dashboard-card>
+      <app-dashboard-card text="Liczba wniosków" [value]="dashboardData.pendingApprovals"></app-dashboard-card>
+      <app-dashboard-card text="Liczba leków" [value]="dashboardData.drugs"></app-dashboard-card>
+      <app-dashboard-card text="Liczba parametrów" [value]="dashboardData.parameters"></app-dashboard-card>
+      <app-dashboard-card text="Liczba aktywności" [value]="dashboardData.activities"></app-dashboard-card>
+    </div>
+  }
+}

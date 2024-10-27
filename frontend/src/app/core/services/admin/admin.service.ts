@@ -16,6 +16,7 @@ import { UserSearchFilters } from '../../models/admin/user-search-filters.model'
 import { UserResponse } from '../../models/user/user-response.model';
 import { ChangeRoleReqRes } from '../../models/admin/change-role-req-res.model';
 import { DeleteUserRequest } from '../../models/admin/delete-user-request.model';
+import { DashboardDataResponse } from '../../models/admin/dashboard-data-response.model';
 
 @Injectable({
   providedIn: 'root'
@@ -55,6 +56,13 @@ export class AdminService {
 
   getFiltersChangeSubject() {
     return this.filtersChangeSubject.asObservable();
+  }
+
+  getDashboardData(): Observable<DashboardDataResponse> {
+    this.loadingSubject.next(true);
+    return this.http.get<DashboardDataResponse>(`${this.apiUrl}/dashboard`).pipe(
+      finalize(() => this.loadingSubject.next(false)),
+    );
   }
 
   getApprovals(page: number, size: number): Observable<PageResponse<DoctorResponse>> {
