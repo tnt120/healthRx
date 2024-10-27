@@ -8,7 +8,7 @@ import com.healthrx.backend.api.external.activities.ActivityDTO;
 import com.healthrx.backend.api.external.activities.ActivityRequest;
 import com.healthrx.backend.api.external.admin.AdminParameterResponse;
 import com.healthrx.backend.api.external.admin.ChangeRoleReqRes;
-import com.healthrx.backend.api.external.admin.DeleteUserRequest;
+import com.healthrx.backend.api.external.admin.DashboardDataResponse;
 import com.healthrx.backend.api.external.admin.DoctorVerificationRequest;
 import com.healthrx.backend.api.external.paramters.ParameterRequest;
 import com.healthrx.backend.api.internal.enums.Role;
@@ -32,6 +32,11 @@ public class AdminController {
     private final UserService userService;
     private final ParametersService parametersService;
     private final ActivityService activityService;
+
+    @GetMapping("/dashboard")
+    public ResponseEntity<DashboardDataResponse> getDashboardData() {
+        return ResponseEntity.ok(adminService.getDashboardData());
+    }
 
     @GetMapping("/approvals")
     public ResponseEntity<PageResponse<DoctorResponse>> getApprovals(

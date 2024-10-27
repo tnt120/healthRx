@@ -2,17 +2,19 @@ package com.healthrx.backend.service.impl;
 
 import com.healthrx.backend.api.external.DoctorResponse;
 import com.healthrx.backend.api.external.PageResponse;
+import com.healthrx.backend.api.external.admin.DashboardDataResponse;
 import com.healthrx.backend.api.external.admin.DoctorVerificationRequest;
 import com.healthrx.backend.api.external.image.ImageRequest;
 import com.healthrx.backend.api.external.image.ImageResponse;
 import com.healthrx.backend.api.internal.DoctorDetails;
 import com.healthrx.backend.api.internal.DoctorSpecialization;
 import com.healthrx.backend.api.internal.User;
+import com.healthrx.backend.api.internal.enums.FriendshipStatus;
 import com.healthrx.backend.api.internal.enums.ImageType;
 import com.healthrx.backend.api.internal.enums.Role;
 import com.healthrx.backend.mapper.DoctorMapper;
-import com.healthrx.backend.repository.UserRepository;
-import com.healthrx.backend.service.AdminService;
+import com.healthrx.backend.repository.*;
+import com.healthrx.backend.service.*;
 import com.healthrx.backend.specification.DoctorSpecification;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +40,24 @@ public class AdminServiceImpl implements AdminService {
     private final ImageService imageService;
     private final DoctorMapper doctorMapper;
     private final Supplier<User> principalSupplier;
+    private final DrugRepository drugRepository;
+    private final ActivityRepository activityRepository;
+    private final ParameterRepository parameterRepository;
+    private final FriendshipRepository friendshipRepository;
+
+    @Override
+    public DashboardDataResponse getDashboardData() {
+        checkPermissions();
+
+        return DashboardDataResponse.builder()
+                .users(userRepository.countAllByRole(Role.USER))
+                .doctors(userRepository.countAllByRole(Role.DOCTOR))
+                .drugs((int) drugRepository.count())
+                .activities((int) activityRepository.count())
+                .parameters((int) parameterRepository.count())
+                .pendingApprovals(friendshipRepository.countAllByStatus(FriendshipStatus.WAITING))
+                .build();
+    }
 
     @Override
     public Void verifyDoctor(DoctorVerificationRequest req) {
