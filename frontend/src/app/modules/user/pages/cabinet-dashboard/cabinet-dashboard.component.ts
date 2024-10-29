@@ -1,6 +1,6 @@
-import { Subscription } from 'rxjs';
+import { filter, Subscription, tap } from 'rxjs';
 import { TakeDrugMonitorDialogComponent, TakeDrugMonitorDialogData } from './../../components/take-drug-monitor-dialog/take-drug-monitor-dialog.component';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Pagination } from '../../../../core/models/pagination.model';
 import { basePagination } from '../../../../core/constants/paginations-options';
 import { SortOption } from '../../../../core/models/sort-option.model';
@@ -34,7 +34,7 @@ interface userDrugMonitor {
   providers: [DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CabinetDashboardComponent implements OnInit {
+export class CabinetDashboardComponent implements OnInit, OnDestroy {
   private readonly cdRef = inject(ChangeDetectorRef);
 
   private readonly drugsService = inject(DrugsService);
@@ -73,11 +73,15 @@ export class CabinetDashboardComponent implements OnInit {
 
   userDrugMonitor: userDrugMonitor = { drugsToTake: [], drugsTaken: [] };
 
-  subscriptions: Subscription[] = [];
+  subscriptions: Subscription = new Subscription();
 
   ngOnInit(): void {
-    this.subscriptions.push(this.drugsService.getFilterChange().subscribe(() => this.loadUserDrugs()));
+    this.subscriptions.add(this.drugsService.getFilterChange().subscribe(() => this.loadUserDrugs()));
     this.loadUserDrugMonitor();
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   nagivateToAdd() {
@@ -85,20 +89,24 @@ export class CabinetDashboardComponent implements OnInit {
   }
 
   loadUserDrugs(): void {
-    this.drugsService.getUserDrugs(this.pagination.pageIndex, this.pagination.pageSize, this.sort).subscribe(res => {
-      this.tableData = res.content.map(userDrug => ({
-        id: userDrug.id,
-        name: userDrug.drug.name,
-        pharmaceuticalFormName: userDrug.drug.pharmaceuticalFormName,
-        doseDays: userDrug.doseDays.map(day => getDayName(day, true)).join(', '),
-        doseTimes: userDrug.doseTimes.map(time => time.substring(0, 5)).join(', '),
-        takingPeriod: `${this.datePipe.transform(userDrug.startDate, 'dd/MM/YYYY')} - ${userDrug.endDate ? this.datePipe.transform(userDrug.endDate, 'dd/MM/YYYY') : ''}`,
-        priority: getPriorityName(userDrug.priority),
-        tracking: userDrug.amount !== null ? `${userDrug.amount} ${userDrug.drug.unit}` : 'Nie'
-      }));
-      this.userDrugs = res.content;
-      this.pagination.totalElements = res.totalElements;
-    });
+    this.subscriptions.add(
+      this.drugsService.getUserDrugs(this.pagination.pageIndex, this.pagination.pageSize, this.sort).pipe(
+        tap(res => {
+          this.tableData = res.content.map(userDrug => ({
+            id: userDrug.id,
+            name: userDrug.drug.name,
+            pharmaceuticalFormName: userDrug.drug.pharmaceuticalFormName,
+            doseDays: userDrug.doseDays.map(day => getDayName(day, true)).join(', '),
+            doseTimes: userDrug.doseTimes.map(time => time.substring(0, 5)).join(', '),
+            takingPeriod: `${this.datePipe.transform(userDrug.startDate, 'dd/MM/YYYY')} - ${userDrug.endDate ? this.datePipe.transform(userDrug.endDate, 'dd/MM/YYYY') : ''}`,
+            priority: getPriorityName(userDrug.priority),
+            tracking: userDrug.amount !== null ? `${userDrug.amount} ${userDrug.drug.unit}` : 'Nie'
+          }));
+          this.userDrugs = res.content;
+          this.pagination.totalElements = res.totalElements;
+        })
+      ).subscribe()
+    );
   }
 
   loadUserDrugMonitor(): void {
@@ -168,16 +176,19 @@ export class CabinetDashboardComponent implements OnInit {
 
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: dialogData, width: '400px' });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.drugsService.deleteUserDrug(userDrug.id).subscribe(() => {
-          const data: SnackBarData = { title: 'Sukces', message: 'Lek został usunięty z Twojej apteczki leków', type: 'success', duration: 3000 };
-          this.customSnackbarService.openCustomSnackbar(data);
-          this.drugsService.emitFilterChange();
-          this.loadUserDrugMonitor();
-        });
-      }
-    });
+    this.subscriptions.add(
+      dialogRef.afterClosed().pipe(
+        filter(result => result),
+        tap(() => {
+          this.drugsService.deleteUserDrug(userDrug.id).subscribe(() => {
+            const data: SnackBarData = { title: 'Sukces', message: 'Lek został usunięty z Twojej apteczki leków', type: 'success', duration: 3000 };
+            this.customSnackbarService.openCustomSnackbar(data);
+            this.drugsService.emitFilterChange();
+            this.loadUserDrugMonitor();
+          });
+        })
+      ).subscribe()
+    );
   }
 
   onSetDrugMonitor(userDrug: UserDrugMonitorResponse): void {
@@ -185,20 +196,23 @@ export class CabinetDashboardComponent implements OnInit {
 
     const dialogRef: MatDialogRef<TakeDrugMonitorDialogComponent, UserDrugMonitorResponse> = this.dialog.open(TakeDrugMonitorDialogComponent, { data, width: '400px' });
 
-    this.subscriptions.push(dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        const request: UserDrugMonitorRequest = this.prepareMonitorRequest(result);
+    this.subscriptions.add(
+      dialogRef.afterClosed().pipe(
+        filter(result => !!result),
+        tap((result) => {
+          const request: UserDrugMonitorRequest = this.prepareMonitorRequest(result);
 
-        this.drugsService.setMonitorDrug(request).subscribe(res => {
-          this.userDrugMonitor.drugsToTake = this.userDrugMonitor.drugsToTake.filter(drug => !(drug.id === res.id && drug.time === res.time));
-          this.userDrugMonitor.drugsTaken = [...this.userDrugMonitor.drugsTaken, res];
+          this.drugsService.setMonitorDrug(request).subscribe(res => {
+            this.userDrugMonitor.drugsToTake = this.userDrugMonitor.drugsToTake.filter(drug => !(drug.id === res.id && drug.time === res.time));
+            this.userDrugMonitor.drugsTaken = [...this.userDrugMonitor.drugsTaken, res];
 
-          this.updateTableAmount(res);
+            this.updateTableAmount(res);
 
-          this.cdRef.detectChanges();
+            this.cdRef.detectChanges();
+          })
         })
-      }
-    }))
+      ).subscribe()
+    )
   }
 
   onEditDrugMonitor(userDrug: UserDrugMonitorResponse): void {
@@ -206,28 +220,31 @@ export class CabinetDashboardComponent implements OnInit {
 
     const dialogRef: MatDialogRef<TakeDrugMonitorDialogComponent, UserDrugMonitorResponse | { delete: boolean }> = this.dialog.open(TakeDrugMonitorDialogComponent, { data, width: '400px' });
 
-    this.subscriptions.push(dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        if ('delete' in result) {
-          if (!result.delete) return;
+    this.subscriptions.add(
+      dialogRef.afterClosed().pipe(
+        filter(result => !!result),
+        tap((result) => {
+          if ('delete' in result) {
+            if (!result.delete) return;
 
-          this.drugsService.deleteMonitorDrug(userDrug.drug.id, userDrug.time).subscribe(() => {
-            this.userDrugMonitor.drugsTaken = this.userDrugMonitor.drugsTaken.filter(drug => !(drug.id === userDrug.id && drug.time === userDrug.time));
-            this.userDrugMonitor.drugsToTake = [...this.userDrugMonitor.drugsToTake, {...userDrug, takenTime: null}];
-            this.updateTableAmount(userDrug, false);
-            this.cdRef.detectChanges();
-          });
+            this.drugsService.deleteMonitorDrug(userDrug.drug.id, userDrug.time).subscribe(() => {
+              this.userDrugMonitor.drugsTaken = this.userDrugMonitor.drugsTaken.filter(drug => !(drug.id === userDrug.id && drug.time === userDrug.time));
+              this.userDrugMonitor.drugsToTake = [...this.userDrugMonitor.drugsToTake, {...userDrug, takenTime: null}];
+              this.updateTableAmount(userDrug, false);
+              this.cdRef.detectChanges();
+            });
 
-        } else {
-          const request: UserDrugMonitorRequest = this.prepareMonitorRequest(result);
+          } else {
+            const request: UserDrugMonitorRequest = this.prepareMonitorRequest(result);
 
-          this.drugsService.editMonitorDrug(request).subscribe(res => {
-            this.userDrugMonitor.drugsTaken = this.userDrugMonitor.drugsTaken.map(userDrug => userDrug.id === res.id && userDrug.time === res.time ? res : userDrug);
-            this.cdRef.detectChanges();
-          });
-        }
-      }
-    }));
+            this.drugsService.editMonitorDrug(request).subscribe(res => {
+              this.userDrugMonitor.drugsTaken = this.userDrugMonitor.drugsTaken.map(userDrug => userDrug.id === res.id && userDrug.time === res.time ? res : userDrug);
+              this.cdRef.detectChanges();
+            });
+          }
+        })
+      ).subscribe()
+    );
   }
 
   private updateTableAmount(userDrug: UserDrugMonitorResponse, isOdd: boolean = true): void {
