@@ -16,4 +16,8 @@ public class UserSpecification {
     public static Specification<User> roleEquals(Role role) {
         return (root, query, cb) -> cb.equal(root.get("role"), role);
     }
+
+    public static Specification<User> idNotEquals(String id) {
+        return (root, query, cb) -> cb.notEqual(root.get("id"), id);
+    }
 }

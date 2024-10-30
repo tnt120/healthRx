@@ -71,12 +71,12 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public PageResponse<UserResponse> getUsers(Integer page, Integer size, Role role, String firstName, String lastName) {
-        adminService.checkPermissions();
+        User admin = adminService.checkPermissions();
 
-        Sort sort = Sort.by("id").ascending();
+        Sort sort = Sort.by("role").ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        Specification<User> spec = Specification.where(null);
+        Specification<User> spec = Specification.where(UserSpecification.idNotEquals(admin.getId()));
         if (firstName != null) spec = spec.and(UserSpecification.firstNameContains(firstName));
         if (lastName != null) spec = spec.and(UserSpecification.lastNameContains(lastName));
         if (role != null) spec = spec.and(UserSpecification.roleEquals(role));
