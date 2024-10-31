@@ -1,3 +1,5 @@
+@let userHeight = userHeight$ | async;
+
 <div class="main-container">
   <div class="top-button-container">
     <button mat-button (click)="goToSettings()"><p class="text-2">Wybór parametrów</p></button>
@@ -64,12 +66,12 @@
               <tbody>
                 @for (param of settedParameters; track param.id) {
                   <tr>
-                    <th>{{ param.parameter.name }}:</th>
-                    <td>{{ param.value }} {{ param.parameter.unit }}</td>
+                    <th>{{ param.parameter.name }} {{ param.parameter.name === 'Waga' ? '(BMI)' : '' }}:</th>
+                    <td>{{ param.value }} {{ param.parameter.unit }} {{ param.parameter.name === "Waga" ? '(' + getBmi(userHeight!, param.value!) + ')' : '' }}</td>
                     <td>
                       <div class="edit-parameter-container">
                         <div [matTooltip]="getTooltipText(param)">
-                          @if (checkStandards(param.parameter, param.value!)) {
+                          @if (checkStandards(param.parameter, param.value!, userHeight!)) {
                             <mat-icon class="green" aria-hidden="true" matListItemIcon fontSet="material-symbols-outlined">check_circle</mat-icon>
                           } @else {
                             <mat-icon class="yellow" aria-hidden="true" matListItemIcon fontSet="material-symbols-outlined">warning</mat-icon>

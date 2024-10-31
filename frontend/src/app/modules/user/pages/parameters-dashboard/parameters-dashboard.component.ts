@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Parameter } from '../../../../core/models/parameter.model';
-import { Observable, of, take, Subscription } from 'rxjs';
+import { Observable, take, Subscription, map } from 'rxjs';
 import { UserParameterResponse } from '../../../../core/models/user-parameter-response.model';
 import { Store } from '@ngrx/store';
 import { userParametersActions } from '../../../../core/state/user-parameters/user-parameters.actions';
@@ -11,6 +11,7 @@ import { EditParameterMonitorDialogComponent, EditParameterMonitorDialogData } f
 import { CustomSnackbarService } from '../../../../core/services/custom-snackbar/custom-snackbar.service';
 import { ParametersService } from '../../../../core/services/parameters/parameters.service';
 import { Router } from '@angular/router';
+import { UserResponse } from '../../../../core/models/user/user-response.model';
 
 @Component({
   selector: 'app-parameters-dashboard',
@@ -32,6 +33,8 @@ export class ParametersDashboardComponent implements OnInit, OnDestroy {
 
   private readonly cdRef = inject(ChangeDetectorRef);
 
+  userHeight$: Observable<number>;
+
   parameters$: Observable<Parameter[]>;
 
   userParameters$: Observable<UserParameterResponse[]>;
@@ -49,6 +52,9 @@ export class ParametersDashboardComponent implements OnInit, OnDestroy {
   constructor() {
     this.parameters$ = this.store.select('parameters');
     this.userParameters$ = this.store.select('userParameters');
+    this.userHeight$ = this.store.select('user').pipe(
+      map((user: UserResponse) => user.height ?? 0)
+    )
   }
 
   ngOnInit(): void {
@@ -120,6 +126,7 @@ export class ParametersDashboardComponent implements OnInit, OnDestroy {
   }
 
   getTooltipText(param: UserParameterResponse): string {
+    if (param.parameter.name === 'Waga') return `Wartość prawidłowa BMI wynosi pomiędzy: ${param.parameter.minStandardValue} a ${param.parameter.maxStandardValue}`;
     return `Wartość prawidłowa wynosi pomiędzy: ${param.parameter.minStandardValue} a ${param.parameter.maxStandardValue}`;
   }
 
@@ -154,7 +161,16 @@ export class ParametersDashboardComponent implements OnInit, OnDestroy {
     )
   }
 
-  protected checkStandards(paramter: Parameter, value: number): boolean {
-    return value! <= paramter.maxStandardValue && value! >= paramter.minStandardValue;
+  getBmi(height: number, weight: number): number {
+    return this.parameterService.calculateBmi(height, weight);
+  }
+
+  protected checkStandards(paramter: Parameter, value: number, height: number): boolean {
+    let val = value;
+
+    if (paramter.name === 'Waga') {
+      val = this.getBmi(height, value);
+    }
+    return val! <= paramter.maxStandardValue && val! >= paramter.minStandardValue;
   }
 }

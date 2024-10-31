@@ -3,8 +3,9 @@ import { ChartResponse } from '../../../core/models/chart-response.model';
 import { Chart, registerables } from 'chart.js/auto';
 import annotationPlugin from 'chartjs-plugin-annotation';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { combineLatest } from 'rxjs';
+import { combineLatest, min } from 'rxjs';
 import { Parameter } from '../../../core/models/parameter.model';
+import { ParametersService } from '../../../core/services/parameters/parameters.service';
 
 @Component({
   selector: 'app-line-chart',
@@ -14,9 +15,13 @@ import { Parameter } from '../../../core/models/parameter.model';
 export class LineChartComponent implements OnInit {
   private readonly observer = inject(BreakpointObserver);
 
+  private readonly parametersService = inject(ParametersService);
+
   @ViewChild('containerBody', { static: true }) containerBody!: ElementRef;
 
   chartData = input.required<ChartResponse & { selectedParameter: Parameter }>();
+
+  userHeight = input.required<number>();
 
   chart: any;
 
@@ -38,10 +43,20 @@ export class LineChartComponent implements OnInit {
 
   generateChart(): void {
     const dataPoints: number[] = this.chartData()?.data.map((d) => d.value) || [];
-    const minTemp = Math.min(...dataPoints) - (this.chartData().selectedParameter.minStandardValue > 1000 ? 100 : 10);
+
+    const minStandardValue = this.chartData().selectedParameter.name === 'Waga' ?
+      this.parametersService.getMaxWeightFromBmiAndHeight(this.userHeight(), this.chartData().selectedParameter.minStandardValue) :
+      this.chartData().selectedParameter.minStandardValue;
+
+    const minTemp = Math.min(...dataPoints, minStandardValue) - (this.chartData().selectedParameter.minStandardValue > 1000 ? 100 : 10);
     const minY = minTemp >= 0 ? minTemp : 0;
-    const maxTemp = Math.max(...dataPoints) + (this.chartData().selectedParameter.maxStandardValue > 1000 ? 100 : 10)
-    const maxY = maxTemp <= this.chartData().selectedParameter.maxValue ? maxTemp : this.chartData().selectedParameter.maxValue;
+
+    const maxStandardValue = this.chartData().selectedParameter.name === 'Waga' ?
+      this.parametersService.getMaxWeightFromBmiAndHeight(this.userHeight(), this.chartData().selectedParameter.maxStandardValue) :
+      this.chartData().selectedParameter.maxStandardValue;
+
+    const maxTemp = Math.max(...dataPoints, maxStandardValue) + (this.chartData().selectedParameter.maxStandardValue > 1000 ? 100 : 10)
+    const maxY: number = maxTemp <= this.chartData().selectedParameter.maxValue ? maxTemp : this.chartData().selectedParameter.maxValue;
 
     this.chart = new Chart('lineChart', {
       type: 'line',
@@ -105,15 +120,15 @@ export class LineChartComponent implements OnInit {
             annotations: {
               line1: {
                 type: 'line',
-                yMin: this.chartData().selectedParameter.minStandardValue,
-                yMax: this.chartData().selectedParameter.minStandardValue,
+                yMin: minStandardValue,
+                yMax: minStandardValue,
                 borderColor: 'red',
                 borderWidth: 1,
               },
               line2: {
                 type: 'line',
-                yMin: this.chartData().selectedParameter.maxStandardValue,
-                yMax: this.chartData().selectedParameter.maxStandardValue,
+                yMin: maxStandardValue,
+                yMax: maxStandardValue,
                 borderColor: 'red',
                 borderWidth: 1,
               }

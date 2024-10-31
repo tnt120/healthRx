@@ -33,7 +33,7 @@
           <p>Zmień kryteria wyszukiwania</p>
         </div>
       } @else {
-        <app-line-chart [chartData]="chartData()!"></app-line-chart>
+        <app-line-chart [chartData]="chartData()!" [userHeight]="userHeight()"></app-line-chart>
       }
     } @else {
       <div class="subtitle-2 no-parameter-selected">Wybierz parametr do wykresu</div>

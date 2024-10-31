@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit, signal } from '@angular/core';
 import { StatisticsServiceService } from '../../../../core/services/statistics/statistics-service.service';
 import { DateRangeOptions, DateRangeType, DateService } from '../../../../core/services/date/date.service';
 import { DatePipe } from '@angular/common';
@@ -8,6 +8,7 @@ import { ParameterStatisticsResponse } from '../../../../core/models/parameter-s
 import { TableColumn } from '../../../../shared/components/table/table.component';
 import { TrendType } from '../../../../core/enums/trend-type.enum';
 import { StatisticsType } from '../../../../core/enums/statistics-type.enum';
+import { ParametersService } from '../../../../core/services/parameters/parameters.service';
 
 @Component({
   selector: 'app-parameter-statistics',
@@ -18,9 +19,13 @@ import { StatisticsType } from '../../../../core/enums/statistics-type.enum';
 export class ParameterStatisticsComponent implements OnInit, OnDestroy {
   private readonly statisticsService = inject(StatisticsServiceService);
 
+  private readonly parametersService = inject(ParametersService);
+
   private readonly dateService = inject(DateService);
 
   private readonly datePipe = inject(DatePipe);
+
+  userHeight = input.required<number>();
 
   dateRangeOptions = [...DateRangeOptions];
 
@@ -70,11 +75,11 @@ export class ParameterStatisticsComponent implements OnInit, OnDestroy {
         this.tableData = res
           .filter(stat => stat.trend)
           .map(stat => ({
-            name: `${stat.parameter.name} [${stat.parameter.unit}]`,
+            name: `${stat.parameter.name} ${stat.parameter.name === 'Waga' ? `(BMI)` : ''} [${stat.parameter.unit}]`,
             standards: `${stat.parameter.minStandardValue} - ${stat.parameter.maxStandardValue}`,
-            avg: Math.round(stat.avgValue * 100) / 100,
-            min: stat.minValue,
-            max: stat.maxValue,
+            avg: `${Math.round(stat.avgValue * 100) / 100} ${stat.parameter.name === 'Waga' ? `(${this.parametersService.calculateBmi(this.userHeight(), stat.avgValue)})` : ''}`,
+            min: `${stat.minValue} ${stat.parameter.name === 'Waga' ? `(${this.parametersService.calculateBmi(this.userHeight(), stat.minValue)})` : ''}`,
+            max: `${stat.maxValue} ${stat.parameter.name === 'Waga' ? `(${this.parametersService.calculateBmi(this.userHeight(), stat.maxValue)})` : ''}`,
             outsideTheNormDays: `${stat.daysBelowMinValue + stat.daysAboveMaxValue} (${stat.daysBelowMinValue}/${stat.daysAboveMaxValue})`,
             firstLogDate: stat?.firstLogDate?.substring(0, 10),
             lastLogDate: stat?.lastLogDate?.substring(0, 10),
@@ -127,11 +132,11 @@ export class ParameterStatisticsComponent implements OnInit, OnDestroy {
       { title: `Średnia`, displayedColumn: 'avg' },
       { title: `Wartość minialna`, displayedColumn: 'min' },
       { title: `Wartość maksymalna`, displayedColumn: 'max' },
+      { title: 'Liczba pomiarów', displayedColumn: 'logsCount' },
       { title: 'Dni poza normą (poniżej/powyzej)', displayedColumn: 'outsideTheNormDays' },
       { title: 'Pierwszy pomiar', displayedColumn: 'firstLogDate' },
       { title: 'Ostatni pomiar', displayedColumn: 'lastLogDate' },
       { title: 'Dni bez pomiarów (najdłuższa przerwa)', displayedColumn: 'daysWithoutLogs' },
-      { title: 'Liczba pomiarów', displayedColumn: 'logsCount' },
       { title: 'Trend', displayedColumn: 'iconTrend' }
     ]
   }

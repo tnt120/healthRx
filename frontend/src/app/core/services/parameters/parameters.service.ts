@@ -53,4 +53,12 @@ export class ParametersService {
   editUserParametersMonitor(request: UserParameterRequest): Observable<UserParameterResponse> {
     return this.http.patch<UserParameterResponse>(`${this.apiUrl}/monitor`, request);
   }
+
+  calculateBmi(height: number, weight: number): number {
+    return Math.round((weight / Math.pow(height / 100, 2)) * 100) / 100;
+  }
+
+  getMaxWeightFromBmiAndHeight(height: number, bmi: number): number {
+    return Math.round(bmi * Math.pow(height / 100, 2) * 100) / 100;
+  }
 }

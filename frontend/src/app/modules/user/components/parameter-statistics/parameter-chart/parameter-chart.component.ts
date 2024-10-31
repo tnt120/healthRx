@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit, signal } from '@angular/core';
 import { StatisticsServiceService } from '../../../../../core/services/statistics/statistics-service.service';
 import { DateRangeOptions, DateRangeType, DateService } from '../../../../../core/services/date/date.service';
 import { Store } from '@ngrx/store';
@@ -24,6 +24,8 @@ export class ParameterChartComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);
 
   private readonly datePipe = inject(DatePipe);
+
+  userHeight = input.required<number>();
 
   isChartLoading$ = this.statisticsService.getLoadingChartState(StatisticsType.PARAMETER);
 
