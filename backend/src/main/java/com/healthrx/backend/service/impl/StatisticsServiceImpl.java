@@ -28,8 +28,7 @@ import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
-import static com.healthrx.backend.handler.BusinessErrorCodes.DRUG_NOT_FOUND;
-import static com.healthrx.backend.handler.BusinessErrorCodes.PARAMETER_NOT_FOUND;
+import static com.healthrx.backend.handler.BusinessErrorCodes.*;
 
 @Service
 @RequiredArgsConstructor
@@ -48,6 +47,8 @@ public class StatisticsServiceImpl implements StatisticsService {
     private final ActivityMapper activityMapper;
     private final TimeStatisticsCalculator timeStatisticsCalculator;
     private final DayStatisticsCalculator dayStatisticsCalculator;
+    private final BmiCalculator bmiCalculator;
+    private final UserRepository userRepository;
 
     @Override
     public ChartResponse getChartData(ChartRequest request, ChartType type) {
@@ -69,6 +70,9 @@ public class StatisticsServiceImpl implements StatisticsService {
 
     @Override
     public List<ParameterStatisticsResponse> generateParameterStats(String userId, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(USER_NOT_FOUND::getError);
+
         List<Parameter> parameters = userParameterRepository.findAllByUserId(userId)
                 .stream()
                 .map(UserParameter::getParameter)
@@ -102,19 +106,26 @@ public class StatisticsServiceImpl implements StatisticsService {
             LocalDate startDate = logs.getFirst().getCreatedAt().toLocalDate();
             LocalDate prevDate = startDate;
 
-            for (ParameterLog log : logs) {
-                LocalDate currLogDate = log.getCreatedAt().toLocalDate();
+            for (ParameterLog paramLog : logs) {
+                LocalDate currLogDate = paramLog.getCreatedAt().toLocalDate();
 
                 long dayIndex = ChronoUnit.DAYS.between(startDate, currLogDate);
-                regression.addData(dayIndex, log.getValue());
+                regression.addData(dayIndex, paramLog.getValue());
 
-                sum += log.getValue();
-                min = Math.min(min, log.getValue());
-                max = Math.max(max, log.getValue());
+                sum += paramLog.getValue();
+                min = Math.min(min, paramLog.getValue());
+                max = Math.max(max, paramLog.getValue());
 
-                if (log.getValue() < paramMinStandardValue) {
+                Double value = paramLog.getValue();
+
+                if (paramLog.getParameter().getName().equals("Waga")) {
+                    value = bmiCalculator.calculateBMI(paramLog.getValue(), user.getHeight());
+                    log.info("BMI: {}, waga: {}, wysokosc: {}", value, paramLog.getValue(), user.getHeight());
+                }
+
+                if (value < paramMinStandardValue) {
                     daysBelowMinValue++;
-                } else if (log.getValue() > paramMaxStandardValue) {
+                } else if (value > paramMaxStandardValue) {
                     daysAboveMaxValue++;
                 }
 
