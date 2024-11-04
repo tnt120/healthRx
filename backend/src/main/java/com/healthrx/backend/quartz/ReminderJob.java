@@ -1,11 +1,14 @@
 package com.healthrx.backend.quartz;
 
+import com.healthrx.backend.api.external.notifications.NotificationDTO;
 import com.healthrx.backend.api.internal.*;
+import com.healthrx.backend.api.internal.enums.NotificationType;
 import com.healthrx.backend.kafka.KafkaReceiveModel;
 import com.healthrx.backend.repository.DrugLogRepository;
 import com.healthrx.backend.repository.ParameterLogRepository;
 import com.healthrx.backend.repository.UserDrugRepository;
 import com.healthrx.backend.repository.UserParameterRepository;
+import com.healthrx.backend.service.NotificationsService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +28,7 @@ import static com.healthrx.backend.handler.BusinessErrorCodes.DRUG_NOT_FOUND;
 @Slf4j
 public class ReminderJob implements Job {
     private final KafkaTemplate<String, KafkaReceiveModel> kafkaTemplate;
+    private final NotificationsService notificationService;
     private final UserDrugRepository userDrugRepository;
     private final DrugLogRepository drugLogRepository;
     private final UserParameterRepository userParameterRepository;
@@ -93,6 +97,13 @@ public class ReminderJob implements Job {
                     "missingTimes", missingTimesString
             );
 
+            notificationService.sendNotification(
+                    NotificationDTO.builder()
+                            .type(NotificationType.DRUG)
+                            .content("Ominięto zażycie leku " + userDrug.getDrug().getName() + ", w godzinach: " + missingTimesString)
+                            .build(),
+                    userDrug.getUser().getId()
+            );
             sendMail(Collections.singletonList(email), data, "DRUG_REMINDER", "Drug reminder");
         }
     }
@@ -123,6 +134,13 @@ public class ReminderJob implements Job {
                     "missingParameters", missingParametersString
             );
 
+            notificationService.sendNotification(
+                    NotificationDTO.builder()
+                            .type(NotificationType.PARAMETERS)
+                            .content("Nie wprowadzono parametrów: " + missingParametersString)
+                            .build(),
+                    userId
+            );
             sendMail(Collections.singletonList(email), data, "PARAMETER_REMINDER", "Parameter reminder");
         }
     }
