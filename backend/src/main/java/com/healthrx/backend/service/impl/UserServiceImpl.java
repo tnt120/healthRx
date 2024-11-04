@@ -148,7 +148,7 @@ public class UserServiceImpl implements UserService {
         switch (user.getRole()) {
             case ADMIN:
                 adminService.checkHeadAdminPermissions(admin);
-                friendshipService.removeFriendshipByUser(userId, true);
+                friendshipService.removeFriendshipByUser(userId, false);
                 break;
             case USER:
                 friendshipService.removeFriendshipByUser(userId, false);
@@ -323,8 +323,8 @@ public class UserServiceImpl implements UserService {
              );
          } else if (user.getRole() == Role.DOCTOR) {
              UserResponse us = response.getUser();
-             us.setIsDoctorVerified(user.getIsVerifiedDoctor());
-             if (!user.getIsVerifiedDoctor()) {
+             us.setIsDoctorVerified(user.getDoctorDetails().getIsVerifiedDoctor());
+             if (!user.getDoctorDetails().getIsVerifiedDoctor()) {
                  us.setUnverifiedDoctor(UnverifiedDoctorDTO.builder()
                                  .unverifiedMessage(user.getDoctorDetails().getUnverifiedMessage())
                                  .numberPESEL(user.getDoctorDetails().getNumberPESEL())
@@ -378,6 +378,7 @@ public class UserServiceImpl implements UserService {
 
             DoctorDetails doctorDetails = new DoctorDetails()
                     .setUser(user)
+                    .setIsVerifiedDoctor(false)
                     .setNumberPWZ(request.getNumberPWZ())
                     .setNumberPESEL(request.getNumberPESEL())
                     .setCity(city);

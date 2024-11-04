@@ -2,6 +2,7 @@ package com.healthrx.backend.specification;
 
 import com.healthrx.backend.api.internal.User;
 import com.healthrx.backend.api.internal.chat.Friendship;
+import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Subquery;
 import lombok.extern.slf4j.Slf4j;
@@ -40,15 +41,22 @@ public class DoctorSpecification {
     }
 
     public static Specification<User> isVerifiedDoctor() {
-        return (root, query, cb) -> cb.isTrue(root.get("isVerifiedDoctor"));
+        return (root, query, cb) -> {
+            Join<Object, Object> doctorDetailsJoin = root.join("doctorDetails");
+            return cb.isTrue(doctorDetailsJoin.get("isVerifiedDoctor"));
+        };
     }
 
     public static Specification<User> isDoctorForVerification() {
-        return (root, query, cb) -> cb.and(
-                cb.isFalse(root.get("isVerifiedDoctor")),
-                cb.isNotNull(root.get("doctorDetails")),
-                cb.isNull(root.get("doctorDetails").get("unverifiedMessage"))
-        );
+        return (root, query, cb) -> {
+            Join<Object, Object> doctorDetailsJoin = root.join("doctorDetails");
+
+            return cb.and(
+                    cb.isFalse(doctorDetailsJoin.get("isVerifiedDoctor")),
+                    cb.isNotNull(root.get("doctorDetails")),
+                    cb.isNull(doctorDetailsJoin.get("unverifiedMessage"))
+            );
+        };
     }
 
     public static Specification<User> isNotInFriendsList(String userId) {

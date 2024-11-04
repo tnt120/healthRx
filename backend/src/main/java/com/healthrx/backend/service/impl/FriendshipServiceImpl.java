@@ -26,6 +26,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import static com.healthrx.backend.handler.BusinessErrorCodes.*;
@@ -161,7 +162,7 @@ public class FriendshipServiceImpl implements FriendshipService {
     public InvitationResponse sendInvitation(InvitationRequest request) {
         User user = principalSupplier.get();
 
-        if (user.getIsVerifiedDoctor() || user.getRole() != Role.USER) throw USER_NOT_PERMITTED.getError();
+        if (user.getRole() != Role.USER) throw USER_NOT_PERMITTED.getError();
 
         friendshipRepository.getFriendshipByUserIdAndDoctorId(
                 user.getId(),
@@ -173,7 +174,7 @@ public class FriendshipServiceImpl implements FriendshipService {
         User doctor = userRepository.findById(request.getTargetDoctorId())
                 .orElseThrow(USER_NOT_FOUND::getError);
 
-        if (!doctor.getIsVerifiedDoctor()) throw WRONG_INVITATION_TARGET.getError();
+        if (doctor.getDoctorDetails() == null || !doctor.getDoctorDetails().getIsVerifiedDoctor()) throw WRONG_INVITATION_TARGET.getError();
 
         String invitationId = this.friendshipRepository.save(
                 Friendship.builder()
@@ -266,18 +267,17 @@ public class FriendshipServiceImpl implements FriendshipService {
     @Override
     @Transactional
     public void removeFriendshipByUser(String id, Boolean isDoctor) {
-        Friendship friendship;
+        Optional<Friendship> friendship;
 
         if (isDoctor) {
-            friendship = friendshipRepository.getFriendshipByDoctorId(id)
-                    .orElseThrow(FRIENDSHIP_NOT_FOUND::getError);
+            friendship = friendshipRepository.getFriendshipByDoctorId(id);
         } else {
-            friendship = friendshipRepository.getFriendshipByUserId(id)
-                    .orElseThrow(FRIENDSHIP_NOT_FOUND::getError);
+            friendship = friendshipRepository.getFriendshipByUserId(id);
         }
 
-        messageRepository.deleteAllByFriendshipId(friendship.getId());
-        friendshipRepository.delete(friendship);
+        if (friendship.isEmpty()) return;
+        messageRepository.deleteAllByFriendshipId(friendship.get().getId());
+        friendshipRepository.delete(friendship.get());
     }
 
     private Friendship getDoctorFriendship(InvitationRequest request, String doctorId) {

@@ -43,7 +43,7 @@ public class AdminServiceImpl implements AdminService {
     private final DrugRepository drugRepository;
     private final ActivityRepository activityRepository;
     private final ParameterRepository parameterRepository;
-    private final FriendshipRepository friendshipRepository;
+    private final DoctorDetailsRepository doctorDetailsRepository;
 
     @Override
     public DashboardDataResponse getDashboardData() {
@@ -55,7 +55,7 @@ public class AdminServiceImpl implements AdminService {
                 .drugs((int) drugRepository.count())
                 .activities((int) activityRepository.count())
                 .parameters((int) parameterRepository.count())
-                .pendingApprovals(friendshipRepository.countAllByStatus(FriendshipStatus.WAITING))
+                .pendingApprovals(doctorDetailsRepository.countAllByIsVerifiedDoctorIsFalseAndUnverifiedMessageIsNull())
                 .build();
     }
 
@@ -67,11 +67,11 @@ public class AdminServiceImpl implements AdminService {
                 .orElseThrow(USER_NOT_FOUND::getError);
 
         if (doctor.getRole() != Role.DOCTOR) throw USER_NOT_FOUND.getError();
-        if (doctor.getIsVerifiedDoctor()) throw DOCTOR_ALREADY_VERIFIED.getError();
+        if (doctor.getDoctorDetails().getIsVerifiedDoctor()) throw DOCTOR_ALREADY_VERIFIED.getError();
 
 
         if (req.getValidVerification()) {
-            doctor.setIsVerifiedDoctor(true);
+            doctor.getDoctorDetails().setIsVerifiedDoctor(true);
         } else {
             DoctorDetails doctorDetails = doctor.getDoctorDetails();
             if (doctorDetails.getUnverifiedMessage() != null && !doctorDetails.getUnverifiedMessage().isEmpty()) throw DOCTOR_ALREADY_NOT_VERIFIED.getError();

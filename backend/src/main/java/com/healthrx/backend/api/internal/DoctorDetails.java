@@ -25,6 +25,8 @@ public class DoctorDetails {
 
     private String unverifiedMessage;
 
+    private Boolean isVerifiedDoctor;
+
     @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private Image frontPwzCardImage;
 

@@ -65,7 +65,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(role)
                 .configured(false)
-                .isVerifiedDoctor(false)
                 .build();
 
         userRepository.save(user);
