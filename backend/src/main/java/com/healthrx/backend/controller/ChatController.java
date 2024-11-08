@@ -3,6 +3,7 @@ package com.healthrx.backend.controller;
 import com.healthrx.backend.api.external.chat.ChatMessageDTO;
 import com.healthrx.backend.api.external.chat.ConversationDTO;
 import com.healthrx.backend.service.ChatService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/chat")
-@Tag(name = "Chat controller", description = "Controller for managing chat messages")
+@Tag(name = "Chat controller", description = "Kontroler do pobierania konwersacji oraz wiadomości")
 public class ChatController {
 
     private final ChatService chatService;
@@ -34,11 +35,13 @@ public class ChatController {
     }
 
     @GetMapping("/conversations")
+    @Operation(summary = "Pobranie konwersacji", description = "Pobranie konwersacji użytkownika")
     public ResponseEntity<List<ConversationDTO>> getConversations() {
         return ResponseEntity.ok(chatService.getConversations());
     }
 
     @GetMapping("/messages/{friendshipId}")
+    @Operation(summary = "Pobranie wiadomości", description = "Pobranie wiadomości z konwersacji")
     public ResponseEntity<List<ChatMessageDTO>> getMessages(@PathVariable String friendshipId) {
         return ResponseEntity.ok(chatService.getMessages(friendshipId));
     }

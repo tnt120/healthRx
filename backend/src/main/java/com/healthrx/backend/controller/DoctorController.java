@@ -4,6 +4,7 @@ import com.healthrx.backend.api.external.DoctorResponse;
 import com.healthrx.backend.api.external.PageResponse;
 import com.healthrx.backend.api.external.ReVerifyDoctorRequest;
 import com.healthrx.backend.service.DoctorService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,11 +13,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/doctor")
 @RequiredArgsConstructor
-@Tag(name = "Doctor controller", description = "Controller for managing doctor actions")
+@Tag(name = "Doctor controller", description = "Kontroler do zarządzania lekarzami")
 public class DoctorController {
     private final DoctorService doctorService;
 
     @GetMapping()
+    @Operation(summary = "Pobranie listy lekarzy zweryfikowanych", description = "Pobranie listy lekarzy z możliwością filtrowania")
     public ResponseEntity<PageResponse<DoctorResponse>> getDoctors(
             @RequestParam(name = "page", defaultValue = "0", required = false) Integer page,
             @RequestParam(name = "size", defaultValue = "10", required = false) Integer size,
@@ -31,6 +33,7 @@ public class DoctorController {
     }
 
     @PatchMapping("/reVerify")
+    @Operation(summary = "Złożenie ponownego wniosku o weryfikację uprawnień lekarza", description = "Złożenie ponownego wniosku o weryfikację uprawnień lekarza")
     public ResponseEntity<Void> reVerifyDoctor(@RequestBody ReVerifyDoctorRequest req) {
         return ResponseEntity.ok(doctorService.reVerifyDoctor(req));
     }

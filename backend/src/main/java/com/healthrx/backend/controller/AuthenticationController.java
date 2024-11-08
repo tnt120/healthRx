@@ -4,6 +4,7 @@ import com.healthrx.backend.api.external.LoginRequest;
 import com.healthrx.backend.api.external.RegisterRequest;
 import com.healthrx.backend.api.external.Token;
 import com.healthrx.backend.service.AuthenticationService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,12 +17,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@Tag(name = "Authentication controller", description = "Controller for managing user authentication")
+@Tag(name = "Authentication controller", description = "Kontroler do zarządzania uwierzytelnieniem i autoryzacją użytkowników")
 public class AuthenticationController {
 
     private final AuthenticationService authService;
 
     @PostMapping("/register")
+    @Operation(summary = "Rejestracja nowego użytkownika", description = "Rejestracja nowego użytkownika w systemie")
     public ResponseEntity<Void> register(@RequestBody RegisterRequest request) {
 
         authService.register(request);
@@ -30,6 +32,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
+    @Operation(summary = "Logowanie użytkownika", description = "Logowanie użytkownika do systemu")
     public ResponseEntity<Token> login(@RequestBody LoginRequest request, HttpServletResponse response) {
 
         Token tokens = authService.login(request);
@@ -55,6 +58,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/refresh")
+    @Operation(summary = "Odświeżenie tokenów", description = "Odświeżenie tokenów dostępowych")
     public ResponseEntity<Token> refresh(HttpServletRequest request, HttpServletResponse response) {
         Token tokens = authService.refresh(request, response);
 
@@ -71,6 +75,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/logout")
+    @Operation(summary = "Wylogowanie użytkownika", description = "Wylogowanie użytkownika z systemu")
     public ResponseEntity<Void> logout(HttpServletResponse response) {
         ResponseCookie accessTokenCookie = ResponseCookie.from("access_token", "")
                 .httpOnly(true)
