@@ -46,6 +46,21 @@ public final class AesHandler implements CommandLineRunner {
         return decrypt("AES/CBC/PKCS5Padding", image, secret, ivParameterSpec);
     }
 
+    @SneakyThrows
+    public static String encryptString(String input) {
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, secret, ivParameterSpec);
+        byte[] cipherText = cipher.doFinal(input.getBytes());
+        return Base64.getEncoder().encodeToString(cipherText);
+    }
+
+    @SneakyThrows
+    public static String decryptString(String cipherText) {
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        cipher.init(Cipher.DECRYPT_MODE, secret, ivParameterSpec);
+        return new String(cipher.doFinal(Base64.getDecoder().decode(cipherText)));
+    }
+
     public static byte[] encrypt(String algorithm, byte[] input, SecretKey key,
                                  IvParameterSpec iv) throws NoSuchPaddingException, NoSuchAlgorithmException,
             InvalidAlgorithmParameterException, InvalidKeyException,

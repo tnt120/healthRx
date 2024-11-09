@@ -11,6 +11,7 @@ import com.healthrx.backend.mapper.MessageMapper;
 import com.healthrx.backend.repository.FriendshipRepository;
 import com.healthrx.backend.repository.MessageRepository;
 import com.healthrx.backend.repository.UserRepository;
+import com.healthrx.backend.security.aes.AesHandler;
 import com.healthrx.backend.service.ChatService;
 import com.healthrx.backend.specification.FriendshipSpecification;
 import com.healthrx.backend.specification.MessageSpecification;
@@ -45,7 +46,7 @@ public class ChatServiceImpl implements ChatService {
 
         Message message = messageRepository.save(
                 Message.builder()
-                        .content(chatMessageDTO.getContent())
+                        .content(AesHandler.encryptString(chatMessageDTO.getContent()))
                         .receiver(userRepository.findById(chatMessageDTO.getReceiverId())
                                 .orElseThrow(USER_NOT_FOUND::getError))
                         .sender(userRepository.findById(chatMessageDTO.getSenderId())
