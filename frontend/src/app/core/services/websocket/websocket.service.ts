@@ -11,7 +11,7 @@ import * as Stomp from 'stompjs';
 export class WebsocketService {
   private store = inject(Store);
 
-  private stompClient: Stomp.Client;
+  private stompClientMessages: Stomp.Client;
 
   private chatSubscription: Stomp.Subscription | null = null;
 
@@ -30,15 +30,15 @@ export class WebsocketService {
   constructor() {
     this.store.select('user').pipe(tap(user => this.userId = user.id)).subscribe();
 
-    this.stompClient = Stomp.over(new SockJS('http://localhost:8080/ws'));
+    this.stompClientMessages = Stomp.over(new SockJS('http://localhost:8080/ws'));
 
-    this.stompClient.connect({}, () => {
+    this.stompClientMessages.connect({}, () => {
       this.connectToChat();
     });
   }
 
   connectToChat() {
-    if (this.stompClient.connected) {
+    if (this.stompClientMessages.connected) {
       this.subscribeToChat();
     } else {
       console.error('Websocket is not connected. Cannot subscribe to chat');
@@ -58,7 +58,7 @@ export class WebsocketService {
   }
 
   sendChatMessage(content: string, friendshipId: string, receiverId: string) {
-    if (this.stompClient && this.stompClient.connected) {
+    if (this.stompClientMessages && this.stompClientMessages.connected) {
       const message: ChatMessageDto = {
         senderId: this.userId,
         receiverId: receiverId,
@@ -66,15 +66,15 @@ export class WebsocketService {
         friendshipId: friendshipId
       };
 
-      this.stompClient.send('/app/chat', {}, JSON.stringify(message));
+      this.stompClientMessages.send('/app/chat', {}, JSON.stringify(message));
     } else {
       console.error('Websocket is not connected. Cannot send chat message');
     }
   }
 
   sendReadReceipt(message: ChatMessageDto) {
-    if (this.stompClient && this.stompClient.connected) {
-      this.stompClient.send('/app/chat/read', {}, JSON.stringify(message));
+    if (this.stompClientMessages && this.stompClientMessages.connected) {
+      this.stompClientMessages.send('/app/chat/read', {}, JSON.stringify(message));
     } else {
       console.error('Websocket is not connected. Cannot send read receipt');
     }
@@ -91,12 +91,12 @@ export class WebsocketService {
       this.readMessageSubscription = null;
     }
 
-    this.chatSubscription = this.stompClient.subscribe(`/user/${this.userId}/queue/messages`, (message) => {
+    this.chatSubscription = this.stompClientMessages.subscribe(`/user/${this.userId}/queue/messages`, (message) => {
       const body: ChatMessageDto = JSON.parse(message.body);
       this.messageReceivedSubject.next(body);
     });
 
-    this.readMessageSubscription = this.stompClient.subscribe(`/user/${this.userId}/queue/messages/read`, (message) => {
+    this.readMessageSubscription = this.stompClientMessages.subscribe(`/user/${this.userId}/queue/messages/read`, (message) => {
       const body: ChatMessageDto = JSON.parse(message.body);
       this.messageReadSubject.next(body);
     });
