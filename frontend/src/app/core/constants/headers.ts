@@ -14,19 +14,7 @@ export const userHeaders: NavItem[] = [
   {
     icon: 'pill',
     title: 'Apteczka',
-    route: '/user/cabinet',
-    subItems: [
-      {
-        icon: 'prescriptions',
-        title: 'Moje leki',
-        route: '/user/cabinet'
-      },
-      {
-        icon: 'calendar_today',
-        title: 'Kalendarz',
-        route: '/user/cabinet/calendar'
-      }
-    ]
+    route: '/user/cabinet'
   },
   {
     icon: 'directions_walk',
