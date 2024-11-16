@@ -66,6 +66,7 @@ public enum BusinessErrorCodes {
     CANNOT_SET_ROLE(346, "Cannot set this role", HttpStatus.BAD_REQUEST),
     CANNOT_CHANGE_ROLE(347, "Cannot change this role", HttpStatus.BAD_REQUEST),
     CANNOT_DELETE_HEAD_ADMIN(348, "Cannot delete head admin", HttpStatus.BAD_REQUEST),
+    WRONG_BMI_DATA(349, "Provided weight or height are incorrect", HttpStatus.BAD_REQUEST),
     ;
 
     private final int code;

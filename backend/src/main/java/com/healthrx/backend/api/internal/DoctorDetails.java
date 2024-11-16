@@ -2,6 +2,7 @@ package com.healthrx.backend.api.internal;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -14,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Accessors(chain = true)
+@Builder
 public class DoctorDetails {
 
     @Id
