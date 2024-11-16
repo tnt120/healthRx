@@ -1,5 +1,5 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
-import { catchError, delay, EMPTY, retry, switchMap, tap, throwError } from 'rxjs';
+import { catchError, delay, EMPTY, Observable, retry, switchMap, tap, throwError } from 'rxjs';
 import { inject } from '@angular/core';
 import { AuthService } from '../../services/auth/auth.service';
 import { Router } from '@angular/router';
@@ -18,19 +18,11 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
 
         if (errorBody && errorBody.message === 'Access token expired') {
           return authService.refresh().pipe(
-            tap(() => console.log('Token refreshed')),
             switchMap(() => {
               return next(req.clone());
             }),
             catchError((err) => {
-              return authService.logout().pipe(
-                tap(() => {
-                  customSnackbarService.openCustomSnackbar({ title: 'Ostrzeżenie', message: 'Wystąpił problem z sesją i zostaniesz ponownie wylogowany.', type: 'warning', duration: 3000 });
-                }),
-                delay(3000),
-                tap(() => router.navigate(['login'])),
-                switchMap(() => EMPTY)
-              );
+              return handleAuthError(err, authService, router, customSnackbarService);
             })
           );
         }
@@ -38,3 +30,16 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
       })
     );
 };
+
+function handleAuthError(err: any, authService: AuthService, router: Router, customSnackbarService: CustomSnackbarService): Observable<never> {
+  return authService.logout().pipe(
+    tap(() => {
+      customSnackbarService.openCustomSnackbar(
+        { title: 'Ostrzeżenie', message: 'Wystąpił problem z sesją i zostaniesz ponownie wylogowany.', type: 'warning', duration: 3000 }
+      );
+    }),
+    delay(3000),
+    tap(() => router.navigate(['login'])),
+    switchMap(() => EMPTY)
+  );
+}

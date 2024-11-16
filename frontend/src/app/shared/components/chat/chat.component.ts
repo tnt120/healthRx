@@ -3,8 +3,9 @@ import { WebsocketService } from '../../../core/services/websocket/websocket.ser
 import { ChatService } from '../../../core/services/chat/chat.service';
 import { Conversation } from '../../../core/models/conversation.model';
 import { UserResponse } from '../../../core/models/user/user-response.model';
-import { Observable, Subscription, tap } from 'rxjs';
+import { filter, Observable, Subscription, tap } from 'rxjs';
 import { Store } from '@ngrx/store';
+import { ChatMessageDto } from '../../../core/models/chat-message-dto.model';
 
 @Component({
   selector: 'app-chat',
@@ -40,37 +41,17 @@ export class ChatComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      this.websocketService.messageReceived$.subscribe(message => {
-        if (this.selectedConversation()?.friendshipId === message.friendshipId && !message.isRead && this.chatUser && message.receiverId === this.chatUser.id) {
-          this.websocketService.sendReadReceipt(message);
-          message.isRead = true;
-        }
-
-        this.conversations.set(this.conversations().map(c => {
-          if (c.friendshipId === message.friendshipId) {
-            c.messages = [message, ...c.messages || []];
-            c.lastMessage = message;
-          }
-          return c;
-        }));
-
-        this.sortFriendships();
-      })
+      this.websocketService.messageReceived$.pipe(
+        tap(message => this.updatConversation(message)),
+        filter(message => this.selectedConversation()?.friendshipId === message.friendshipId && !message.isRead && message.receiverId === this.chatUser?.id),
+        tap(message => this.markMessageAsRead(message))
+      ).subscribe()
     );
 
     this.subscriptions.push(
-      this.websocketService.messageRead$.subscribe(message => {
-        const findedConversation = this.conversations().find(c => c.friendshipId === message.friendshipId);
-
-        if (findedConversation) {
-          const findedMessage = findedConversation.messages?.find(m => m.id === message.id);
-
-          if (findedMessage) {
-            findedMessage.isRead = true;
-            this.cdRef.detectChanges();
-          }
-        }
-      })
+      this.websocketService.messageRead$.pipe(
+        tap(message => this.updateReadStatus(message))
+      ).subscribe()
     )
   }
 
@@ -91,8 +72,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         if (c.friendshipId === conversation.friendshipId) {
           res = res.map(message => {
             if (!message.isRead && this.chatUser && message.receiverId === this.chatUser.id) {
-              this.websocketService.sendReadReceipt(message);
-              message.isRead = true
+              this.markMessageAsRead(message);
             }
 
             return message;
@@ -115,5 +95,35 @@ export class ChatComponent implements OnInit, OnDestroy {
       const dateB = b?.lastMessage?.createdAt ? new Date(b.lastMessage.createdAt).getTime() : 0;
       return dateB - dateA;
     })]);
+  }
+
+  private markMessageAsRead(message: ChatMessageDto): void {
+      this.websocketService.sendReadReceipt(message);
+      message.isRead = true
+  }
+
+  private updatConversation(message: ChatMessageDto): void {
+    this.conversations.set(this.conversations().map(c => {
+      if (c.friendshipId === message.friendshipId) {
+        c.messages = [message, ...c.messages || []];
+        c.lastMessage = message;
+      }
+      return c;
+    }));
+
+    this.sortFriendships();
+  }
+
+  private updateReadStatus(message: ChatMessageDto): void {
+    const findedConversation = this.conversations().find(c => c.friendshipId === message.friendshipId);
+
+    if (findedConversation) {
+      const findedMessage = findedConversation.messages?.find(m => m.id === message.id);
+
+      if (findedMessage) {
+        findedMessage.isRead = true;
+        this.cdRef.detectChanges();
+      }
+    }
   }
 }
