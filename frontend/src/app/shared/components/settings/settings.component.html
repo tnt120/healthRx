@@ -2,6 +2,9 @@
   <app-tab headerTitle="Profil" [padding]="tabPadding">
     <app-settings-user-profile [userProfileData]="userData$ | async"></app-settings-user-profile>
   </app-tab>
+  <app-tab headerTitle="Zmiana zdjęcia profilowego" [padding]="tabPadding">
+    <app-profile-picture-change [userProfileData]="userData$ | async"></app-profile-picture-change>
+  </app-tab>
   <app-tab headerTitle="Zmiana hasła" [padding]="tabPadding">
     <app-password-change-dialog></app-password-change-dialog>
   </app-tab>
@@ -10,8 +13,5 @@
   </app-tab>
   <app-tab headerTitle="Zarządzanie parametrami" *ngIf="role === 'USER'" [padding]="tabPadding">
     <app-parameters-manage [userParameters]="userParamters$ | async" [parameters]="paramters$ | async"></app-parameters-manage>
-  </app-tab>
-  <app-tab headerTitle="Zmiana zdjęcia profilowego" [padding]="tabPadding">
-    <app-profile-picture-change [userProfileData]="userData$ | async"></app-profile-picture-change>
   </app-tab>
 </app-tabs>
