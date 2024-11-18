@@ -49,10 +49,17 @@ public class DrugsServiceImpl implements DrugsService {
 
     @Override
     public PageResponse<DrugResponse> getAllDrugs(Integer page, Integer size, String sortBy, String order, String name) {
+        User user = principalSupplier.get();
+
+        List<Integer> userDrugsIds = userDrugRepository.findAllByUserId(user.getId())
+                .stream()
+                .map(userDrug -> userDrug.getDrug().getId())
+                .toList();
+
         Sort sort = order.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        Specification<Drug> spec = Specification.where(null);
+        Specification<Drug> spec = Specification.where(DrugSpecification.idsDifferent(userDrugsIds));
         if (name != null) spec = spec.and(DrugSpecification.nameContains(name));
 
         Page<Drug> drugs = drugRepository.findAll(spec, pageable);
