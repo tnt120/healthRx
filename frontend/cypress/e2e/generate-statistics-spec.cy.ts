@@ -10,6 +10,8 @@ describe('Statystyki użytkownika', () => {
     cy.url().should('eq', 'http://localhost:4200/user/parameters');
 
     cy.contains('Statystyki').click();
+
+    cy.get('app-header-bar').contains('Statystyki').should('be.visible');
   });
   it('Utworzenie wykresu statystyk parametrów użytkownika', () => {
     cy.contains('h3', 'Parametry').should('be.visible');

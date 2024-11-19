@@ -1,4 +1,4 @@
-describe('Statystyki użytkownika', () => {
+describe('Parametry użytkownika', () => {
   beforeEach(() => {
     cy.visit('/login');
 
@@ -10,6 +10,8 @@ describe('Statystyki użytkownika', () => {
     cy.url().should('eq', 'http://localhost:4200/user/parameters');
 
     cy.contains('Parametry').click();
+
+    cy.get('app-header-bar').contains('Monitorowanie parametrów').should('be.visible');
   });
   it('Przejście na stronę', () => {
     cy.contains('p', 'Wybór parametrów')

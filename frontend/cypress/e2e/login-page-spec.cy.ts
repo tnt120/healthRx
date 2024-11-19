@@ -20,7 +20,7 @@ describe('Logowanie lekarza', () => {
     cy.visit('/login');
 
     cy.get('input[formControlName="email"]').type('lekarz1@gmail.com');
-    cy.get('input[formControlName="password"]').type('lekerz');
+    cy.get('input[formControlName="password"]').type('lekarz');
 
     cy.get('button.submit-button').click();
 
@@ -29,3 +29,18 @@ describe('Logowanie lekarza', () => {
     cy.contains('Moi pacjenci').should('be.visible');
   });
 });
+
+describe('Logowanie administartora', () => {
+  it('powinno zalogować adminstartora i przekierować na dashboard administratora', () => {
+    cy.visit('/login');
+
+    cy.get('input[formControlName="email"]').type('admin1@gmail.com');
+    cy.get('input[formControlName="password"]').type('admin');
+
+    cy.get('button.submit-button').click();
+
+    cy.url().should('eq', 'http://localhost:4200/admin/dashboard');
+
+    cy.contains('Dashboard').should('be.visible');
+  })
+})

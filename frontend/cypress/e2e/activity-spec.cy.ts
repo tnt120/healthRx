@@ -1,4 +1,4 @@
-describe('Apteczka leków', () => {
+describe('Aktywności użytkownika', () => {
   beforeEach(() => {
     cy.visit('/login');
 
@@ -13,6 +13,8 @@ describe('Apteczka leków', () => {
   });
   it('Przejście na stronę', () => {
     cy.url().should('eq', 'http://localhost:4200/user/activities');
+
+    cy.get('app-header-bar').contains('Aktywności fizyczne').should('be.visible');
 
     cy.contains('h3', 'Twoje dzisiejsze aktywności')
       .parent()
