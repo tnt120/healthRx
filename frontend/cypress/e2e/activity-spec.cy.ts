@@ -35,6 +35,8 @@ describe('Aktywności użytkownika', () => {
 
     cy.get('mat-dialog-container').should('be.visible');
 
+    cy.get('mat-dialog-container').contains('h3', 'Dodanie aktywności').should('be.visible');
+
     cy.get('mat-dialog-container').get('mat-form-field').first().click();
     cy.get('mat-option').first().click();
 
