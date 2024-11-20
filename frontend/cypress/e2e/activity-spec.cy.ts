@@ -50,6 +50,6 @@ describe('Aktywności użytkownika', () => {
 
     cy.get('mat-dialog-container').get('button').contains('Zapisz').click();
 
-    cy.contains('Sukces');
+    cy.get('app-custom-snackbar').contains('Sukces');
   });
 });

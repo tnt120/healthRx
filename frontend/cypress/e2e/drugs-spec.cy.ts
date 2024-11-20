@@ -70,6 +70,6 @@ describe('Apteczka leków', () => {
 
     cy.url().should('eq', 'http://localhost:4200/user/cabinet');
 
-    cy.contains('Sukces');
+    cy.get('app-custom-snackbar').contains('Sukces');
   })
 });
