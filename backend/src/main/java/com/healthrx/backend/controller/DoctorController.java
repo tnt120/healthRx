@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/doctor")
 @RequiredArgsConstructor
-@Tag(name = "Doctor controller", description = "Kontroler do zarządzania lekarzami")
+@Tag(name = "Doctor controller", description = "Controller for managing doctors")
 public class DoctorController {
     private final DoctorService doctorService;
 
     @GetMapping()
-    @Operation(summary = "Pobranie listy lekarzy zweryfikowanych", description = "Pobranie listy lekarzy z możliwością filtrowania")
+    @Operation(summary = "Fetching the list of verified doctors", description = "Fetching a list of doctors with the option to filter")
     public ResponseEntity<PageResponse<DoctorResponse>> getDoctors(
             @RequestParam(name = "page", defaultValue = "0", required = false) Integer page,
             @RequestParam(name = "size", defaultValue = "10", required = false) Integer size,
@@ -33,7 +33,7 @@ public class DoctorController {
     }
 
     @PatchMapping("/reVerify")
-    @Operation(summary = "Złożenie ponownego wniosku o weryfikację uprawnień lekarza", description = "Złożenie ponownego wniosku o weryfikację uprawnień lekarza")
+    @Operation(summary = "Submitting a new application for verification of a doctor's qualifications", description = "Submitting a new application for verification of a doctor's qualifications")
     public ResponseEntity<Void> reVerifyDoctor(@RequestBody ReVerifyDoctorRequest req) {
         return ResponseEntity.ok(doctorService.reVerifyDoctor(req));
     }

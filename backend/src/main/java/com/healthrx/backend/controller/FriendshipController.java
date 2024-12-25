@@ -18,24 +18,24 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/friendship")
 @RequiredArgsConstructor
-@Tag(name = "Friendship controller", description = "Kontroler do zarządzania znajomościami (współpracami)")
+@Tag(name = "Friendship controller", description = "Controller for managing friendships (collaborations)")
 public class FriendshipController {
     private final FriendshipService friendshipService;
 
     @GetMapping(("/pending"))
-    @Operation(summary = "Pobranie zaproszeń oczekujących na akceptację", description = "Pobranie zaproszeń oczekujących na akceptację")
+    @Operation(summary = "Fetching invitations waiting for acceptance", description = "Fetching invitations waiting for acceptance")
     public ResponseEntity<List<FriendshipResponse>> getFriendshipsPending() {
         return ResponseEntity.ok(friendshipService.getFriendships(FriendshipStatus.WAITING));
     }
 
     @GetMapping("/rejected")
-    @Operation(summary = "Pobranie zaproszeń odrzuconych", description = "Pobranie zaproszeń odrzuconych")
+    @Operation(summary = "Fetching rejected invitations", description = "Fetching rejected invitations")
     public ResponseEntity<List<FriendshipResponse>> getFriendshipsRejected() {
         return ResponseEntity.ok(friendshipService.getFriendships(FriendshipStatus.REJECTED));
     }
 
     @GetMapping("/accepted")
-    @Operation(summary = "Pobranie listy współpracujących (znajomych)", description = "Pobranie zaproszeń zaakceptowanych")
+    @Operation(summary = "Fetching a list of collaborators (friends)", description = "Fetching accepted invitations")
     public ResponseEntity<PageResponse<FriendshipResponse>> getFriendships(
             @RequestParam(name = "page", defaultValue = "0", required = false) Integer page,
             @RequestParam(name = "size", defaultValue = "10", required = false) Integer size,
@@ -48,37 +48,37 @@ public class FriendshipController {
     }
 
     @PostMapping("/permissions/{id}")
-    @Operation(summary = "Zmiana uprawnień dostępu do informacji zdrowotnych dla podnej znajomości (współpracy)", description = "Zmiana uprawnień znajomości")
+    @Operation(summary = "Change of access rights to health information for a given acquaintance (cooperation)", description = "Changing friendship permissions")
     public ResponseEntity<FriendshipPermissions> updatePermissions(@PathVariable String id, @RequestBody FriendshipPermissions request) {
         return ResponseEntity.ok(friendshipService.updatePermissions(id, request));
     }
 
     @PostMapping("/invite")
-    @Operation(summary = "Wysłanie zaproszenia do współpracy", description = "Wysłanie zaproszenia do współpracy")
+    @Operation(summary = "Sending an invitation to cooperate", description = "Sending an invitation to cooperate")
     public ResponseEntity<InvitationResponse> sendInvitation(@RequestBody InvitationRequest request) {
         return ResponseEntity.ok(friendshipService.sendInvitation(request));
     }
 
     @PostMapping("/accept")
-    @Operation(summary = "Akceptacja zaproszenia do współpracy", description = "Akceptacja zaproszenia do współpracy")
+    @Operation(summary = "Acceptance of invitation to cooperation", description = "Acceptance of invitation to cooperation")
     public ResponseEntity<InvitationResponse> acceptInvitation(@RequestBody InvitationRequest request) {
         return ResponseEntity.ok(friendshipService.acceptInvitation(request));
     }
 
     @PostMapping("/reject")
-    @Operation(summary = "Odrzucenie zaproszenia do współpracy", description = "Odrzucenie zaproszenia do współpracy")
+    @Operation(summary = "Rejecting an invitation to cooperate", description = "Rejecting an invitation to cooperate")
     public ResponseEntity<InvitationResponse> rejectInvitation(@RequestBody InvitationRequest request) {
         return ResponseEntity.ok(friendshipService.rejectInvitation(request));
     }
 
     @PostMapping("/resend")
-    @Operation(summary = "Ponowne wysłanie zaproszenia do współpracy", description = "Ponowne wysłanie zaproszenia do współpracy")
+    @Operation(summary = "Resending invitation to collaborate", description = "Resending invitation to collaborate")
     public ResponseEntity<InvitationResponse> resendInvitation(@RequestBody InvitationRequest request) {
         return ResponseEntity.ok(friendshipService.resendInvitation(request));
     }
 
     @DeleteMapping("/remove/{id}")
-    @Operation(summary = "Usunięcie znajomości (współpracy)", description = "Usunięcie znajomości (współpracy)")
+    @Operation(summary = "Deleting acquaintances (cooperations)", description = "Deleting acquaintances (cooperations)")
     public ResponseEntity<InvitationResponse> cancelInvitation(@PathVariable String id) {
         return ResponseEntity.ok(friendshipService.removeInvitation(id));
     }

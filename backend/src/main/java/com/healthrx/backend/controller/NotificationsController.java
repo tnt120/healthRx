@@ -14,18 +14,18 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/notifications")
 @RequiredArgsConstructor
-@Tag(name = "Notifications controller", description = "Kontroler do zarządzania powiadomieniami")
+@Tag(name = "Notifications controller", description = "Controller for managing notifications")
 public class NotificationsController {
     private final NotificationsService notificationsService;
 
     @GetMapping
-    @Operation(summary = "Pobranie wszystkich powiadomień", description = "Pobranie wszystkich powiadomień")
+    @Operation(summary = "Fetching all notifications", description = "Fetching all notifications")
     public ResponseEntity<List<NotificationDTO>> getNotificationsAll() {
         return ResponseEntity.ok(notificationsService.getNotificationsAll());
     }
 
     @PostMapping("/discard")
-    @Operation(summary = "Usunięcie odczytanego powiadomienia", description = "Usunięcie odczytanego powiadomienia")
+    @Operation(summary = "Deleting a read notification", description = "Deleting a read notification")
     public ResponseEntity<Void> discardNotifications(@RequestBody DiscardNotificationsRequest req) {
         return ResponseEntity.ok(notificationsService.discardNotification(req));
     }

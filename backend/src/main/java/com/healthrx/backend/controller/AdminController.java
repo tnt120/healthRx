@@ -27,7 +27,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/admin")
 @RequiredArgsConstructor
-@Tag(name = "Admin controller", description = "Kontroler do zarządzania danymi przez administratora")
+@Tag(name = "Admin controller", description = "Controller for data management by the administrator")
 public class AdminController {
     private final AdminService adminService;
     private final UserService userService;
@@ -35,13 +35,13 @@ public class AdminController {
     private final ActivityService activityService;
 
     @GetMapping("/dashboard")
-    @Operation(summary = "Pobranie danych systemu do dashboardu administratora", description = "Pobranie danych do dashboardu")
+    @Operation(summary = "Fetching system data to the administrator's dashboard", description = "Fetching data to the dashboard")
     public ResponseEntity<DashboardDataResponse> getDashboardData() {
         return ResponseEntity.ok(adminService.getDashboardData());
     }
 
     @GetMapping("/approvals")
-    @Operation(summary = "Pobranie wniosków weryfikacyjnych lekarzy", description = "Pobranie danych do zatwierdzenia - możliwość paginacji")
+    @Operation(summary = "Fetching doctor verification applications", description = "Fetching data for approval - pagination option")
     public ResponseEntity<PageResponse<DoctorResponse>> getApprovals(
             @RequestParam(name = "page", defaultValue = "0", required = false) Integer page,
             @RequestParam(name = "size", defaultValue = "10", required = false) Integer size
@@ -50,62 +50,62 @@ public class AdminController {
     }
 
     @PatchMapping("/verifyDoctor")
-    @Operation(summary = "Zatwierdzenie wniosku weryfikacyjnego lekarza", description = "Zatwierdzenie wniosku weryfikacyjnego lekarza")
+    @Operation(summary = "Approval of Physician Verification Request", description = "Approval of Physician Verification Request")
     public ResponseEntity<Void> verifyDoctor(@RequestBody DoctorVerificationRequest req) {
         return ResponseEntity.ok(adminService.verifyDoctor(req));
     }
 
     @GetMapping("/parameters")
-    @Operation(summary = "Pobranie parametrów dostępnych w systemie", description = "Pobranie parametrów systemu")
+    @Operation(summary = "Fetching parameters available in the system", description = "Fetching system parameters")
     public ResponseEntity<AdminParameterResponse> getParameters() {
         return ResponseEntity.ok(parametersService.getAllParameters());
     }
 
     @PostMapping("/parameters")
-    @Operation(summary = "Dodanie parametru do systemu", description = "Dodanie parametru")
+    @Operation(summary = "Adding a parameter to the system", description = "Adding a parameter")
     public ResponseEntity<ParameterDTO> addParameter(@RequestBody ParameterRequest req) {
         return ResponseEntity.ok(parametersService.addParameter(req));
     }
 
     @PatchMapping("/parameters/{id}")
-    @Operation(summary = "Edycja parametru do systemu", description = "Edycja parametru")
+    @Operation(summary = "Editing a parameter to the system", description = "Edit parameter")
     public ResponseEntity<ParameterDTO> editParameter(@PathVariable String id, @RequestBody ParameterRequest req) {
         return ResponseEntity.ok(parametersService.editParameter(id, req));
     }
 
     @DeleteMapping("/parameters/{id}")
-    @Operation(summary = "Usunięcie parametru z systemi", description = "Usunięcie parametru")
+    @Operation(summary = "Removing a parameter from the system", description = "Parameter removal")
     public ResponseEntity<Void> deleteParameter(@PathVariable String id) {
         parametersService.deleteParameter(id);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/activities")
-    @Operation(summary = "Pobranie aktywności dostępnych w systemie", description = "Pobranie aktywności")
+    @Operation(summary = "Fetching activities available in the system", description = "Fetching activities")
     public ResponseEntity<List<ActivityDTO>> getAllActivities() {
         return ResponseEntity.ok(activityService.getAllActivitiesDTOs());
     }
 
     @PostMapping("/activities")
-    @Operation(summary = "Dodanie aktywności do systemu", description = "Dodanie aktywności")
+    @Operation(summary = "Adding activity to the system", description = "Adding activity")
     public ResponseEntity<ActivityDTO> addActivity(@RequestBody ActivityRequest req) {
         return ResponseEntity.ok(activityService.addActivity(req));
     }
 
     @PatchMapping("/activities/{id}")
-    @Operation(summary = "Edycja aktywności w systemie", description = "Edycja aktywności")
+    @Operation(summary = "Editing activity in the system", description = "Edit activity")
     public ResponseEntity<ActivityDTO> editActivity(@PathVariable String id, @RequestBody ActivityRequest req) {
         return ResponseEntity.ok(activityService.editActivity(id, req));
     }
 
     @DeleteMapping("/activities/{id}")
-    @Operation(summary = "Usunięcie aktywności z systemu", description = "Usunięcie aktywności")
+    @Operation(summary = "Removing activity from the system", description = "Deleting activity")
     public ResponseEntity<Void> deleteActivity(@PathVariable String id) {
         return ResponseEntity.ok(activityService.deleteActivity(id));
     }
 
     @GetMapping("/users")
-    @Operation(summary = "Pobranie użytkowników", description = "Pobranie użytkowników - możliwość filtrowania po roli, imieniu i nazwisku oraz paginacja")
+    @Operation(summary = "Fetching users", description = "Fetching users - ability to filter by role, name and surname and pagination")
     public ResponseEntity<PageResponse<UserResponse>> getUsers(
             @RequestParam(name = "page", defaultValue = "0", required = false) Integer page,
             @RequestParam(name = "size", defaultValue = "10", required = false) Integer size,
@@ -117,13 +117,13 @@ public class AdminController {
     }
 
     @PatchMapping("/users/{id}")
-    @Operation(summary = "Zmiana roli użytkownika", description = "Zmiana roli użytkownika")
+    @Operation(summary = "Changing user role", description = "Changing user role")
     public ResponseEntity<ChangeRoleReqRes> changeUserRole(@PathVariable String id, @RequestBody ChangeRoleReqRes req) {
         return ResponseEntity.ok(userService.changeRole(id, req));
     }
 
     @DeleteMapping("/users/{id}")
-    @Operation(summary = "Usunięcie użytkownika", description = "Usunięcie użytkownika")
+    @Operation(summary = "User deletion", description = "User deletion")
     public ResponseEntity<Void> deleteUser(@PathVariable String id, @RequestParam(name = "message") String message) {
         return ResponseEntity.ok(userService.deleteUser(id, message));
     }

@@ -13,12 +13,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/drugs")
 @RequiredArgsConstructor
-@Tag(name = "Drugs controller", description = "Kontroler do zarządzania lekami")
+@Tag(name = "Drugs controller", description = "Controller for managing medications")
 public class DrugsController {
     private final DrugsService drugsService;
 
     @GetMapping
-    @Operation(summary = "Pobranie listy leków", description = "Pobranie listy leków z możliwością filtrowania")
+    @Operation(summary = "Fetching a medication list", description = "Fetching a list of medications with filtering options")
     public ResponseEntity<PageResponse<DrugResponse>> getDrugs(
             @RequestParam(name = "page", defaultValue = "0", required = false) Integer page,
             @RequestParam(name = "size", defaultValue = "10", required = false) Integer size,
@@ -30,19 +30,19 @@ public class DrugsController {
     }
 
     @GetMapping("/drugsUser")
-    @Operation(summary = "Pobranie listy leków użytkownika", description = "Pobranie listy leków użytkownika")
+    @Operation(summary = "Fetching the user's medication list", description = "Fetching the user's medication list")
     public ResponseEntity<List<DrugResponse>> getDrugsFromUser() {
         return ResponseEntity.ok(drugsService.getDrugsFromUser());
     }
 
     @GetMapping("/packs/{id}")
-    @Operation(summary = "Pobranie opakowań leku", description = "Pobranie opakowań leku")
+    @Operation(summary = "Fetching medicine packages", description = "Fetching medicine packages")
     public ResponseEntity<DrugPacksResponse> getDrugPacks(@PathVariable Integer id) {
         return ResponseEntity.ok(drugsService.getDrugPacks(id));
     }
 
     @GetMapping("/user")
-    @Operation(summary = "Pobranie apteczki leków użytkownika", description = "Pobranie apteczki leków użytkownika z możliwością paginacji")
+    @Operation(summary = "Fetching the user's medicine kit", description = "Fetching the user's medicine cabinet with the possibility of pagination")
     public ResponseEntity<PageResponse<UserDrugsResponse>> getUserDrugs(
             @RequestParam(name = "page", defaultValue = "0", required = false) Integer page,
             @RequestParam(name = "size", defaultValue = "10", required = false) Integer size,
@@ -53,43 +53,43 @@ public class DrugsController {
     }
 
     @PostMapping("/user")
-    @Operation(summary = "Dodanie leku do apteczki użytkownika", description = "Dodanie leku do apteczki użytkownika")
+    @Operation(summary = "Adding a medicine to the user's medicine cabinet", description = "Adding a medicine to the user's medicine cabinet")
     public ResponseEntity<UserDrugsResponse> addUserDrug(@RequestBody UserDrugsRequest userDrugsResponse) {
         return ResponseEntity.ok(drugsService.addUserDrug(userDrugsResponse));
     }
 
     @PutMapping("/user/{id}")
-    @Operation(summary = "Edycja leku w apteczce użytkownika", description = "Edycja leku w apteczce użytkownika")
+    @Operation(summary = "Editing a medicine in the user's medicine cabinet", description = "Editing a medicine in the user's medicine cabinet")
     public ResponseEntity<UserDrugsResponse> updateUserDrug(@RequestBody UserDrugsRequest userDrugsResponse, @PathVariable String id) {
         return ResponseEntity.ok(drugsService.editUserDrug(userDrugsResponse, id));
     }
 
     @DeleteMapping("/user/{id}")
-    @Operation(summary = "Usunięcie leku z apteczki użytkownika", description = "Usunięcie leku z apteczki użytkownika")
+    @Operation(summary = "Removing a medicine from the user's medicine cabinet", description = "Removing a medicine from the user's medicine cabinet")
     public ResponseEntity<Void> deleteUserDrug(@PathVariable String id) {
         return ResponseEntity.ok(drugsService.deleteUserDrug(id));
     }
 
     @GetMapping("/monitor")
-    @Operation(summary = "Pobranie listy leków użytkownika z apteczki do zażycia w danym dniu", description = "Pobranie listy leków użytkownika z apteczki do zażycia w danym dniu")
+    @Operation(summary = "Fetching a list of user's medications from the medicine cabinet to be taken on a given day", description = "Fetching a list of user's medications from the medicine cabinet to be taken on a given day")
     public ResponseEntity<List<UserDrugMonitorResponse>> getUserDrugMonitor() {
         return ResponseEntity.ok(drugsService.getUserDrugMonitor());
     }
 
     @PostMapping("/monitor")
-    @Operation(summary = "Odznaczenie przyjęcia leku", description = "Odznaczenie przyjęcia leku, z dokładną godziną zażycia")
+    @Operation(summary = "Marking the taking of the medicine", description = "Marking the taking of the medicine")
     public ResponseEntity<UserDrugMonitorResponse> setMonitorDrug(@RequestBody UserDrugMonitorRequest request) {
         return ResponseEntity.ok(drugsService.setUserDrugMonitor(request));
     }
 
     @PatchMapping("/monitor")
-    @Operation(summary = "Edycja godziny zażycia leku", description = "Edycja godziny zażycia leku")
+    @Operation(summary = "Editing the time of taking the medicine", description = "Editing the time of taking the medicine")
     public ResponseEntity<UserDrugMonitorResponse> editMonitorDrug(@RequestBody UserDrugMonitorRequest request) {
         return ResponseEntity.ok(drugsService.editUserDrugMonitor(request));
     }
 
     @DeleteMapping("/monitor")
-    @Operation(summary = "Usunięcie odznaczenia przyjęcia leku", description = "Usunięcie godziny zażycia leku")
+    @Operation(summary = "Unchecking the medicine intake", description = "Removing the time of taking the medicine")
     public ResponseEntity<Void> deleteMonitorDrug(@RequestParam Integer drugId, @RequestParam String time) {
         return ResponseEntity.ok(drugsService.deleteUserDrugMonitor(drugId, time));
     }

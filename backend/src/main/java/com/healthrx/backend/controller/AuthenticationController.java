@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@Tag(name = "Authentication controller", description = "Kontroler do zarządzania uwierzytelnieniem i autoryzacją użytkowników")
+@Tag(name = "Authentication controller", description = "Controller for managing user authentication and authorization")
 public class AuthenticationController {
 
     private final AuthenticationService authService;
 
     @PostMapping("/register")
-    @Operation(summary = "Rejestracja nowego użytkownika", description = "Rejestracja nowego użytkownika w systemie")
+    @Operation(summary = "New User Registration", description = "Registering a new user in the system")
     public ResponseEntity<Void> register(@RequestBody RegisterRequest request) {
 
         authService.register(request);
@@ -32,7 +32,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    @Operation(summary = "Logowanie użytkownika", description = "Logowanie użytkownika do systemu")
+    @Operation(summary = "User Login", description = "User login to the system")
     public ResponseEntity<Token> login(@RequestBody LoginRequest request, HttpServletResponse response) {
 
         Token tokens = authService.login(request);
@@ -58,7 +58,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/refresh")
-    @Operation(summary = "Odświeżenie tokenów", description = "Odświeżenie tokenów dostępowych")
+    @Operation(summary = "Token refresh", description = "Refreshing access tokens")
     public ResponseEntity<Token> refresh(HttpServletRequest request, HttpServletResponse response) {
         Token tokens = authService.refresh(request, response);
 
@@ -75,7 +75,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/logout")
-    @Operation(summary = "Wylogowanie użytkownika", description = "Wylogowanie użytkownika z systemu")
+    @Operation(summary = "User Logout", description = "Logging the user out of the system")
     public ResponseEntity<Void> logout(HttpServletResponse response) {
         ResponseCookie accessTokenCookie = ResponseCookie.from("access_token", "")
                 .httpOnly(true)

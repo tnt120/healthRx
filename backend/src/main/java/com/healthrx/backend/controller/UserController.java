@@ -15,24 +15,24 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
-@Tag(name = "User controller", description = "Kontroler do zarządzania danymi użytkownika w kontekście weryfikacji i inicjalizacji")
+@Tag(name = "User controller", description = "Controller for managing user data in the context of verification and initialization")
 public class UserController {
     private final UserService userService;
 
     @GetMapping("/initAndConfig")
-    @Operation(summary = "Pobranie danych inicjalizacyjnych i konfiguracyjnych", description = "Pobranie danych inicjalizacyjnych i konfiguracyjnych")
+    @Operation(summary = "Fetching initialization and configuration data", description = "Fetching initialization and configuration data")
     public ResponseEntity<InitAndConfigResponse> getInitAndConfigData() {
         return ResponseEntity.ok(userService.getInitAndConfigData());
     }
 
     @PostMapping("/getVerificationData")
-    @Operation(summary = "Pobranie danych do zweryfikowania konta użytkownika", description = "Pobranie danych do zweryfikowania konta użytkownika")
+    @Operation(summary = "Fetching data to verify the user account", description = "Fetching data to verify the user account")
     public ResponseEntity<VerificationDataResponse> getVerificationData(@RequestBody Token request) {
         return ResponseEntity.ok(userService.getVerificationData(request));
     }
 
     @PostMapping("/verification")
-    @Operation(summary = "Weryfikacja konta użytkownika", description = "Weryfikacja konta użytkownika")
+    @Operation(summary = "Verification user account", description = "Verification user account")
     public ResponseEntity<Void> verifyUser(@RequestBody UserVerificationRequest request) {
         if (userService.verifyUser(request) == null) {
             throw BusinessErrorCodes.INVALID_VERIFICATION.getError();

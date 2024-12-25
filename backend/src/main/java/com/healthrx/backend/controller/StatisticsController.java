@@ -16,37 +16,37 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/statistics")
 @RequiredArgsConstructor
-@Tag(name = "Statistics controller", description = "Kontroler do zarządzania statystykami i generowania raportów")
+@Tag(name = "Statistics controller", description = "Controller for managing statistics and generating reports")
 public class StatisticsController {
     private final StatisticsService statisticsService;
     private final ReportService reportService;
 
     @PostMapping("/chart")
-    @Operation(summary = "Pobranie danych do wykresu dla parametrów, leków lub aktywności", description = "Pobranie danych do wykresu dla parametrów, leków lub aktywności")
+    @Operation(summary = "Fetching data to a chart for parameters, drugs or activities", description = "Fetching data to a chart for parameters, drugs or activities")
     public ResponseEntity<ChartResponse> getChartData (@RequestBody ChartRequest request) {
         return ResponseEntity.ok(statisticsService.getChartData(request, request.getType()));
     }
 
     @PostMapping("/parameters")
-    @Operation(summary = "Pobranie statystyk dla parametrów", description = "Pobranie statystyk dla parametrów")
+    @Operation(summary = "Fetching statistics for parameters", description = "Fetching statistics for parameters")
     public ResponseEntity<List<ParameterStatisticsResponse>> getParametersStatistics (@RequestBody StatisticsRequest request) {
         return ResponseEntity.ok(statisticsService.getParametersStatistics(request));
     }
 
     @PostMapping("/drugs")
-    @Operation(summary = "Pobranie statystyk dla leków", description = "Pobranie statystyk dla leków")
+    @Operation(summary = "Fetching statistics for drugs", description = "Fetching statistics for drugs")
     public ResponseEntity<List<DrugStatisticsResponse>> getDrugsStatistics (@RequestBody StatisticsRequest request) {
         return ResponseEntity.ok(statisticsService.getDrugsStatistics(request));
     }
 
     @PostMapping("/activities")
-    @Operation(summary = "Pobranie statystyk dla aktywności", description = "Pobranie statystyk dla aktywności")
+    @Operation(summary = "Fetching statistics for activities", description = "Fetching statistics for activities")
     public ResponseEntity<List<ActivityStatisticsResponse>> getActivitiesStatistics (@RequestBody StatisticsRequest request) {
         return ResponseEntity.ok(statisticsService.getActivitiesStatistics(request));
     }
 
     @PostMapping("/generate-report")
-    @Operation(summary = "Generowanie raportu zdrowotnego", description = "Generowanie raportu zdrowotnego")
+    @Operation(summary = "Generating a health report", description = "Generating a health report")
     public ResponseEntity<Void> generateReport(@RequestBody GenerateReportRequest req, HttpServletResponse response) {
         reportService.generateReport(req, response);
         return ResponseEntity.ok().build();

@@ -18,12 +18,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/activities")
 @RequiredArgsConstructor
-@Tag(name = "Activities controller", description = "Kontroler do zarządzania aktywnościami użytkowników")
+@Tag(name = "Activities controller", description = "Controller for managing user activities")
 public class ActivitiesController {
     private final ActivityService activityService;
 
     @GetMapping("/user")
-    @Operation(summary = "Pobranie aktywności użytkowników", description = "Pobranie aktywności użytkowników - możliwość filtrowania po aktywności, zakresie czasu oraz paginacja")
+    @Operation(summary = "Fetching user activity", description = "Fetching user activity - ability to filter by activity, time range and pagination")
     public ResponseEntity<PageResponse<UserActivityResponse>> getUserActivities(
             @RequestParam(name = "page", defaultValue = "0", required = false) Integer page,
             @RequestParam(name = "size", defaultValue = "10", required = false) Integer size,
@@ -37,19 +37,19 @@ public class ActivitiesController {
     }
 
     @PostMapping("/user")
-    @Operation(summary = "Dodanie wykonanej aktywności użytkownika", description = "Dodanie aktywności użytkownika")
+    @Operation(summary = "Adding completed user activity", description = "Adding user activity")
     public ResponseEntity<UserActivityResponse> addUserActivity(@RequestBody UserActivityRequest request) {
         return ResponseEntity.ok(activityService.addUserActivity(request));
     }
 
     @PutMapping("/user/{id}")
-    @Operation(summary = "Edycja wykonanej aktywności użytkownika", description = "Edycja aktywności użytkownika")
+    @Operation(summary = "Editing a user's completed activity", description = "Editing User Activity")
     public ResponseEntity<UserActivityResponse> editUserActivity(@RequestBody UserActivityRequest request, @PathVariable String id) {
         return ResponseEntity.ok(activityService.editUserActivity(request, id));
     }
 
     @DeleteMapping("/user/{id}")
-    @Operation(summary = "Usunięcie wykonanej aktywności użytkownika", description = "Usunięcie aktywności użytkownika")
+    @Operation(summary = "Usunięcie wykonanej aktywności użytkownika", description = "Deleting user activity")
     public ResponseEntity<Void> deleteUserActivity(@PathVariable String id) {
         return ResponseEntity.ok(activityService.deleteUserActivity(id));
     }

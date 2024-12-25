@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/chat")
-@Tag(name = "Chat controller", description = "Kontroler do pobierania konwersacji oraz wiadomości")
+@Tag(name = "Chat controller", description = "Controller for downloading conversations and messages")
 public class ChatController {
 
     private final ChatService chatService;
@@ -35,13 +35,13 @@ public class ChatController {
     }
 
     @GetMapping("/conversations")
-    @Operation(summary = "Pobranie konwersacji", description = "Pobranie konwersacji użytkownika")
+    @Operation(summary = "Fetching conversation", description = "Fetching user conversations")
     public ResponseEntity<List<ConversationDTO>> getConversations() {
         return ResponseEntity.ok(chatService.getConversations());
     }
 
     @GetMapping("/messages/{friendshipId}")
-    @Operation(summary = "Pobranie wiadomości", description = "Pobranie wiadomości z konwersacji")
+    @Operation(summary = "Fetching the message", description = "Fetching messages from a conversation")
     public ResponseEntity<List<ChatMessageDTO>> getMessages(@PathVariable String friendshipId) {
         return ResponseEntity.ok(chatService.getMessages(friendshipId));
     }
