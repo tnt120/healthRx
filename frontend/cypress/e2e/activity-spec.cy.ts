@@ -14,7 +14,9 @@ describe('Aktywności użytkownika', () => {
   it('Przejście na stronę', () => {
     cy.url().should('eq', 'http://localhost:4200/user/activities');
 
-    cy.get('app-header-bar').contains('Aktywności fizyczne').should('be.visible');
+    cy.get('app-header-bar')
+      .contains('Aktywności fizyczne')
+      .should('be.visible');
 
     cy.contains('h3', 'Twoje dzisiejsze aktywności')
       .parent()
@@ -35,17 +37,22 @@ describe('Aktywności użytkownika', () => {
 
     cy.get('mat-dialog-container').should('be.visible');
 
-    cy.get('mat-dialog-container').contains('h3', 'Dodanie aktywności').should('be.visible');
+    cy.get('mat-dialog-container')
+      .contains('h3', 'Dodanie aktywności')
+      .should('be.visible');
 
     cy.get('mat-dialog-container').get('mat-form-field').first().click();
     cy.get('mat-option').first().click();
 
-    cy.get('mat-dialog-container').get('mat-form-field').eq(1).type('10.10.2024');
+    cy.get('mat-dialog-container')
+      .get('mat-form-field')
+      .eq(1)
+      .type('10.10.2024');
 
-    cy.get('mat-dialog-container').get('mat-form-field').eq(2).click()
+    cy.get('mat-dialog-container').get('mat-form-field').eq(2).click();
     cy.get('mat-option').contains('20').click();
 
-    cy.get('mat-dialog-container').get('mat-form-field').eq(3).click()
+    cy.get('mat-dialog-container').get('mat-form-field').eq(3).click();
     cy.get('mat-option').contains('15').click();
 
     cy.get('mat-dialog-container').get('mat-form-field').eq(4).type('50');

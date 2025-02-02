@@ -1,0 +1,35 @@
+<div class="main-container">
+  <app-container-layout>
+    <app-section-layout sectionTitle="Wybór leku">
+      @if (selectedDrug) {
+      <div class="selected-drug-container">
+        <p class="text-1"><b>Wybrano: </b>{{ selectedDrug.name }}</p>
+        <button mat-button (click)="selectDrug(null)">
+          <p class="text-1">edytuj</p>
+        </button>
+      </div>
+      } @else {
+      <app-table
+        [data]="tableData"
+        [columns]="userDrugsDisplayedColumns"
+        [pagination]="pagination"
+        [isSearching]="isDrugsSearching$ | async"
+        [searchable]="true"
+        emptyInfo="Brak leków"
+        type="selectable"
+        (onSelectEmit)="selectDrug($event)"
+        (onSearchEmit)="onSearch($event)"
+        (pageChange)="handlePageEvent($event)"
+      />
+      }
+    </app-section-layout>
+
+    @if (selectedDrug) {
+    <app-user-drugs-details
+      [selectedDrug]="selectedDrug"
+      (cancelEmit)="cancel()"
+      (saveEmit)="save($event)"
+    ></app-user-drugs-details>
+    }
+  </app-container-layout>
+</div>

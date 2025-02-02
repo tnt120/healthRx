@@ -1,0 +1,118 @@
+@import '../../../../../../styles/variables';
+
+:host {
+  width: 100%;
+  height: 84px;
+  border-radius: 10px;
+
+  &.active {
+    background-color: rgb(20, 105, 192, 0.2);
+  }
+
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+
+    .user-message-container {
+      display: flex;
+      align-items: center;
+
+      .image,
+      img {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .image {
+        position: relative;
+
+        .unread {
+          position: absolute;
+          top: 0;
+          right: 0;
+          width: 16px;
+          height: 16px;
+          background-color: #f44336;
+          border-radius: 50%;
+        }
+      }
+
+      .info {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+        padding: 10px;
+
+        .last-message,
+        .fullname {
+          display: block;
+          max-width: 225px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+
+    .small-text {
+      font-size: 0.75rem;
+      font-style: normal;
+      line-height: 1rem;
+      letter-spacing: 0;
+      font-family: Roboto, sans-serif;
+    }
+
+    &:hover {
+      background-color: rgb(20, 105, 192, 0.05);
+      cursor: pointer;
+    }
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  :host {
+    .container {
+      .user-message-container {
+        .info {
+          .last-message,
+          .fullname {
+            max-width: 125px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  :host {
+    height: auto;
+    width: 68px;
+
+    .container {
+      .user-message-container {
+        .image,
+        img {
+          width: 48px;
+          height: 48px;
+        }
+
+        .info {
+          display: none;
+        }
+      }
+
+      .last-message-time {
+        display: none;
+      }
+    }
+  }
+}

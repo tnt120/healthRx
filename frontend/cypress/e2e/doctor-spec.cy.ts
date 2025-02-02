@@ -26,6 +26,8 @@ describe('Strona lekarza', () => {
 
     cy.contains('Wiadomości').should('be.visible');
 
-    cy.get('app-chat-conversations-tab').contains('Wszystkie rozmowy').should('be.visible');
-  })
-})
+    cy.get('app-chat-conversations-tab')
+      .contains('Wszystkie rozmowy')
+      .should('be.visible');
+  });
+});

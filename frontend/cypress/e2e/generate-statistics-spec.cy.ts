@@ -22,59 +22,47 @@ describe('Statystyki użytkownika', () => {
       .find('.collapse-icon')
       .click();
 
-      cy.get('div.buttons button[mat-icon-button]')
-      .should('exist')
-      .click();
+    cy.get('div.buttons button[mat-icon-button]').should('exist').click();
 
-      cy.get('div.parameters-chart-filter-container').contains('Parametr', { timeout: 10000 })
+    cy.get('div.parameters-chart-filter-container')
+      .contains('Parametr', { timeout: 10000 })
       .children()
       .should('exist')
       .click();
 
-      cy.get('mat-option')
-      .first()
-      .click();
+    cy.get('mat-option').first().click();
 
-      cy.get('div.parameters-chart-filter-container').contains('Zakres', { timeout: 10000 })
+    cy.get('div.parameters-chart-filter-container')
+      .contains('Zakres', { timeout: 10000 })
       .children()
       .should('exist')
       .click();
 
-      cy.get('mat-option')
-      .eq(7)
-      .click();
+    cy.get('mat-option').eq(7).click();
   });
 
   it('Utworzenie wykresu statystyk leków użytkownika', () => {
     cy.contains('h3', 'Leki').should('be.visible');
 
-    cy.contains('h3', 'Leki')
-      .parent()
-      .parent()
-      .find('.collapse-icon')
-      .click();
+    cy.contains('h3', 'Leki').parent().parent().find('.collapse-icon').click();
 
-      cy.get('div.buttons button[mat-icon-button]')
-      .should('exist')
-      .click();
+    cy.get('div.buttons button[mat-icon-button]').should('exist').click();
 
-      cy.get('div.drugs-chart-filter-container').contains('Lek', { timeout: 10000 })
+    cy.get('div.drugs-chart-filter-container')
+      .contains('Lek', { timeout: 10000 })
       .children()
       .should('exist')
       .click();
 
-      cy.get('mat-option')
-      .first()
-      .click();
+    cy.get('mat-option').first().click();
 
-      cy.get('div.drugs-chart-filter-container').contains('Zakres', { timeout: 10000 })
+    cy.get('div.drugs-chart-filter-container')
+      .contains('Zakres', { timeout: 10000 })
       .children()
       .should('exist')
       .click();
 
-      cy.get('mat-option')
-      .eq(7)
-      .click();
+    cy.get('mat-option').eq(7).click();
   });
 
   it('Utworzenie wykresu statystyk aktywności użytkownika', () => {
@@ -86,26 +74,22 @@ describe('Statystyki użytkownika', () => {
       .find('.collapse-icon')
       .click();
 
-      cy.get('div.buttons button[mat-icon-button]')
-      .should('exist')
-      .click();
+    cy.get('div.buttons button[mat-icon-button]').should('exist').click();
 
-      cy.get('div.parameters-chart-filter-container').contains('Parametr', { timeout: 10000 })
+    cy.get('div.parameters-chart-filter-container')
+      .contains('Parametr', { timeout: 10000 })
       .children()
       .should('exist')
       .click();
 
-      cy.get('mat-option')
-      .first()
-      .click();
+    cy.get('mat-option').first().click();
 
-      cy.get('div.parameters-chart-filter-container').contains('Zakres', { timeout: 10000 })
+    cy.get('div.parameters-chart-filter-container')
+      .contains('Zakres', { timeout: 10000 })
       .children()
       .should('exist')
       .click();
 
-      cy.get('mat-option')
-      .eq(7)
-      .click();
+    cy.get('mat-option').eq(7).click();
   });
 });

@@ -21,7 +21,7 @@ describe('Apteczka leków', () => {
       .click();
 
     cy.contains('p.subtitle-3', 'Do zażycia');
-    cy.contains('p.subtitle-3', 'Zażyte')
+    cy.contains('p.subtitle-3', 'Zażyte');
   });
   it('Dodanie leku', () => {
     cy.url().should('eq', 'http://localhost:4200/user/cabinet');
@@ -47,7 +47,6 @@ describe('Apteczka leków', () => {
 
     cy.get('mat-form-field').contains('Dawka').type('1');
 
-
     cy.get('div.dose-time-container')
       .children()
       .children()
@@ -71,5 +70,5 @@ describe('Apteczka leków', () => {
     cy.url().should('eq', 'http://localhost:4200/user/cabinet');
 
     cy.get('app-custom-snackbar').contains('Sukces');
-  })
+  });
 });

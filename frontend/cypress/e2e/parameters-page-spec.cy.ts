@@ -11,14 +11,18 @@ describe('Parametry użytkownika', () => {
 
     cy.contains('Parametry').click();
 
-    cy.get('app-header-bar').contains('Monitorowanie parametrów').should('be.visible');
+    cy.get('app-header-bar')
+      .contains('Monitorowanie parametrów')
+      .should('be.visible');
   });
   it('Przejście na stronę', () => {
-    cy.contains('p', 'Wybór parametrów')
-      .click();
+    cy.contains('p', 'Wybór parametrów').click();
 
-      cy.url().should('eq', 'http://localhost:4200/user/settings?parametersChange=true');
+    cy.url().should(
+      'eq',
+      'http://localhost:4200/user/settings?parametersChange=true'
+    );
 
-      cy.contains('h4', 'Wybrane parametry').should('be.visible');
+    cy.contains('h4', 'Wybrane parametry').should('be.visible');
   });
 });

@@ -42,5 +42,5 @@ describe('Logowanie administartora', () => {
     cy.url().should('eq', 'http://localhost:4200/admin/dashboard');
 
     cy.contains('Dashboard').should('be.visible');
-  })
-})
+  });
+});
